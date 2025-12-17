@@ -24,6 +24,16 @@ export interface BuyStockResponse {
   message: string;
 }
 
+export interface PurchaseHistory {
+  id: string;
+  symbol: string;
+  stockName: string;
+  quantity: number;
+  pricePerShare: number;
+  totalAmount: number;
+  purchaseDate: string;
+}
+
 // Dummy stock data for simulation
 const dummyStocks: Stock[] = [
   { id: "1", symbol: "AAPL", name: "Apple Inc.", price: 178.52, change: 2.34, changePercent: 1.33, volume: 52847300, marketCap: "2.8T" },
@@ -38,12 +48,20 @@ const dummyStocks: Stock[] = [
   { id: "10", symbol: "JNJ", name: "Johnson & Johnson", price: 156.78, change: -0.45, changePercent: -0.29, volume: 5234567, marketCap: "377B" },
 ];
 
+// Dummy purchase history data
+const dummyPurchaseHistory: PurchaseHistory[] = [
+  { id: "1", symbol: "AAPL", stockName: "Apple Inc.", quantity: 10, pricePerShare: 175.20, totalAmount: 1752.00, purchaseDate: "2024-12-15T14:30:00Z" },
+  { id: "2", symbol: "NVDA", stockName: "NVIDIA Corp.", quantity: 5, pricePerShare: 480.50, totalAmount: 2402.50, purchaseDate: "2024-12-14T09:15:00Z" },
+  { id: "3", symbol: "MSFT", stockName: "Microsoft Corp.", quantity: 8, pricePerShare: 372.80, totalAmount: 2982.40, purchaseDate: "2024-12-12T16:45:00Z" },
+  { id: "4", symbol: "GOOGL", stockName: "Alphabet Inc.", quantity: 15, pricePerShare: 138.90, totalAmount: 2083.50, purchaseDate: "2024-12-10T11:20:00Z" },
+  { id: "5", symbol: "TSLA", stockName: "Tesla Inc.", quantity: 12, pricePerShare: 255.30, totalAmount: 3063.60, purchaseDate: "2024-12-08T13:00:00Z" },
+];
+
 export const stocksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getStocks: builder.query<Stock[], void>({
       query: () => "/stocks",
       providesTags: ["Stocks"],
-      // Transform response with dummy data for now
       transformResponse: () => dummyStocks,
     }),
     getStock: builder.query<Stock, string>({
@@ -58,14 +76,23 @@ export const stocksApi = baseApi.injectEndpoints({
         body: order,
       }),
       invalidatesTags: ["Portfolio"],
-      // Simulate successful purchase
       transformResponse: (): BuyStockResponse => ({
         orderId: `ORD-${Date.now()}`,
         status: "completed",
         message: "Order executed successfully",
       }),
     }),
+    getPurchaseHistory: builder.query<PurchaseHistory[], void>({
+      query: () => "/orders/history",
+      providesTags: ["Portfolio"],
+      transformResponse: () => dummyPurchaseHistory,
+    }),
   }),
 });
 
-export const { useGetStocksQuery, useGetStockQuery, useBuyStockMutation } = stocksApi;
+export const { 
+  useGetStocksQuery, 
+  useGetStockQuery, 
+  useBuyStockMutation,
+  useGetPurchaseHistoryQuery,
+} = stocksApi;
