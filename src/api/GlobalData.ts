@@ -1,4 +1,6 @@
-export const base_url = "http://192.168.1.36/";
+export const base_url = "http://192.168.1.9:8002";
+// export const base_url = "http://localhost:8002";
+
 // export const base_url = "https://erpsy.testapi.smartinb.com/";
 export const companyId = "660fab2cb74becb936dee560";
 export const loginEP = "api/investor/auth/login";
@@ -6,3 +8,4 @@ export const registerEP = "api/investor/auth/register";
 export const stocksEP = "api/investmentCompanies";
 export const sharePurchaseRequestEP = "api/sharePurchaseRequest";
 export const investorSharesEP = "api/investorShares";
+export const investorEP = "api/investor";

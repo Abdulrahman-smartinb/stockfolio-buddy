@@ -23,6 +23,7 @@ export const useProfile = () => {
   const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery(
     user?._id
   );
+
   const { data: purchaseRequests, isLoading: loadingRequests } =
     useGetInvestorPurchaseRequestsQuery(user?._id);
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();

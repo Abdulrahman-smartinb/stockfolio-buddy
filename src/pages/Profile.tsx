@@ -15,11 +15,12 @@ import {
   X,
   PenBox,
   CheckCircle2,
-  Cake,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
 import { Input } from "@/components/ui/input";
+import TransactionHistory from "@/components/TransactionHistory";
+import PendingRequests from "@/components/PendingRequests";
 
 const Profile = () => {
   const {
@@ -42,73 +43,78 @@ const Profile = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="container mx-auto px-4 py-8">
+
+      <main className="container mx-auto px-3 sm:px-4 py-5 sm:py-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="space-y-8"
+          className="space-y-6 sm:space-y-8"
         >
-          {/* Page Title */}
+          {/* PAGE TITLE */}
           <motion.div variants={itemVariants}>
-            <h1 className="text-3xl font-bold gradient-text">My Profile</h1>
-            <p className="text-muted-foreground mt-2">
+            <h1 className="text-xl sm:text-3xl font-bold gradient-text">
+              My Profile
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               Manage your account and view purchase history
             </p>
           </motion.div>
 
-          {/* Personal Information Card */}
+          {/* PERSONAL INFO */}
           <motion.div variants={itemVariants}>
-            <Card className="glass-card border-border/50">
-              <CardHeader>
-                <div className="flex justify-between">
-                  <CardTitle className="flex items-center gap-2">
-                    <User className="w-5 h-5 text-primary" />
+            <Card className="border-border/50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                    <User className="w-4 h-4 text-primary" />
                     Personal Information
                   </CardTitle>
-                  <CardTitle
-                    className="flex items-center gap-2 cursor-pointer"
-                    onClick={() => setIsEditing(!isEditing)}
+
+                  <button
+                    onClick={
+                      isEditing ? handleSaveProfile : () => setIsEditing(true)
+                    }
+                    disabled={isSaving}
+                    className="flex items-center gap-1 text-xs sm:text-sm text-primary"
                   >
                     {isEditing ? (
-                      <div
-                        className="flex gap-2 items-center"
-                        onClick={handleSaveProfile}
-                      >
-                        <CheckCircle2 className="w-5 h-5 text-primary" />
-                        Save Changes
-                      </div>
+                      <>
+                        <CheckCircle2 className="w-4 h-4" />
+                        Save
+                      </>
                     ) : (
-                      <div className="flex gap-2 items-center">
-                        <PenBox className="w-5 h-5 text-primary" />
-                        Update Profile
-                      </div>
+                      <>
+                        <PenBox className="w-4 h-4" />
+                        Edit
+                      </>
                     )}
-                  </CardTitle>
+                  </button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center gap-4">
-                  <div className="relative w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+
+              <CardContent className="space-y-5">
+                {/* AVATAR + NAME */}
+                <div className="flex items-center gap-3">
+                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                     {editData.profilePreview ? (
                       <img
                         src={editData.profilePreview}
-                        alt="User picture"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-2xl font-bold text-primary-foreground">
-                        {user?.fullName?.charAt(0).toUpperCase() || "U"}
+                      <span className="text-lg sm:text-2xl font-bold text-white">
+                        {user?.fullName?.charAt(0).toUpperCase()}
                       </span>
                     )}
 
                     {isEditing && (
-                      <label className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer text-white text-xs opacity-0 hover:opacity-100 transition">
+                      <label className="absolute inset-0 bg-black/50 flex items-center justify-center text-[10px] text-white cursor-pointer">
                         Change
                         <input
                           type="file"
-                          accept="image/*"
                           className="hidden"
+                          accept="image/*"
                           onChange={(e) =>
                             handleProfileImageChange(e.target.files?.[0])
                           }
@@ -117,27 +123,23 @@ const Profile = () => {
                     )}
                   </div>
 
-                  <div>
+                  <div className="flex-1">
                     {!isEditing ? (
-                      <h3 className="text-xl font-semibold text-foreground text-start">
-                        {user?.fullName || "User"}
-                        <div className="flex">
-                          <span className="text-sm text-foreground">
-                            Member Since:&nbsp;
-                          </span>
-                          <span className="text-sm text-muted-foreground">
-                            {format(user?.createdAt, "MMM yyyy")}
-                          </span>
-                        </div>
-                      </h3>
+                      <>
+                        <p className="text-sm sm:text-xl font-semibold">
+                          {user?.fullName}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          Member since {format(user?.createdAt, "MMM yyyy")}
+                        </p>
+                      </>
                     ) : (
                       <Input
-                        className="input w-full"
-                        placeholder="Full name"
+                        className="h-9 text-sm"
                         value={editData.fullName}
                         onChange={(e) =>
-                          setEditData((prev) => ({
-                            ...prev,
+                          setEditData((p) => ({
+                            ...p,
                             fullName: e.target.value,
                           }))
                         }
@@ -146,300 +148,101 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-3">
-                  {!isEditing ? (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Mail className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground text-start">
-                          Email
-                        </p>
-                        <p className="font-medium text-foreground">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Mail className="w-5 h-5 text-primary" />
-                      <div className="w-full">
-                        <p className="text-sm text-muted-foreground text-start">
-                          Email
-                        </p>
+                {/* INFO GRID */}
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {/* EMAIL */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <Mail className="w-4 h-4 text-primary" />
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">Email</p>
+                      {!isEditing ? (
+                        <p className="text-sm font-medium">{user?.email}</p>
+                      ) : (
                         <Input
-                          type="email"
-                          className="input w-full"
-                          placeholder="example@domain.com"
+                          className="h-8 text-sm"
                           value={editData.email}
                           onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
+                            setEditData((p) => ({
+                              ...p,
                               email: e.target.value,
                             }))
                           }
                         />
-                      </div>
+                      )}
                     </div>
-                  )}
+                  </div>
 
-                  {!isEditing ? (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Phone className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground text-start">
-                          Phone number
-                        </p>
-                        <p className="font-medium text-foreground">
+                  {/* PHONE */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <Phone className="w-4 h-4 text-primary" />
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">Phone</p>
+                      {!isEditing ? (
+                        <p className="text-sm font-medium">
                           {user?.phoneNumber}
                         </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Phone className="w-5 h-5 text-primary" />
-                      <div className="w-full">
-                        <p className="text-sm text-muted-foreground text-start">
-                          Phone number
-                        </p>
+                      ) : (
                         <Input
-                          type="tel"
-                          className="input w-full"
-                          placeholder="905**********"
+                          className="h-8 text-sm"
                           value={editData.phoneNumber}
                           onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
+                            setEditData((p) => ({
+                              ...p,
                               phoneNumber: e.target.value,
                             }))
                           }
                         />
-                      </div>
+                      )}
                     </div>
-                  )}
+                  </div>
 
-                  {!isEditing ? (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground text-start">
-                          Birth Date
-                        </p>
-                        <p className="font-medium text-foreground">
+                  {/* BIRTH DATE */}
+                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                    <Calendar className="w-4 h-4 text-primary" />
+                    <div className="flex-1">
+                      <p className="text-xs text-muted-foreground">
+                        Birth Date
+                      </p>
+                      {!isEditing ? (
+                        <p className="text-sm font-medium">
                           {user?.birthDate
-                            ? format(user?.birthDate, "MMMM yyyy")
-                            : "Not registered"}
+                            ? format(user?.birthDate, "MMM yyyy")
+                            : "—"}
                         </p>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Calendar className="w-5 h-5 text-primary" />
-                      <div className="w-full">
-                        <p className="text-sm text-muted-foreground text-start">
-                          Birth Date
-                        </p>
+                      ) : (
                         <Input
                           type="date"
-                          className="input w-full"
-                          placeholder="Birth Date"
+                          className="h-8 text-sm"
                           value={editData.birthDate}
                           onChange={(e) =>
-                            setEditData((prev) => ({
-                              ...prev,
+                            setEditData((p) => ({
+                              ...p,
                               birthDate: e.target.value,
                             }))
                           }
                         />
-                      </div>
+                      )}
                     </div>
-                  )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </motion.div>
 
-          {/* Purchase History */}
+          {/* TRANSACTION HISTORY */}
           <motion.div variants={itemVariants}>
-            <Card className="glass-card border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-primary" />
-                  Purchase History
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="h-20 bg-muted/50 rounded-lg animate-pulse"
-                      />
-                    ))}
-                  </div>
-                ) : purchaseHistory?.data &&
-                  purchaseHistory?.data?.length > 0 ? (
-                  <div className="space-y-4">
-                    {purchaseHistory?.data?.map((purchase, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div
-                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${
-                              purchase?.type === "buy"
-                                ? "primary"
-                                : "destructive"
-                            }/20 to-${
-                              purchase?.type === "buy"
-                                ? "accent"
-                                : "destructive"
-                            }/20 flex items-center justify-center`}
-                          >
-                            {purchase?.type === "buy" ? (
-                              <TrendingUp className="w-6 h-6 text-primary" />
-                            ) : (
-                              <TrendingDown className="w-6 h-6 text-destructive" />
-                            )}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {purchase?.shares} shares
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground text-start">
-                              {purchase?.description}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="flex items-center gap-1 font-semibold text-foreground">
-                            <DollarSign className="w-4 h-4" />
-                            {purchase?.purchaseValue.toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                            })}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {format(
-                              new Date(purchase?.createdAt),
-                              "MMM dd, yyyy • HH:mm"
-                            )}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <Package className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                    <p className="text-muted-foreground">
-                      No purchase history yet
-                    </p>
-                    <p className="text-sm text-muted-foreground/70">
-                      Start trading to see your transactions here
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <TransactionHistory
+              isLoading={isLoading}
+              data={purchaseHistory?.data}
+            />
           </motion.div>
 
-          {/* Pending Requests */}
+          {/* PENDING REQUESTS */}
           <motion.div variants={itemVariants}>
-            <Card className="glass-card border-border/50">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5 text-primary" />
-                  Pending Requests
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loadingRequests ? (
-                  <div className="space-y-4">
-                    {[1, 2, 3].map((i) => (
-                      <div
-                        key={i}
-                        className="h-20 bg-muted/50 rounded-lg animate-pulse"
-                      />
-                    ))}
-                  </div>
-                ) : purchaseRequests?.data &&
-                  purchaseRequests?.data?.length > 0 ? (
-                  <div className="space-y-4">
-                    {purchaseRequests?.data?.map((purchase, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex items-center gap-4">
-                          <div
-                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${
-                              purchase?.status === "pending"
-                                ? "primary"
-                                : "destructive"
-                            }/20 to-${
-                              purchase?.status === "pending"
-                                ? "accent"
-                                : "destructive"
-                            }/20 flex items-center justify-center`}
-                          >
-                            {purchase?.status === "pending" ? (
-                              <Clock className="w-6 h-6 text-primary" />
-                            ) : (
-                              <X className="w-6 h-6 text-destructive" />
-                            )}
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <Badge variant="outline" className="text-xs">
-                                {purchase?.shares} shares
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-muted-foreground text-start">
-                              {purchase?.description}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="flex items-center gap-1 font-semibold text-foreground">
-                            <DollarSign className="w-4 h-4" />
-                            {(
-                              purchase?.shares * purchase?.sharePrice
-                            ).toLocaleString("en-US", {
-                              minimumFractionDigits: 2,
-                            })}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            {format(
-                              new Date(purchase?.createdAt),
-                              "MMM dd, yyyy • HH:mm"
-                            )}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <Package className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                    <p className="text-muted-foreground">
-                      No purchase history yet
-                    </p>
-                    <p className="text-sm text-muted-foreground/70">
-                      Start trading to see your transactions here
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <PendingRequests
+              isLoading={loadingRequests}
+              data={purchaseRequests?.data}
+            />
           </motion.div>
         </motion.div>
       </main>

@@ -6,6 +6,7 @@ import {
   Activity,
   DollarSign,
   BarChart3,
+  RefreshCw,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
@@ -21,6 +22,7 @@ const Dashboard = () => {
     null
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [tradeType, setTradeType] = useState("");
 
   const {
     data: stocks = [],
@@ -36,8 +38,9 @@ const Dashboard = () => {
       stock.industry?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleStockClick = (stock: InvestmentCompany) => {
+  const handleStockClick = (stock: InvestmentCompany, type: string) => {
     setSelectedStock(stock);
+    setTradeType(type);
     setIsBuyModalOpen(true);
   };
 
@@ -84,10 +87,10 @@ const Dashboard = () => {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-2">
+          <h1 className="text-xl md:text-4xl font-bold text-foreground mb-2">
             Markets Overview
           </h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm md:text-xl">
             Track real-time stock prices and trade with confidence
           </p>
         </motion.div>
@@ -97,7 +100,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
         >
           {stats.map((stat, index) => (
             <motion.div
@@ -138,22 +141,27 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between space-x-4">
             <div className="relative w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground " />
               <Input
                 type="text"
                 placeholder="Search stocks by name or symbol..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-card"
+                className="pl-12 h-12 bg-card text-xs"
               />
             </div>
 
             <Button
               disabled={isLoading}
-              className="h-12 w-32 shrink-0"
+              className="h-12 w-12 md:w-32 shrink-0 flex items-center justify-center gap-2"
               onClick={refetch}
             >
-              Refresh{" "}
+              {/* Mobile: Icon */}
+              <RefreshCw className="w-5 h-5 md:hidden" />
+
+              {/* Desktop: Text */}
+              <span className="hidden md:inline">Refresh</span>
+
               {isLoading && (
                 <span className="flex items-center gap-2">
                   <motion.div
@@ -191,12 +199,12 @@ const Dashboard = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
             {filteredStocks.map((stock, index) => (
               <StockCard
                 key={stock._id}
                 stock={stock}
-                onClick={() => handleStockClick(stock)}
+                onAction={(type) => handleStockClick(stock, type)}
                 index={index}
               />
             ))}
@@ -225,6 +233,7 @@ const Dashboard = () => {
       <BuyModal
         stock={selectedStock}
         isOpen={isBuyModalOpen}
+        tradType={tradeType}
         onClose={() => {
           setIsBuyModalOpen(false);
           setSelectedStock(null);

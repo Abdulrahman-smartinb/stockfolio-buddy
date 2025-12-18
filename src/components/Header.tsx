@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { LogOut, TrendingUp, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { UserData } from "@/store/api/authApi";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 export const Header = () => {
   const [user] = useState<UserData>(
@@ -13,6 +14,7 @@ export const Header = () => {
 
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
@@ -28,77 +30,67 @@ export const Header = () => {
       className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl"
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <div
-            className="flex items-center gap-3 cursor-pointer"
-            onClick={() => navigate("/")}
-          >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
-              <TrendingUp className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <span className="text-xl font-bold gradient-text">StockFlow</span>
+        {/* LEFT — Brand */}
+        <div
+          className="flex items-center gap-3 cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+            <TrendingUp className="w-5 h-5 text-primary-foreground" />
           </div>
-
-          {/* Navigation */}
-          <nav className="hidden sm:flex items-center gap-1">
-            <Button
-              variant={path === "/" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => navigate("/")}
-              className="gap-2"
-            >
-              <Home className="w-4 h-4" />
-              Home
-            </Button>
-            <Button
-              variant={path === "/profile" ? "secondary" : "ghost"}
-              size="sm"
-              onClick={() => navigate("/profile")}
-              className="gap-2"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Button>
-          </nav>
+          <span className="text-lg font-bold gradient-text hidden sm:block">
+            JADWA INVEST
+          </span>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{user?.fullName || "User"}</span>
+        {/* CENTER — Navigation (icons on mobile, text on desktop) */}
+        <nav className="flex items-center gap-1">
+          <Button
+            variant={path === "/" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => navigate("/")}
+            className="gap-2"
+          >
+            <Home className="w-4 h-4" />
+            <span className="hidden sm:inline">Home</span>
+          </Button>
+
+          <Button
+            variant={path === "/profile" ? "secondary" : "ghost"}
+            size="sm"
+            onClick={() => navigate("/profile")}
+            className="gap-2"
+          >
+            <User className="w-4 h-4" />
+            <span className="hidden sm:inline">Profile</span>
+          </Button>
+        </nav>
+
+        {/* RIGHT — User Actions */}
+        <div className="flex items-center gap-3">
+          {/* User Info */}
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+              {user?.fullName?.[0] || "U"}
+            </div>
+            <span className="text-sm text-muted-foreground hidden md:block">
+              {user?.fullName || "User"}
+            </span>
           </div>
-          {/* Desktop: Logout */}
+
+          {/* Logout */}
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="hidden md:flex text-muted-foreground hover:text-destructive"
+            className={cn(
+              "text-muted-foreground hover:text-destructive",
+              "flex items-center gap-2"
+            )}
           >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
+            <LogOut className="w-4 h-4" />
+            <span className="hidden md:inline">Logout</span>
           </Button>
-
-          {/* Mobile: Profile */}
-          {path.includes("profile") ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/")}
-              className="flex md:hidden text-muted-foreground"
-            >
-              <Home className="w-4 h-4" />
-              Home
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/profile")}
-              className="flex md:hidden text-muted-foreground"
-            >
-              <User className="w-4 h-4" />
-              Profile
-            </Button>
-          )}
         </div>
       </div>
     </motion.header>

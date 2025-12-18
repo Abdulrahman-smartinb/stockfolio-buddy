@@ -59,30 +59,27 @@ export interface CreatePurchaseRequestPayload {
   description?: string;
   paymentStatus: string;
 }
+
+export interface PurchaseHistoryItem {
+  _id: string;
+  investorId: string;
+  counterpartyId: string;
+  companyId: string;
+  type: string;
+  shares: number;
+  sharePrice: number;
+  purchaseValue: number;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 export interface PurchaseHistory {
   status: boolean;
   message: string;
-  data: [
-    {
-      id?: string;
-      symbol?: string;
-      stockName?: string;
-      quantity?: number;
-      pricePerShare?: number;
-      totalAmount?: number;
-      purchaseDate?: string;
-
-      type: string;
-      shares: string;
-      sharePrice: string;
-      purchaseValue: string;
-      description?: string;
-      createdAt: string;
-    }
-  ];
+  data: PurchaseHistoryItem[];
 }
 
-export interface PurchaseRequest {
+export interface PurchaseRequestItem {
   investorId?: string;
   type?: string;
   shares?: number;
@@ -91,6 +88,11 @@ export interface PurchaseRequest {
   companyId?: string;
   paymentStatus?: string;
   status?: string;
+}
+export interface PurchaseRequest {
+  status: boolean;
+  message: string;
+  data: PurchaseRequestItem[];
 }
 
 export const stocksApi = baseApi.injectEndpoints({
@@ -133,11 +135,11 @@ export const stocksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Stocks"],
     }),
-    getPurchaseHistory: builder.query<PurchaseHistory[], string>({
+    getPurchaseHistory: builder.query<PurchaseHistory, string>({
       query: (id) => `${investorSharesEP}/${id}`,
       providesTags: ["Stocks"],
     }),
-    getInvestorPurchaseRequests: builder.query<PurchaseHistory[], string>({
+    getInvestorPurchaseRequests: builder.query<PurchaseHistory, string>({
       query: (id) => `${sharePurchaseRequestEP}/investor/${id}`,
       providesTags: ["Stocks"],
     }),
