@@ -23,6 +23,7 @@ export interface UserData {
   fullName: string;
   phoneNumber: string;
   email?: string;
+  ownedShares: number;
   companyId?: string;
   active: boolean;
   profileImage?: string;
