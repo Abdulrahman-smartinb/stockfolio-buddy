@@ -79,7 +79,8 @@ export interface PurchaseHistory {
   data: PurchaseHistoryItem[];
 }
 
-export interface PurchaseRequestItem {
+export interface PendingRequestItem {
+  _id: string;
   investorId?: string;
   type?: string;
   shares?: number;
@@ -88,11 +89,12 @@ export interface PurchaseRequestItem {
   companyId?: string;
   paymentStatus?: string;
   status?: string;
+  createdAt: string;
 }
-export interface PurchaseRequest {
+export interface PendingRequests {
   status: boolean;
   message: string;
-  data: PurchaseRequestItem[];
+  data: PendingRequestItem[];
 }
 
 export const stocksApi = baseApi.injectEndpoints({
