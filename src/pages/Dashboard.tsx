@@ -1,26 +1,42 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, TrendingUp, Activity, DollarSign, BarChart3 } from "lucide-react";
+import {
+  Search,
+  TrendingUp,
+  Activity,
+  DollarSign,
+  BarChart3,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { StockCard } from "@/components/StockCard";
 import { BuyModal } from "@/components/BuyModal";
-import { useGetStocksQuery, Stock } from "@/store/api/stocksApi";
+import { useGetStocksQuery, InvestmentCompany } from "@/store/api/stocksApi";
+import { Button } from "@/components/ui/button";
+import { companyId } from "@/api/GlobalData";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
+  const [selectedStock, setSelectedStock] = useState<InvestmentCompany | null>(
+    null
+  );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
-  const { data: stocks = [], isLoading } = useGetStocksQuery();
+  const {
+    data: stocks = [],
+    isLoading,
+    refetch,
+  } = useGetStocksQuery({
+    companyId,
+  });
 
   const filteredStocks = stocks.filter(
     (stock) =>
-      stock.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+      stock.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      stock.industry?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleStockClick = (stock: Stock) => {
+  const handleStockClick = (stock: InvestmentCompany) => {
     setSelectedStock(stock);
     setIsBuyModalOpen(true);
   };
@@ -81,7 +97,7 @@ const Dashboard = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+          className="grid grid-cols-1 lg:grid-cols-4 gap-4 mb-8"
         >
           {stats.map((stat, index) => (
             <motion.div
@@ -92,14 +108,20 @@ const Dashboard = () => {
               className="glass-card rounded-xl p-4"
             >
               <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}>
+                <div
+                  className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                >
                   <stat.icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">{stat.label}</p>
-                  <p className={`text-lg font-bold ${stat.color}`}>{stat.value}</p>
+                  <p className={`text-lg font-bold ${stat.color}`}>
+                    {stat.value}
+                  </p>
                   {stat.subValue && (
-                    <p className="text-xs text-muted-foreground">{stat.subValue}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {stat.subValue}
+                    </p>
                   )}
                 </div>
               </div>
@@ -114,15 +136,38 @@ const Dashboard = () => {
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <div className="relative max-w-md">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-            <Input
-              type="text"
-              placeholder="Search stocks by name or symbol..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 h-12 bg-card"
-            />
+          <div className="flex items-center justify-between space-x-4">
+            <div className="relative w-full max-w-md">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search stocks by name or symbol..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-12 h-12 bg-card"
+              />
+            </div>
+
+            <Button
+              disabled={isLoading}
+              className="h-12 w-32 shrink-0"
+              onClick={refetch}
+            >
+              Refresh{" "}
+              {isLoading && (
+                <span className="flex items-center gap-2">
+                  <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1,
+                      ease: "linear",
+                    }}
+                    className="w-4 h-4 border-2 border-success-foreground/30 border-t-success-foreground rounded-full"
+                  />
+                </span>
+              )}
+            </Button>
           </div>
         </motion.div>
 
@@ -149,7 +194,7 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {filteredStocks.map((stock, index) => (
               <StockCard
-                key={stock.id}
+                key={stock._id}
                 stock={stock}
                 onClick={() => handleStockClick(stock)}
                 index={index}
@@ -167,7 +212,9 @@ const Dashboard = () => {
             <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
               <Search className="w-8 h-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-2">No stocks found</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              No stocks found
+            </h3>
             <p className="text-muted-foreground">
               Try adjusting your search query
             </p>

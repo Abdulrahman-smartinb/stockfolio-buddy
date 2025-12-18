@@ -16,8 +16,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "pwa-192x192.png", "pwa-512x512.png"],
       manifest: {
-        name: "StockFlow - Trade Smarter",
-        short_name: "StockFlow",
+        name: "SmartInvest - Trade Smarter",
+        short_name: "SmartInvest",
         description: "Modern stock trading platform",
         theme_color: "#0a1628",
         background_color: "#0a1628",

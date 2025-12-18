@@ -2,17 +2,41 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { useGetPurchaseHistoryQuery } from "@/store/api/stocksApi";
+import { useEffect, useState } from "react";
+import {
+  useGetInvestorPurchaseRequestsQuery,
+  useGetPurchaseHistoryQuery,
+} from "@/store/api/stocksApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, Calendar, TrendingUp, DollarSign, Package } from "lucide-react";
+import {
+  User,
+  Mail,
+  Calendar,
+  TrendingUp,
+  DollarSign,
+  Package,
+  Phone,
+  TrendingDown,
+  Clock,
+  X,
+} from "lucide-react";
 import { format } from "date-fns";
+import { UserData } from "@/store/api/authApi";
+import { base_url } from "@/api/GlobalData";
 
 const Profile = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const [user] = useState<UserData>(
+    JSON.parse(localStorage.getItem("user") || "null")
+  );
   const navigate = useNavigate();
-  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery();
+  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery(
+    user?._id
+  );
+  const { data: purchaseRequests, isLoading: loadingRequests } =
+    useGetInvestorPurchaseRequestsQuery(user?._id);
+  console.log(purchaseRequests);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -66,33 +90,59 @@ const Profile = () => {
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
                     <span className="text-2xl font-bold text-primary-foreground">
-                      {user?.name?.charAt(0).toUpperCase() || "U"}
+                      {user?.profileImage ? (
+                        <img
+                          src={`${base_url}/api/Investor/${user?.profileImage}`}
+                          alt="User picture"
+                        />
+                      ) : (
+                        user?.fullName?.charAt(0).toUpperCase() || "U"
+                      )}
                     </span>
                   </div>
                   <div>
                     <h3 className="text-xl font-semibold text-foreground">
-                      {user?.name || "User"}
+                      {user?.fullName || "User"}
                     </h3>
-                    <p className="text-muted-foreground">Premium Member</p>
+                    {/* <p className="text-muted-foreground">Membership</p> */}
                   </div>
                 </div>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                    <Mail className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground">Email</p>
-                      <p className="font-medium text-foreground">
-                        {user?.email || "user@example.com"}
-                      </p>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {user?.email && (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Mail className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground text-start">
+                          Email
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {user?.email}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  )}
+                  {user?.phoneNumber && (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Phone className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground text-start">
+                          Phone number
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {user?.phoneNumber}
+                        </p>
+                      </div>
+                    </div>
+                  )}
                   <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
                     <Calendar className="w-5 h-5 text-primary" />
                     <div>
-                      <p className="text-sm text-muted-foreground">Member Since</p>
+                      <p className="text-sm text-muted-foreground text-start">
+                        Member Since
+                      </p>
                       <p className="font-medium text-foreground">
-                        {format(new Date(), "MMMM yyyy")}
+                        {format(user?.createdAt, "MMMM yyyy")}
                       </p>
                     </div>
                   </div>
@@ -120,43 +170,58 @@ const Profile = () => {
                       />
                     ))}
                   </div>
-                ) : purchaseHistory && purchaseHistory.length > 0 ? (
+                ) : purchaseHistory?.data &&
+                  purchaseHistory?.data?.length > 0 ? (
                   <div className="space-y-4">
-                    {purchaseHistory.map((purchase, index) => (
+                    {purchaseHistory?.data?.map((purchase, index) => (
                       <motion.div
-                        key={purchase.id}
+                        key={index}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.05 }}
                         className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                       >
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                            <TrendingUp className="w-6 h-6 text-primary" />
+                          <div
+                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${
+                              purchase?.type === "buy"
+                                ? "primary"
+                                : "destructive"
+                            }/20 to-${
+                              purchase?.type === "buy"
+                                ? "accent"
+                                : "destructive"
+                            }/20 flex items-center justify-center`}
+                          >
+                            {purchase?.type === "buy" ? (
+                              <TrendingUp className="w-6 h-6 text-primary" />
+                            ) : (
+                              <TrendingDown className="w-6 h-6 text-destructive" />
+                            )}
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-foreground">
-                                {purchase.symbol}
-                              </span>
                               <Badge variant="outline" className="text-xs">
-                                {purchase.quantity} shares
+                                {purchase?.shares} shares
                               </Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground">
-                              {purchase.stockName}
+                            <p className="text-sm text-muted-foreground text-start">
+                              {purchase?.description}
                             </p>
                           </div>
                         </div>
                         <div className="text-right">
                           <div className="flex items-center gap-1 font-semibold text-foreground">
                             <DollarSign className="w-4 h-4" />
-                            {purchase.totalAmount.toLocaleString("en-US", {
+                            {purchase?.purchaseValue.toLocaleString("en-US", {
                               minimumFractionDigits: 2,
                             })}
                           </div>
                           <p className="text-xs text-muted-foreground">
-                            {format(new Date(purchase.purchaseDate), "MMM dd, yyyy • HH:mm")}
+                            {format(
+                              new Date(purchase?.createdAt),
+                              "MMM dd, yyyy • HH:mm"
+                            )}
                           </p>
                         </div>
                       </motion.div>
@@ -165,7 +230,102 @@ const Profile = () => {
                 ) : (
                   <div className="text-center py-12">
                     <Package className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
-                    <p className="text-muted-foreground">No purchase history yet</p>
+                    <p className="text-muted-foreground">
+                      No purchase history yet
+                    </p>
+                    <p className="text-sm text-muted-foreground/70">
+                      Start trading to see your transactions here
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Pending Requests */}
+          <motion.div variants={itemVariants}>
+            <Card className="glass-card border-border/50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  Pending Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="space-y-4">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className="h-20 bg-muted/50 rounded-lg animate-pulse"
+                      />
+                    ))}
+                  </div>
+                ) : purchaseRequests?.data &&
+                  purchaseRequests?.data?.length > 0 ? (
+                  <div className="space-y-4">
+                    {purchaseRequests?.data?.map((purchase, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                        className="flex items-center justify-between p-4 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div
+                            className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${
+                              purchase?.status === "pending"
+                                ? "primary"
+                                : "destructive"
+                            }/20 to-${
+                              purchase?.status === "pending"
+                                ? "accent"
+                                : "destructive"
+                            }/20 flex items-center justify-center`}
+                          >
+                            {purchase?.status === "pending" ? (
+                              <Clock className="w-6 h-6 text-primary" />
+                            ) : (
+                              <X className="w-6 h-6 text-destructive" />
+                            )}
+                          </div>
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {purchase?.shares} shares
+                              </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground text-start">
+                              {purchase?.description}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="flex items-center gap-1 font-semibold text-foreground">
+                            <DollarSign className="w-4 h-4" />
+                            {(
+                              purchase?.shares * purchase?.sharePrice
+                            ).toLocaleString("en-US", {
+                              minimumFractionDigits: 2,
+                            })}
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            {format(
+                              new Date(purchase?.createdAt),
+                              "MMM dd, yyyy • HH:mm"
+                            )}
+                          </p>
+                        </div>
+                      </motion.div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Package className="w-12 h-12 mx-auto text-muted-foreground/50 mb-4" />
+                    <p className="text-muted-foreground">
+                      No purchase history yet
+                    </p>
                     <p className="text-sm text-muted-foreground/70">
                       Start trading to see your transactions here
                     </p>

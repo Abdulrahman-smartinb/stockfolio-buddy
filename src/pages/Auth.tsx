@@ -1,61 +1,31 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { TrendingUp, Mail, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
+import {
+  TrendingUp,
+  Lock,
+  User,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Phone,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-
-type AuthMode = "login" | "register";
 
 const Auth = () => {
-  const [mode, setMode] = useState<AuthMode>("login");
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-  
-  const navigate = useNavigate();
-  const { login } = useAuth();
-  const { toast } = useToast();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Dummy authentication - in real app, this would call the RTK Query mutation
-    try {
-      const userData = {
-        id: `user-${Date.now()}`,
-        name: mode === "register" ? formData.name : formData.email.split("@")[0],
-        email: formData.email,
-      };
-
-      login(userData);
-      
-      toast({
-        title: mode === "login" ? "Welcome back!" : "Account created!",
-        description: `You're now signed in as ${userData.name}`,
-      });
-
-      navigate("/");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Authentication failed",
-        description: "Please check your credentials and try again.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    mode,
+    setMode,
+    showPassword,
+    setShowPassword,
+    formData,
+    setFormData,
+    isLoading,
+    handleSubmit,
+    handlePhoneNumberChange,
+    showWarn,
+    showLengthError,
+  } = useAuth();
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -63,7 +33,7 @@ const Auth = () => {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--accent)/0.15),transparent_50%)]" />
-        
+
         <div className="relative z-10 flex flex-col justify-center px-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -75,11 +45,13 @@ const Auth = () => {
               <TrendingUp className="w-8 h-8 text-primary-foreground" />
             </div>
             <h1 className="text-5xl font-bold text-foreground mb-4">
-              Trade Smarter.<br />
+              Trade Smarter.
+              <br />
               <span className="gradient-text">Grow Faster.</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-md">
-              Join thousands of investors using StockFlow to make informed trading decisions with real-time market data.
+              Join thousands of investors using SmartInvest to make informed
+              trading decisions with real-time market data.
             </p>
           </motion.div>
 
@@ -95,8 +67,12 @@ const Auth = () => {
               { label: "Markets", value: "120+" },
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-2xl font-bold text-foreground">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
+                <div className="text-2xl font-bold text-foreground">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-muted-foreground">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </motion.div>
@@ -127,7 +103,9 @@ const Auth = () => {
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
               <TrendingUp className="w-6 h-6 text-primary-foreground" />
             </div>
-            <span className="text-2xl font-bold gradient-text">StockFlow</span>
+            <span className="text-2xl font-bold gradient-text">
+              SmartInvest
+            </span>
           </div>
 
           <div className="glass-card rounded-2xl p-8">
@@ -155,8 +133,8 @@ const Auth = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
-                onSubmit={handleSubmit}
                 className="space-y-5"
+                onSubmit={handleSubmit}
               >
                 {mode === "register" && (
                   <div>
@@ -168,8 +146,10 @@ const Auth = () => {
                       <Input
                         type="text"
                         placeholder="John Doe"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        value={formData.fullName}
+                        onChange={(e) =>
+                          setFormData({ ...formData, fullName: e.target.value })
+                        }
                         className="pl-11"
                         required
                       />
@@ -179,19 +159,44 @@ const Auth = () => {
 
                 <div>
                   <label className="text-sm font-medium text-muted-foreground mb-2 block">
-                    Email Address
+                    Phone Number
                   </label>
+
                   <div className="relative">
-                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+
                     <Input
-                      type="email"
-                      placeholder="you@example.com"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="pl-11"
+                      type="tel"
+                      placeholder="905**********"
+                      value={formData.phoneNumber}
+                      onChange={handlePhoneNumberChange}
+                      className={`pl-11 ${
+                        showWarn || showLengthError
+                          ? "border-red-500 focus-visible:border-red-500"
+                          : ""
+                      }`}
                       required
                     />
                   </div>
+
+                  {(showWarn || showLengthError) && (
+                    <motion.div
+                      key={"warning"}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2, type: "tween" }}
+                      className="mt-2 overflow-hidden"
+                    >
+                      <span className="text-sm font-medium text-red-500">
+                        {
+                          showWarn
+                            ? "Only numbers are allowed."
+                            : `Phone number must be between 10 and 14 digits, including country code (Current: ${formData.phoneNumber.length}).` // Message B (Length error)
+                        }
+                      </span>
+                    </motion.div>
+                  )}
                 </div>
 
                 <div>
@@ -204,7 +209,9 @@ const Auth = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="••••••••"
                       value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({ ...formData, password: e.target.value })
+                      }
                       className="pl-11 pr-11"
                       required
                       minLength={6}
@@ -214,7 +221,11 @@ const Auth = () => {
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      {showPassword ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -228,7 +239,11 @@ const Auth = () => {
                   {isLoading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
-                      transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 1,
+                        ease: "linear",
+                      }}
                       className="w-5 h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"
                     />
                   ) : (
@@ -244,9 +259,13 @@ const Auth = () => {
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             By continuing, you agree to our{" "}
-            <a href="#" className="text-primary hover:underline">Terms of Service</a>
-            {" "}and{" "}
-            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+            <a href="#" className="text-primary hover:underline">
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a href="#" className="text-primary hover:underline">
+              Privacy Policy
+            </a>
           </p>
         </motion.div>
       </div>

@@ -1,6 +1,40 @@
+import {
+  investorSharesEP,
+  sharePurchaseRequestEP,
+  stocksEP,
+} from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
 
-export interface Stock {
+export interface InvestmentCompany {
+  _id: string;
+  companyName: string;
+  email?: string;
+  description?: string;
+  industry?: string;
+  country?: string;
+
+  valuation?: number;
+  sharePrice?: number;
+  totalShares?: number;
+  availableShares?: number;
+
+  currency?: string;
+  logo?: string;
+  website?: string;
+  status?: string;
+  bankQR?: [
+    { name?: string; accountNumber?: string; qrCode?: string; _id?: string }
+  ];
+
+  foundersArray?: {
+    investorId: string;
+    shares: number;
+  }[];
+
+  companyId: string;
+
+  createdAt: string;
+  updatedAt: string;
   id: string;
   symbol: string;
   name: string;
@@ -9,90 +43,111 @@ export interface Stock {
   changePercent: number;
   volume: number;
   marketCap: string;
-  logo?: string;
 }
 
-export interface BuyStockRequest {
-  stockId: string;
-  quantity: number;
-  price: number;
-}
-
-export interface BuyStockResponse {
-  orderId: string;
-  status: string;
+interface ApiResponse<T> {
+  status: boolean;
   message: string;
+  data: T;
 }
 
+export interface CreatePurchaseRequestPayload {
+  investorId: string;
+  type: string;
+  shares: number;
+  sharePrice: number;
+  description?: string;
+  paymentStatus: string;
+}
 export interface PurchaseHistory {
-  id: string;
-  symbol: string;
-  stockName: string;
-  quantity: number;
-  pricePerShare: number;
-  totalAmount: number;
-  purchaseDate: string;
+  status: boolean;
+  message: string;
+  data: [
+    {
+      id?: string;
+      symbol?: string;
+      stockName?: string;
+      quantity?: number;
+      pricePerShare?: number;
+      totalAmount?: number;
+      purchaseDate?: string;
+
+      type: string;
+      shares: string;
+      sharePrice: string;
+      purchaseValue: string;
+      description?: string;
+      createdAt: string;
+    }
+  ];
 }
 
-// Dummy stock data for simulation
-const dummyStocks: Stock[] = [
-  { id: "1", symbol: "AAPL", name: "Apple Inc.", price: 178.52, change: 2.34, changePercent: 1.33, volume: 52847300, marketCap: "2.8T" },
-  { id: "2", symbol: "GOOGL", name: "Alphabet Inc.", price: 141.80, change: -1.23, changePercent: -0.86, volume: 21456700, marketCap: "1.8T" },
-  { id: "3", symbol: "MSFT", name: "Microsoft Corp.", price: 378.91, change: 4.56, changePercent: 1.22, volume: 18234500, marketCap: "2.8T" },
-  { id: "4", symbol: "AMZN", name: "Amazon.com Inc.", price: 178.25, change: 3.21, changePercent: 1.84, volume: 45678900, marketCap: "1.9T" },
-  { id: "5", symbol: "NVDA", name: "NVIDIA Corp.", price: 495.22, change: 12.45, changePercent: 2.58, volume: 38234567, marketCap: "1.2T" },
-  { id: "6", symbol: "META", name: "Meta Platforms", price: 505.95, change: -3.45, changePercent: -0.68, volume: 15678234, marketCap: "1.3T" },
-  { id: "7", symbol: "TSLA", name: "Tesla Inc.", price: 248.50, change: -8.72, changePercent: -3.39, volume: 98234567, marketCap: "790B" },
-  { id: "8", symbol: "JPM", name: "JPMorgan Chase", price: 198.34, change: 1.89, changePercent: 0.96, volume: 8234567, marketCap: "572B" },
-  { id: "9", symbol: "V", name: "Visa Inc.", price: 280.45, change: 2.12, changePercent: 0.76, volume: 6234567, marketCap: "574B" },
-  { id: "10", symbol: "JNJ", name: "Johnson & Johnson", price: 156.78, change: -0.45, changePercent: -0.29, volume: 5234567, marketCap: "377B" },
-];
-
-// Dummy purchase history data
-const dummyPurchaseHistory: PurchaseHistory[] = [
-  { id: "1", symbol: "AAPL", stockName: "Apple Inc.", quantity: 10, pricePerShare: 175.20, totalAmount: 1752.00, purchaseDate: "2024-12-15T14:30:00Z" },
-  { id: "2", symbol: "NVDA", stockName: "NVIDIA Corp.", quantity: 5, pricePerShare: 480.50, totalAmount: 2402.50, purchaseDate: "2024-12-14T09:15:00Z" },
-  { id: "3", symbol: "MSFT", stockName: "Microsoft Corp.", quantity: 8, pricePerShare: 372.80, totalAmount: 2982.40, purchaseDate: "2024-12-12T16:45:00Z" },
-  { id: "4", symbol: "GOOGL", stockName: "Alphabet Inc.", quantity: 15, pricePerShare: 138.90, totalAmount: 2083.50, purchaseDate: "2024-12-10T11:20:00Z" },
-  { id: "5", symbol: "TSLA", stockName: "Tesla Inc.", quantity: 12, pricePerShare: 255.30, totalAmount: 3063.60, purchaseDate: "2024-12-08T13:00:00Z" },
-];
+export interface PurchaseRequest {
+  investorId?: string;
+  type?: string;
+  shares?: number;
+  sharePrice?: number;
+  description?: string;
+  companyId?: string;
+  paymentStatus?: string;
+  status?: string;
+}
 
 export const stocksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getStocks: builder.query<Stock[], void>({
-      query: () => "/stocks",
+    // Get all investment companies
+    getStocks: builder.query<InvestmentCompany[], { companyId: string }>({
+      query: ({ companyId }) => ({
+        url: stocksEP,
+        params: { companyId },
+      }),
+      transformResponse: (response: ApiResponse<InvestmentCompany[]>) =>
+        response.data,
       providesTags: ["Stocks"],
-      transformResponse: () => dummyStocks,
     }),
-    getStock: builder.query<Stock, string>({
-      query: (id) => `/stocks/${id}`,
-      providesTags: (result, error, id) => [{ type: "Stocks", id }],
-      transformResponse: (_, __, id) => dummyStocks.find((s) => s.id === id) || dummyStocks[0],
+
+    // Get one investment company
+    getStock: builder.query<
+      InvestmentCompany,
+      { id: string; companyId: string }
+    >({
+      query: ({ id, companyId }) => ({
+        url: `${stocksEP}/${id}`,
+        params: { companyId },
+      }),
+      transformResponse: (response: ApiResponse<InvestmentCompany>) =>
+        response.data,
+      providesTags: (result, error, { id }) => [{ type: "Stocks", id }],
     }),
-    buyStock: builder.mutation<BuyStockResponse, BuyStockRequest>({
-      query: (order) => ({
-        url: "/orders/buy",
+
+    // Create purchase request
+    createPurchaseRequest: builder.mutation<
+      any,
+      { companyId: string; data: CreatePurchaseRequestPayload }
+    >({
+      query: ({ companyId, data }) => ({
+        url: sharePurchaseRequestEP,
         method: "POST",
-        body: order,
+        params: { companyId },
+        body: data,
       }),
-      invalidatesTags: ["Portfolio"],
-      transformResponse: (): BuyStockResponse => ({
-        orderId: `ORD-${Date.now()}`,
-        status: "completed",
-        message: "Order executed successfully",
-      }),
+      invalidatesTags: ["Stocks"],
     }),
-    getPurchaseHistory: builder.query<PurchaseHistory[], void>({
-      query: () => "/orders/history",
-      providesTags: ["Portfolio"],
-      transformResponse: () => dummyPurchaseHistory,
+    getPurchaseHistory: builder.query<PurchaseHistory[], string>({
+      query: (id) => `${investorSharesEP}/${id}`,
+      providesTags: ["Stocks"],
+    }),
+    getInvestorPurchaseRequests: builder.query<PurchaseHistory[], string>({
+      query: (id) => `${sharePurchaseRequestEP}/investor/${id}`,
+      providesTags: ["Stocks"],
     }),
   }),
 });
 
-export const { 
-  useGetStocksQuery, 
-  useGetStockQuery, 
-  useBuyStockMutation,
+export const {
+  useGetStocksQuery,
+  useGetStockQuery,
+  useCreatePurchaseRequestMutation,
   useGetPurchaseHistoryQuery,
+  useGetInvestorPurchaseRequestsQuery,
 } = stocksApi;

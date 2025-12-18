@@ -2,17 +2,24 @@ import { motion } from "framer-motion";
 import { LogOut, TrendingUp, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { UserData } from "@/store/api/authApi";
+import { useState } from "react";
 
 export const Header = () => {
-  const { user, logout } = useAuth();
+  const [user] = useState<UserData>(
+    JSON.parse(localStorage.getItem("user") || "null")
+  );
+
+  const { logout } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const handleLogout = () => {
     logout();
     navigate("/auth");
   };
+
+  const path = location.pathname;
 
   return (
     <motion.header
@@ -22,7 +29,7 @@ export const Header = () => {
     >
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <div 
+          <div
             className="flex items-center gap-3 cursor-pointer"
             onClick={() => navigate("/")}
           >
@@ -35,16 +42,16 @@ export const Header = () => {
           {/* Navigation */}
           <nav className="hidden sm:flex items-center gap-1">
             <Button
-              variant={location.pathname === "/" ? "secondary" : "ghost"}
+              variant={path === "/" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => navigate("/")}
               className="gap-2"
             >
               <Home className="w-4 h-4" />
-              Dashboard
+              Home
             </Button>
             <Button
-              variant={location.pathname === "/profile" ? "secondary" : "ghost"}
+              variant={path === "/profile" ? "secondary" : "ghost"}
               size="sm"
               onClick={() => navigate("/profile")}
               className="gap-2"
@@ -57,17 +64,41 @@ export const Header = () => {
 
         <div className="flex items-center gap-4">
           <div className="hidden md:flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{user?.name || "User"}</span>
+            <span>{user?.fullName || "User"}</span>
           </div>
+          {/* Desktop: Logout */}
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLogout}
-            className="text-muted-foreground hover:text-destructive"
+            className="hidden md:flex text-muted-foreground hover:text-destructive"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Logout
           </Button>
+
+          {/* Mobile: Profile */}
+          {path.includes("profile") ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/")}
+              className="flex md:hidden text-muted-foreground"
+            >
+              <Home className="w-4 h-4" />
+              Home
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate("/profile")}
+              className="flex md:hidden text-muted-foreground"
+            >
+              <User className="w-4 h-4" />
+              Profile
+            </Button>
+          )}
         </div>
       </div>
     </motion.header>

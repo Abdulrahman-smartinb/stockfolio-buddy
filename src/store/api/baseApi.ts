@@ -1,12 +1,10 @@
+import { base_url } from "@/api/GlobalData";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-// Dummy base URL - replace with your real API
-const BASE_URL = "https://api.example.com/v1";
 
 export const baseApi = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
-    baseUrl: BASE_URL,
+    baseUrl: base_url,
     prepareHeaders: (headers, { getState }) => {
       const token = localStorage.getItem("authToken");
       if (token) {

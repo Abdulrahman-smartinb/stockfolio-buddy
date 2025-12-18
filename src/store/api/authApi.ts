@@ -1,34 +1,42 @@
 import { baseApi } from "./baseApi";
+import { loginEP, registerEP } from "../../api/GlobalData";
 
 export interface LoginRequest {
-  email: string;
+  phoneNumber: string;
   password: string;
 }
 
 export interface RegisterRequest {
-  name: string;
-  email: string;
+  fullName: string;
+  phoneNumber: string;
   password: string;
+  companyId: string;
 }
 
 export interface AuthResponse {
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  user: UserData;
   token: string;
+}
+
+export interface UserData {
+  _id: string;
+  fullName: string;
+  phoneNumber: string;
+  email?: string;
+  companyId?: string;
+  active: boolean;
+  profileImage?: string;
+  createdAt?: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/auth/login",
+        url: loginEP,
         method: "POST",
         body: credentials,
       }),
-      // Dummy implementation - simulates API response
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
@@ -41,7 +49,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (userData) => ({
-        url: "/auth/register",
+        url: registerEP,
         method: "POST",
         body: userData,
       }),
@@ -55,17 +63,7 @@ export const authApi = baseApi.injectEndpoints({
         }
       },
     }),
-    logout: builder.mutation<void, void>({
-      query: () => ({
-        url: "/auth/logout",
-        method: "POST",
-      }),
-      async onQueryStarted() {
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("user");
-      },
-    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi;
+export const { useLoginMutation, useRegisterMutation } = authApi;
