@@ -26,6 +26,7 @@ export interface UserData {
   companyId?: string;
   active: boolean;
   profileImage?: string;
+  birthDate?: string;
   createdAt?: string;
 }
 

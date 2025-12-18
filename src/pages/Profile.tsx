@@ -1,12 +1,5 @@
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
-import { useAuth } from "@/hooks/useAuth";
-import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import {
-  useGetInvestorPurchaseRequestsQuery,
-  useGetPurchaseHistoryQuery,
-} from "@/store/api/stocksApi";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,44 +13,31 @@ import {
   TrendingDown,
   Clock,
   X,
+  PenBox,
+  CheckCircle2,
+  Cake,
 } from "lucide-react";
 import { format } from "date-fns";
-import { UserData } from "@/store/api/authApi";
-import { base_url } from "@/api/GlobalData";
+import { useProfile } from "@/hooks/useProfile";
+import { Input } from "@/components/ui/input";
 
 const Profile = () => {
-  const { isAuthenticated } = useAuth();
-  const [user] = useState<UserData>(
-    JSON.parse(localStorage.getItem("user") || "null")
-  );
-  const navigate = useNavigate();
-  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery(
-    user?._id
-  );
-  const { data: purchaseRequests, isLoading: loadingRequests } =
-    useGetInvestorPurchaseRequestsQuery(user?._id);
-  console.log(purchaseRequests);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/auth");
-    }
-  }, [isAuthenticated, navigate]);
-
-  if (!isAuthenticated) return null;
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
+  const {
+    user,
+    purchaseHistory,
+    isLoading,
+    purchaseRequests,
+    loadingRequests,
+    isEditing,
+    setIsEditing,
+    containerVariants,
+    itemVariants,
+    editData,
+    setEditData,
+    handleProfileImageChange,
+    handleSaveProfile,
+    isSaving,
+  } = useProfile();
 
   return (
     <div className="min-h-screen bg-background">
@@ -81,71 +61,152 @@ const Profile = () => {
           <motion.div variants={itemVariants}>
             <Card className="glass-card border-border/50">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5 text-primary" />
-                  Personal Information
-                </CardTitle>
+                <div className="flex justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <User className="w-5 h-5 text-primary" />
+                    Personal Information
+                  </CardTitle>
+                  <CardTitle
+                    className="flex items-center gap-2 cursor-pointer"
+                    onClick={() => setIsEditing(!isEditing)}
+                  >
+                    {isEditing ? (
+                      <div
+                        className="flex gap-2 items-center"
+                        onClick={handleSaveProfile}
+                      >
+                        <CheckCircle2 className="w-5 h-5 text-primary" />
+                        Save Changes
+                      </div>
+                    ) : (
+                      <div className="flex gap-2 items-center">
+                        <PenBox className="w-5 h-5 text-primary" />
+                        Update Profile
+                      </div>
+                    )}
+                  </CardTitle>
+                </div>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
-                    <span className="text-2xl font-bold text-primary-foreground">
-                      {user?.profileImage ? (
-                        <img
-                          src={`${base_url}/api/Investor/${user?.profileImage}`}
-                          alt="User picture"
+                  <div className="relative w-20 h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+                    {editData.profilePreview ? (
+                      <img
+                        src={editData.profilePreview}
+                        alt="User picture"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-2xl font-bold text-primary-foreground">
+                        {user?.fullName?.charAt(0).toUpperCase() || "U"}
+                      </span>
+                    )}
+
+                    {isEditing && (
+                      <label className="absolute inset-0 bg-black/40 flex items-center justify-center cursor-pointer text-white text-xs opacity-0 hover:opacity-100 transition">
+                        Change
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) =>
+                            handleProfileImageChange(e.target.files?.[0])
+                          }
                         />
-                      ) : (
-                        user?.fullName?.charAt(0).toUpperCase() || "U"
-                      )}
-                    </span>
+                      </label>
+                    )}
                   </div>
+
                   <div>
-                    <h3 className="text-xl font-semibold text-foreground">
-                      {user?.fullName || "User"}
-                    </h3>
-                    {/* <p className="text-muted-foreground">Membership</p> */}
+                    {!isEditing ? (
+                      <h3 className="text-xl font-semibold text-foreground text-start">
+                        {user?.fullName || "User"}
+                        <div className="flex">
+                          <span className="text-sm text-foreground">
+                            Member Since:&nbsp;
+                          </span>
+                          <span className="text-sm text-muted-foreground">
+                            {format(user?.createdAt, "MMM yyyy")}
+                          </span>
+                        </div>
+                      </h3>
+                    ) : (
+                      <Input
+                        className="input w-full"
+                        placeholder="Full name"
+                        value={editData.fullName}
+                        onChange={(e) =>
+                          setEditData((prev) => ({
+                            ...prev,
+                            fullName: e.target.value,
+                          }))
+                        }
+                      />
+                    )}
                   </div>
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                  {user?.email && (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Mail className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground text-start">
-                          Email
-                        </p>
-                        <p className="font-medium text-foreground">
-                          {user?.email}
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                  {user?.phoneNumber && (
-                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                      <Phone className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="text-sm text-muted-foreground text-start">
-                          Phone number
-                        </p>
-                        <p className="font-medium text-foreground">
-                          {user?.phoneNumber}
-                        </p>
-                      </div>
-                    </div>
-                  )}
                   <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                    <Calendar className="w-5 h-5 text-primary" />
+                    <Mail className="w-5 h-5 text-primary" />
                     <div>
                       <p className="text-sm text-muted-foreground text-start">
-                        Member Since
+                        Email
                       </p>
                       <p className="font-medium text-foreground">
-                        {format(user?.createdAt, "MMMM yyyy")}
+                        {user?.email}
                       </p>
                     </div>
                   </div>
+
+                  <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                    <Phone className="w-5 h-5 text-primary" />
+                    <div>
+                      <p className="text-sm text-muted-foreground text-start">
+                        Phone number
+                      </p>
+                      <p className="font-medium text-foreground">
+                        {user?.phoneNumber}
+                      </p>
+                    </div>
+                  </div>
+
+                  {!isEditing ? (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Calendar className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground text-start">
+                          Birth Date
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {user?.birthDate
+                            ? format(user?.birthDate, "MMMM yyyy")
+                            : "Not registered"}
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Calendar className="w-5 h-5 text-primary" />
+                      <div className="w-full">
+                        <p className="text-sm text-muted-foreground text-start">
+                          Birth Date
+                        </p>
+                        <Input
+                          type="date"
+                          className="input w-full"
+                          placeholder="Birth Date"
+                          value={editData.birthDate}
+                          onChange={(e) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              birthDate: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -252,7 +313,7 @@ const Profile = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {isLoading ? (
+                {loadingRequests ? (
                   <div className="space-y-4">
                     {[1, 2, 3].map((i) => (
                       <div
