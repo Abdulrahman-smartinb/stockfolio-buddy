@@ -1,5 +1,5 @@
 import { baseApi } from "./baseApi";
-import { loginEP, registerEP } from "../../api/GlobalData";
+import { loginEP, logoutEP, registerEP } from "../../api/GlobalData";
 
 export interface LoginRequest {
   phoneNumber: string;
@@ -31,6 +31,10 @@ export interface UserData {
   createdAt?: string;
 }
 
+export interface LogoutResponse {
+  message: string;
+}
+
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
@@ -46,6 +50,23 @@ export const authApi = baseApi.injectEndpoints({
           localStorage.setItem("user", JSON.stringify(data.user));
         } catch (error) {
           console.error("Login failed:", error);
+        }
+      },
+    }),
+    logout: builder.mutation<LogoutResponse, void>({
+      query: () => ({
+        url: logoutEP,
+        method: "POST",
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled;
+
+          // Clear local state
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("user");
+        } catch (error) {
+          console.error("Logout failed:", error);
         }
       },
     }),
@@ -68,4 +89,5 @@ export const authApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = authApi;
+export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
+  authApi;

@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./use-toast";
-import { useLoginMutation, useRegisterMutation } from "@/store/api/authApi";
+import {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+} from "@/store/api/authApi";
 import { companyId } from "@/api/GlobalData";
 
 type AuthMode = "login" | "register";
@@ -25,6 +29,7 @@ export const useAuth = () => {
 
   const [loginApi, { isLoading: loginLoading }] = useLoginMutation();
   const [registerApi, { isLoading: registerLoading }] = useRegisterMutation();
+  const [logoutApi] = useLogoutMutation();
 
   const isLoading = loginLoading || registerLoading;
 
@@ -143,7 +148,8 @@ export const useAuth = () => {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await logoutApi().unwrap();
     localStorage.clear();
     setIsAuthenticated(false);
     navigate("/auth");
