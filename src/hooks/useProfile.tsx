@@ -31,6 +31,8 @@ export const useProfile = () => {
   const [editData, setEditData] = useState({
     fullName: user?.fullName || "",
     birthDate: user?.birthDate || "",
+    phoneNumber: user?.phoneNumber || "",
+    email: user?.email || "",
     profileImageFile: null as File | null,
     profilePreview: user?.profileImage
       ? `${base_url}/api/Investor/${user.profileImage}`
@@ -63,6 +65,12 @@ export const useProfile = () => {
       }
       if (editData.profileImageFile) {
         formData.append("profileImage", editData.profileImageFile);
+      }
+      if (editData.phoneNumber) {
+        formData.append("phoneNumber", editData.phoneNumber);
+      }
+      if (editData.email) {
+        formData.append("email", editData.email);
       }
 
       const res = await updateInvestor({

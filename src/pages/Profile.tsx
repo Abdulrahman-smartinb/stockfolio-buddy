@@ -147,29 +147,75 @@ const Profile = () => {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-3">
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                    <Mail className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground text-start">
-                        Email
-                      </p>
-                      <p className="font-medium text-foreground">
-                        {user?.email}
-                      </p>
+                  {!isEditing ? (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Mail className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground text-start">
+                          Email
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {user?.email}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Mail className="w-5 h-5 text-primary" />
+                      <div className="w-full">
+                        <p className="text-sm text-muted-foreground text-start">
+                          Email
+                        </p>
+                        <Input
+                          type="email"
+                          className="input w-full"
+                          placeholder="example@domain.com"
+                          value={editData.email}
+                          onChange={(e) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              email: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
 
-                  <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                    <Phone className="w-5 h-5 text-primary" />
-                    <div>
-                      <p className="text-sm text-muted-foreground text-start">
-                        Phone number
-                      </p>
-                      <p className="font-medium text-foreground">
-                        {user?.phoneNumber}
-                      </p>
+                  {!isEditing ? (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Phone className="w-5 h-5 text-primary" />
+                      <div>
+                        <p className="text-sm text-muted-foreground text-start">
+                          Phone number
+                        </p>
+                        <p className="font-medium text-foreground">
+                          {user?.phoneNumber}
+                        </p>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                      <Phone className="w-5 h-5 text-primary" />
+                      <div className="w-full">
+                        <p className="text-sm text-muted-foreground text-start">
+                          Phone number
+                        </p>
+                        <Input
+                          type="tel"
+                          className="input w-full"
+                          placeholder="905**********"
+                          value={editData.phoneNumber}
+                          onChange={(e) =>
+                            setEditData((prev) => ({
+                              ...prev,
+                              phoneNumber: e.target.value,
+                            }))
+                          }
+                        />
+                      </div>
+                    </div>
+                  )}
 
                   {!isEditing ? (
                     <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
