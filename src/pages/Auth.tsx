@@ -14,7 +14,8 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 
 const Auth = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === "ar";
   const {
     mode,
     setMode,
@@ -30,7 +31,10 @@ const Auth = () => {
   } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background flex">
+    <div
+      className="min-h-screen bg-background flex"
+      dir={isRtl ? "rtl" : "ltr"}
+    >
       {/* LEFT – DESKTOP ONLY */}
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
@@ -115,9 +119,13 @@ const Auth = () => {
                       {t("full_name")}
                     </label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <User
+                        className={`absolute ${
+                          isRtl ? "right" : "left"
+                        }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                      />
                       <Input
-                        className="pl-10 h-11"
+                        className="ps-10 h-11"
                         value={formData.fullName}
                         onChange={(e) =>
                           setFormData({ ...formData, fullName: e.target.value })
@@ -134,10 +142,14 @@ const Auth = () => {
                     {t("phone_number")}
                   </label>
                   <div className="relative">
-                    <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Phone
+                      className={`absolute ${
+                        isRtl ? "right" : "left"
+                      }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                    />
                     <Input
                       type="tel"
-                      className={`pl-10 h-11 ${
+                      className={`ps-10 h-11 ${
                         showWarn || showLengthError ? "border-red-500" : ""
                       }`}
                       value={formData.phoneNumber}
@@ -160,10 +172,14 @@ const Auth = () => {
                     {t("password")}
                   </label>
                   <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Lock
+                      className={`absolute ${
+                        isRtl ? "right" : "left"
+                      }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                    />
                     <Input
                       type={showPassword ? "text" : "password"}
-                      className="pl-10 pr-10 h-11"
+                      className="ps-10 pr-10 h-11"
                       value={formData.password}
                       onChange={(e) =>
                         setFormData({
@@ -176,7 +192,9 @@ const Auth = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                      className={`absolute ${
+                        isRtl ? "left" : "right"
+                      }-3 top-1/2 -translate-y-1/2 text-muted-foreground`}
                     >
                       {showPassword ? (
                         <EyeOff className="w-4 h-4" />

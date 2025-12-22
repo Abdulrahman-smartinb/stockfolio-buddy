@@ -20,7 +20,8 @@ import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 
 const Profile = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === "ar";
   const {
     user,
     purchaseHistory,
@@ -84,7 +85,7 @@ const Profile = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
       <main className="container mx-auto px-3 sm:px-4 py-5 sm:py-8">

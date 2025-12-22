@@ -19,7 +19,8 @@ import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRtl = i18n.language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentCompany | null>(
     null
@@ -80,7 +81,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
       <main className="container mx-auto px-4 py-8">
