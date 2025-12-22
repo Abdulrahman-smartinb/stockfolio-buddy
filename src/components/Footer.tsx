@@ -15,16 +15,19 @@ export const Footer = () => {
     <motion.header
       initial={{ opacity: 0, y: 0 }}
       animate={{ opacity: 1, y: 0 }}
-      className="sticky bottom-0 z-40 w-full border-b border-border/50 bg-white/80 backdrop-blur-xl md:hidden"
+      style={{ boxShadow: "0 -2px rgb(0 0 0 / 0.05)" }}
+      className="fixed bottom-0 z-40 w-full border-b border-border/50 bg-white/80 backdrop-blur-xl md:hidden"
     >
-      <nav className="flex items-center justify-around">
+      <nav className="flex items-center justify-around h-14">
         <Button
           variant="ghost"
           size="sm"
           onClick={() => navigate("/")}
-          className={`gap-2 ${path === "/" ? "" : "text-muted-foreground"}`}
+          className={`gap-2 w-[48%] ${
+            path === "/" ? "" : "text-muted-foreground"
+          }`}
         >
-          <Home className="w-4 h-4" />
+          <Home style={{ height: "25px", width: "25px" }} />
           <span className="hidden sm:inline">{t("home")}</span>
         </Button>
 
@@ -32,11 +35,11 @@ export const Footer = () => {
           variant="ghost"
           size="sm"
           onClick={() => navigate("/profile")}
-          className={`gap-2 ${
+          className={`gap-2 w-[48%] ${
             path === "/profile" ? "" : "text-muted-foreground"
           }`}
         >
-          <User className="w-4 h-4" />
+          <User style={{ height: "25px", width: "25px" }} />
           <span className="hidden sm:inline">{t("profile")}</span>
         </Button>
       </nav>

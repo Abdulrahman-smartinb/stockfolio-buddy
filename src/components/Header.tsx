@@ -68,11 +68,14 @@ export const Header = () => {
           <select
             value={(i18n.language || "").split("-")[0] || "en"}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
-            aria-label={"Language"}
-            className="rounded-md border bg-transparent px-2 py-1 text-sm"
+            aria-label="Language"
+            className="appearance-none rounded-lg border border-border/60
+            bg-background/60 px-3 py-1.5 pr-8 text-sm font-medium text-foreground
+            backdrop-blur-md shadow-sm transition hover:border-primary/50
+            focus:outline-none focus:ring-2 focus:ring-primary/40 text-center"
           >
-            <option value="en">{t("en")}</option>
-            <option value="ar">{t("ar")}</option>
+            <option value="en">EN</option>
+            <option value="ar">AR</option>
           </select>
 
           {/* Logout */}

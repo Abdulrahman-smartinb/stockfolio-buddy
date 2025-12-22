@@ -103,25 +103,8 @@ const TransactionHistory = ({
             {t("no_records_found")}
           </p>
         )}
-        <div className="flex justify-between">
-          <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground">
-            <span>{t("rows_per_page")}</span>
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setPage(1);
-              }}
-              className="border rounded px-2 py-1 bg-background"
-            >
-              {[5, 10, 20, 50, 100].map((size) => (
-                <option key={size} value={size}>
-                  {size}
-                </option>
-              ))}
-            </select>
-          </div>
-          <Pagination className="w-50 mx-0">
+        <div className="md:flex md:justify-between">
+          <Pagination className="w-50 mx-0 sm:w-100">
             <PaginationContent>
               {/* PREVIOUS */}
               <PaginationItem>
@@ -166,6 +149,26 @@ const TransactionHistory = ({
               </PaginationItem>
             </PaginationContent>
           </Pagination>
+          <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground sm:w-100">
+            <span>{t("rows_per_page")}</span>
+            <select
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value));
+                setPage(1);
+              }}
+              className="appearance-none rounded-lg border border-border/60
+            bg-background/60 px-3 py-1.5 pr-8 text-sm font-medium text-foreground
+            backdrop-blur-md shadow-sm transition hover:border-primary/50
+            focus:outline-none focus:ring-2 focus:ring-primary/40 text-center"
+            >
+              {[5, 10, 20, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </CardContent>
     </Card>
