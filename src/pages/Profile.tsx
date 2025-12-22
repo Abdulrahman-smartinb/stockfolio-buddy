@@ -1,18 +1,13 @@
 import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   User,
   Mail,
   Calendar,
   TrendingUp,
   DollarSign,
-  Package,
   Phone,
-  TrendingDown,
-  Clock,
-  X,
   PenBox,
   CheckCircle2,
 } from "lucide-react";
@@ -21,6 +16,7 @@ import { useProfile } from "@/hooks/useProfile";
 import { Input } from "@/components/ui/input";
 import TransactionHistory from "@/components/TransactionHistory";
 import PendingRequests from "@/components/PendingRequests";
+import { Footer } from "@/components/Footer";
 
 const Profile = () => {
   const {
@@ -61,7 +57,7 @@ const Profile = () => {
       investedValue: 0,
     }
   );
-  console.log(purchaseHistory);
+
   const stats = [
     {
       label: "Total Shares",
@@ -325,6 +321,7 @@ const Profile = () => {
           </motion.div>
         </motion.div>
       </main>
+      <Footer />
     </div>
   );
 };

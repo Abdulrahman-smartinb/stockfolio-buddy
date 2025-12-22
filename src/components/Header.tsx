@@ -3,15 +3,9 @@ import { LogOut, TrendingUp, User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
-import { UserData } from "@/store/api/authApi";
-import { useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const Header = () => {
-  const [user] = useState<UserData>(
-    JSON.parse(localStorage.getItem("user") || "null")
-  );
-
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,7 +38,7 @@ export const Header = () => {
         </div>
 
         {/* CENTER — Navigation (icons on mobile, text on desktop) */}
-        <nav className="flex items-center gap-1">
+        <nav className="flex items-center gap-1 hidden md:inline">
           <Button
             variant={path === "/" ? "secondary" : "ghost"}
             size="sm"
@@ -68,16 +62,6 @@ export const Header = () => {
 
         {/* RIGHT — User Actions */}
         <div className="flex items-center gap-3">
-          {/* User Info */}
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-              {user?.fullName?.[0] || "U"}
-            </div>
-            <span className="text-sm text-muted-foreground hidden md:block">
-              {user?.fullName || "User"}
-            </span>
-          </div>
-
           {/* Logout */}
           <Button
             variant="ghost"

@@ -35,9 +35,7 @@ export const useProfile = () => {
     phoneNumber: user?.phoneNumber || "",
     email: user?.email || "",
     profileImageFile: null as File | null,
-    profilePreview: user?.profileImage
-      ? `${base_url}/api/Investor/${user.profileImage}`
-      : "",
+    profilePreview: user?.profileImage ? `${user.profileImage}` : "",
   });
 
   useEffect(() => {

@@ -15,6 +15,7 @@ import { BuyModal } from "@/components/BuyModal";
 import { useGetStocksQuery, InvestmentCompany } from "@/store/api/stocksApi";
 import { Button } from "@/components/ui/button";
 import { companyId } from "@/api/GlobalData";
+import { Footer } from "@/components/Footer";
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -239,6 +240,7 @@ const Dashboard = () => {
           setSelectedStock(null);
         }}
       />
+      <Footer />
     </div>
   );
 };
