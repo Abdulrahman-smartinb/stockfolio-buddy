@@ -69,7 +69,7 @@ export const Header = () => {
             value={(i18n.language || "").split("-")[0] || "en"}
             onChange={(e) => i18n.changeLanguage(e.target.value)}
             aria-label={"Language"}
-            className="hidden sm:block rounded-md border bg-transparent px-2 py-1 text-sm"
+            className="rounded-md border bg-transparent px-2 py-1 text-sm"
           >
             <option value="en">{t("en")}</option>
             <option value="ar">{t("ar")}</option>
