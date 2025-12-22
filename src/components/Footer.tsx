@@ -2,8 +2,10 @@ import { motion } from "framer-motion";
 import { User, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const Footer = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,7 +25,7 @@ export const Footer = () => {
           className={`gap-2 ${path === "/" ? "" : "text-muted-foreground"}`}
         >
           <Home className="w-4 h-4" />
-          <span className="hidden sm:inline">Home</span>
+          <span className="hidden sm:inline">{t("home")}</span>
         </Button>
 
         <Button
@@ -35,7 +37,7 @@ export const Footer = () => {
           }`}
         >
           <User className="w-4 h-4" />
-          <span className="hidden sm:inline">Profile</span>
+          <span className="hidden sm:inline">{t("profile")}</span>
         </Button>
       </nav>
     </motion.header>

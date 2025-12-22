@@ -4,11 +4,13 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 export const Header = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { t, i18n } = useTranslation();
 
   const handleLogout = () => {
     logout();
@@ -46,7 +48,7 @@ export const Header = () => {
             className="gap-2"
           >
             <Home className="w-4 h-4" />
-            <span className="hidden sm:inline">Home</span>
+            <span className="hidden sm:inline">{t("home")}</span>
           </Button>
 
           <Button
@@ -56,12 +58,23 @@ export const Header = () => {
             className="gap-2"
           >
             <User className="w-4 h-4" />
-            <span className="hidden sm:inline">Profile</span>
+            <span className="hidden sm:inline">{t("profile")}</span>
           </Button>
         </nav>
 
         {/* RIGHT — User Actions */}
         <div className="flex items-center gap-3">
+          {/* Language selector */}
+          <select
+            value={(i18n.language || "").split("-")[0] || "en"}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            aria-label={"Language"}
+            className="hidden sm:block rounded-md border bg-transparent px-2 py-1 text-sm"
+          >
+            <option value="en">{t("en")}</option>
+            <option value="ar">{t("ar")}</option>
+          </select>
+
           {/* Logout */}
           <Button
             variant="ghost"
@@ -73,7 +86,7 @@ export const Header = () => {
             )}
           >
             <LogOut className="w-4 h-4" />
-            <span className="hidden md:inline">Logout</span>
+            <span className="hidden md:inline">{t("logout")}</span>
           </Button>
         </div>
       </div>

@@ -77,6 +77,7 @@ export interface PurchaseHistory {
   status: boolean;
   message: string;
   data: PurchaseHistoryItem[];
+  totalPages: number;
 }
 
 export interface PendingRequestItem {
@@ -137,8 +138,12 @@ export const stocksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Stocks"],
     }),
-    getPurchaseHistory: builder.query<PurchaseHistory, string>({
-      query: (id) => `${investorSharesEP}/${id}`,
+    getPurchaseHistory: builder.query<
+      PurchaseHistory,
+      { id: string; page: number; limit: number }
+    >({
+      query: ({ id, page, limit }) =>
+        `${investorSharesEP}/${id}?page=${page}&limit=${limit}`,
       providesTags: ["Stocks"],
     }),
     getInvestorPurchaseRequests: builder.query<PurchaseHistory, string>({

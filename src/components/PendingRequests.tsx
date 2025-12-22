@@ -3,6 +3,7 @@ import { Badge } from "@/components/ui/badge";
 import { Clock, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { PendingRequestItem } from "@/store/api/stocksApi";
+import { useTranslation } from "react-i18next";
 
 interface PendingRequestsProps {
   isLoading: boolean;
@@ -10,12 +11,13 @@ interface PendingRequestsProps {
 }
 
 const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
+  const { t } = useTranslation();
   return (
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
           <Clock className="w-4 h-4 text-primary shrink-0" />
-          Pending Requests
+          {t("pending_requests")}
         </CardTitle>
       </CardHeader>
 
@@ -72,12 +74,13 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
                         variant="secondary"
                         className="text-[10px] capitalize"
                       >
-                        {request.status}
+                        {t(request.status)}
                       </Badge>
                     </div>
 
                     <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
-                      {request.shares} shares × ${request.sharePrice.toFixed(2)}
+                      {request.shares} {t("shares")} × $
+                      {request.sharePrice.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -97,7 +100,7 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
                           : "bg-warning/10 text-warning"
                       }`}
                     >
-                      {request.paymentStatus}
+                      {t(request.paymentStatus)}
                     </Badge>
 
                     <span className="text-[9px] text-muted-foreground">
@@ -110,7 +113,7 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
           })
         ) : (
           <p className="text-xs text-muted-foreground text-center py-4">
-            No pending requests
+            {t("no_records_found")}
           </p>
         )}
       </CardContent>

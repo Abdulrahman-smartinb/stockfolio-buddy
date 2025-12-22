@@ -17,8 +17,10 @@ import { Input } from "@/components/ui/input";
 import TransactionHistory from "@/components/TransactionHistory";
 import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
+import { useTranslation } from "react-i18next";
 
 const Profile = () => {
+  const { t } = useTranslation();
   const {
     user,
     purchaseHistory,
@@ -34,6 +36,10 @@ const Profile = () => {
     handleProfileImageChange,
     handleSaveProfile,
     isSaving,
+    page,
+    setPage,
+    limit,
+    setLimit,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -60,8 +66,8 @@ const Profile = () => {
 
   const stats = [
     {
-      label: "Total Shares",
-      value: `${ownedShares} Shares`,
+      label: t("total_shares"),
+      value: `${ownedShares} ${t("shares")}`,
       subValue: "NVDA",
       icon: TrendingUp,
       color: "text-success",
@@ -69,7 +75,7 @@ const Profile = () => {
     },
 
     {
-      label: "Shares Value",
+      label: t("shares_value"),
       value: `${investedValue} USD`,
       icon: DollarSign,
       color: "text-primary",
@@ -91,10 +97,10 @@ const Profile = () => {
           {/* PAGE TITLE */}
           <motion.div variants={itemVariants}>
             <h1 className="text-xl sm:text-3xl font-bold gradient-text">
-              My Profile
+              {t("profile")}
             </h1>
             <p className="text-xs sm:text-sm text-muted-foreground mt-1">
-              Manage your account and view purchase history
+              {t("profile_letter")}
             </p>
           </motion.div>
 
@@ -121,7 +127,7 @@ const Profile = () => {
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground">
-                      {stat.label}
+                      {t(stat.label)}
                     </p>
                     <p className={`text-lg font-bold ${stat.color}`}>
                       {stat.value}
@@ -143,7 +149,7 @@ const Profile = () => {
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                     <User className="w-4 h-4 text-primary" />
-                    Personal Information
+                    {t("personal_info")}
                   </CardTitle>
 
                   <button
@@ -156,12 +162,12 @@ const Profile = () => {
                     {isEditing ? (
                       <>
                         <CheckCircle2 className="w-4 h-4" />
-                        Save
+                        {t("save")}
                       </>
                     ) : (
                       <>
                         <PenBox className="w-4 h-4" />
-                        Edit
+                        {t("edit")}
                       </>
                     )}
                   </button>
@@ -185,7 +191,7 @@ const Profile = () => {
 
                     {isEditing && (
                       <label className="absolute inset-0 bg-black/50 flex items-center justify-center text-[10px] text-white cursor-pointer">
-                        Change
+                        {t("change")}
                         <input
                           type="file"
                           className="hidden"
@@ -205,7 +211,8 @@ const Profile = () => {
                           {user?.fullName}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Member since {format(user?.createdAt, "MMM yyyy")}
+                          {t("member_since")}{" "}
+                          {format(user?.createdAt, "MMM yyyy")}
                         </p>
                       </>
                     ) : (
@@ -229,7 +236,9 @@ const Profile = () => {
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                     <Mail className="w-4 h-4 text-primary" />
                     <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">Email</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("email")}
+                      </p>
                       {!isEditing ? (
                         <p className="text-sm font-medium">{user?.email}</p>
                       ) : (
@@ -251,7 +260,9 @@ const Profile = () => {
                   <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
                     <Phone className="w-4 h-4 text-primary" />
                     <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">Phone</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("phone")}
+                      </p>
                       {!isEditing ? (
                         <p className="text-sm font-medium">
                           {user?.phoneNumber}
@@ -276,7 +287,7 @@ const Profile = () => {
                     <Calendar className="w-4 h-4 text-primary" />
                     <div className="flex-1">
                       <p className="text-xs text-muted-foreground">
-                        Birth Date
+                        {t("birth_date")}
                       </p>
                       {!isEditing ? (
                         <p className="text-sm font-medium">
@@ -309,6 +320,11 @@ const Profile = () => {
             <TransactionHistory
               isLoading={isLoading}
               data={purchaseHistory?.data}
+              page={page}
+              setPage={setPage}
+              limit={limit}
+              setLimit={setLimit}
+              totalPages={purchaseHistory?.totalPages}
             />
           </motion.div>
 

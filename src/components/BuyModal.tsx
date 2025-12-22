@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, CheckCircle, Text } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { base_url, companyId } from "@/api/GlobalData";
 import { UserData } from "@/store/api/authApi";
 import { Input } from "./ui/input";
+import { useTranslation } from "react-i18next";
 
 interface BuyModalProps {
   stock: InvestmentCompany | null;
@@ -25,6 +26,7 @@ export const BuyModal = ({
   onClose,
   tradType,
 }: BuyModalProps) => {
+  const { t } = useTranslation();
   const [quantity, setQuantity] = useState(1);
   const [description, setDescription] = useState("");
   const [isPaid, setIsPaid] = useState(false);
@@ -45,6 +47,13 @@ export const BuyModal = ({
   const handleQuantityChange = (delta: number) => {
     setQuantity((q) => Math.min(1000, Math.max(1, q + delta)));
   };
+  const handleQuantityInput = (value: string) => {
+    const num = Number(value);
+
+    if (Number.isNaN(num)) return;
+
+    setQuantity(Math.min(1000, Math.max(1, num)));
+  };
 
   const handleBuy = async () => {
     try {
@@ -61,8 +70,10 @@ export const BuyModal = ({
       }).unwrap();
 
       toast({
-        title: "Request sent",
-        description: `Request to buy ${quantity} shares sent successfully.`,
+        title: t("request_sent"),
+        description: `${t("request_buy")} ${quantity} ${t(
+          "shares_sent_success"
+        )}`,
       });
 
       onClose();
@@ -72,8 +83,8 @@ export const BuyModal = ({
     } catch {
       toast({
         variant: "destructive",
-        title: "Order Failed",
-        description: "Please try again.",
+        title: t("order_failed"),
+        description: t("try_again"),
       });
     }
   };
@@ -89,7 +100,11 @@ export const BuyModal = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={() => {
+              onClose();
+              setDescription("");
+              setQuantity(1);
+            }}
           >
             {/* MODAL */}
             <motion.div
@@ -118,7 +133,11 @@ export const BuyModal = ({
                   <h2 className="text-lg font-bold">{stock.companyName}</h2>
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={() => {
+                    onClose();
+                    setDescription("");
+                    setQuantity(1);
+                  }}
                   className="p-2 rounded-full hover:bg-muted"
                 >
                   <X className="w-5 h-5" />
@@ -127,7 +146,9 @@ export const BuyModal = ({
 
               {/* PRICE */}
               <div className="bg-muted/50 rounded-xl p-3 mb-6 flex justify-between">
-                <span className="text-muted-foreground">Share Price</span>
+                <span className="text-muted-foreground">
+                  {t("share_price")}
+                </span>
                 <span className="text-xl font-bold">
                   ${stock.sharePrice.toFixed(2)}
                 </span>
@@ -142,7 +163,11 @@ export const BuyModal = ({
                 >
                   <Minus />
                 </Button>
-                <span className="text-6xl font-bold">{quantity}</span>
+                <Input
+                  className="text-center w-auto"
+                  value={quantity}
+                  onChange={(e) => handleQuantityInput(e.target.value)}
+                />
                 <Button
                   variant="outline"
                   size="icon"
@@ -155,7 +180,7 @@ export const BuyModal = ({
               {/* DESCRIPTION */}
               <div className="mb-6">
                 <label className="text-sm text-muted-foreground mb-2 block">
-                  Description (Optional)
+                  {t("description")} {t("optional")}
                 </label>
                 <div className="relative">
                   <Text className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -176,7 +201,9 @@ export const BuyModal = ({
                     : "bg-primary/5 border-primary/20"
                 )}
               >
-                <span className="text-muted-foreground">Estimated Total</span>
+                <span className="text-muted-foreground">
+                  {t("estimated_total")}
+                </span>
                 <span
                   className={cn(
                     "text-xl font-bold",
@@ -206,7 +233,7 @@ export const BuyModal = ({
                         checked={(type === "paid") === isPaid}
                         onChange={() => setIsPaid(type === "paid")}
                       />
-                      <strong className="capitalize">{type}</strong>
+                      <strong className="capitalize">{t(type)}</strong>
                     </label>
                   ))}
                 </div>
@@ -233,8 +260,16 @@ export const BuyModal = ({
 
               {/* ACTIONS */}
               <div className="flex gap-3">
-                <Button variant="outline" className="flex-1" onClick={onClose}>
-                  Cancel
+                <Button
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => {
+                    onClose();
+                    setDescription("");
+                    setQuantity(1);
+                  }}
+                >
+                  {t("cancel")}
                 </Button>
                 <Button
                   variant={tradType === "sell" ? "destructive" : "success"}
@@ -243,11 +278,11 @@ export const BuyModal = ({
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    "Processing…"
+                    t("processing")
                   ) : (
                     <>
                       <CheckCircle className="w-4 h-4 mr-1" />
-                      Send Request
+                      {t("send_request")}
                     </>
                   )}
                 </Button>

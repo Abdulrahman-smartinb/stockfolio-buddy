@@ -11,8 +11,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
+import { useTranslation } from "react-i18next";
 
 const Auth = () => {
+  const { t } = useTranslation();
   const {
     mode,
     setMode,
@@ -49,13 +51,13 @@ const Auth = () => {
             </div>
 
             <h2 className="text-4xl font-bold mb-4">
-              Trade Smarter.
+              {t("trade_smarter")}
               <br />
-              <span className="gradient-text">Grow Faster.</span>
+              <span className="gradient-text">{t("grow_faster")}</span>
             </h2>
 
             <p className="text-lg text-muted-foreground max-w-md">
-              Make informed trading decisions with real-time market data.
+              {t("login_letter")}
             </p>
           </motion.div>
         </div>
@@ -91,7 +93,7 @@ const Auth = () => {
                       : "text-muted-foreground"
                   }`}
                 >
-                  {tab === "login" ? "Sign In" : "Register"}
+                  {tab === "login" ? t("sign_in") : t("register")}
                 </button>
               ))}
             </div>
@@ -110,7 +112,7 @@ const Auth = () => {
                 {mode === "register" && (
                   <div>
                     <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                      Full Name
+                      {t("full_name")}
                     </label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -129,7 +131,7 @@ const Auth = () => {
                 {/* PHONE */}
                 <div>
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                    Phone Number
+                    {t("phone_number")}
                   </label>
                   <div className="relative">
                     <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -147,9 +149,7 @@ const Auth = () => {
 
                   {(showWarn || showLengthError) && (
                     <p className="text-xs text-red-500 mt-1 leading-tight">
-                      {showWarn
-                        ? "Only numbers are allowed."
-                        : `Phone number must be 10–14 digits.`}
+                      {showWarn ? t("only_numbers") : t("phone_length")}
                     </p>
                   )}
                 </div>
@@ -157,7 +157,7 @@ const Auth = () => {
                 {/* PASSWORD */}
                 <div>
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                    Password
+                    {t("password")}
                   </label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -202,7 +202,7 @@ const Auth = () => {
                     />
                   ) : (
                     <>
-                      {mode === "login" ? "Sign In" : "Create Account"}
+                      {mode === "login" ? t("sign_in") : t("register")}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </>
                   )}
@@ -212,9 +212,7 @@ const Auth = () => {
           </div>
 
           <p className="text-[11px] text-muted-foreground text-center mt-4">
-            By continuing, you agree to our{" "}
-            <span className="text-primary">Terms</span> &{" "}
-            <span className="text-primary">Privacy Policy</span>
+            {t("terms_policy_agree")}
           </p>
         </motion.div>
       </div>

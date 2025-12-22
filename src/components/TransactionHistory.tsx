@@ -2,6 +2,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TrendingUp, TrendingDown, Package } from "lucide-react";
 import { format } from "date-fns";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "./ui/pagination";
+import { useTranslation } from "react-i18next";
 
 interface TransactionItem {
   type: string;
@@ -14,15 +23,29 @@ interface TransactionItem {
 interface TransactionHistoryProps {
   isLoading: boolean;
   data?: TransactionItem[];
+  page?: number;
+  setPage?: any;
+  limit?: number;
+  setLimit?: any;
+  totalPages?: number;
 }
 
-const TransactionHistory = ({ isLoading, data }: TransactionHistoryProps) => {
+const TransactionHistory = ({
+  isLoading,
+  data,
+  page,
+  setPage,
+  limit,
+  setLimit,
+  totalPages,
+}: TransactionHistoryProps) => {
+  const { t } = useTranslation();
   return (
     <Card>
       <CardHeader>
         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
           <Package className="w-4 h-4 text-primary" />
-          Transactions History
+          {t("transactions_history")}
         </CardTitle>
       </CardHeader>
 
@@ -52,7 +75,7 @@ const TransactionHistory = ({ isLoading, data }: TransactionHistoryProps) => {
                           : "text-destructive border-destructive/40"
                       }`}
                     >
-                      {isBuy ? "BUY" : "SELL"}
+                      {isBuy ? t("buy") : t("sell")}
                     </Badge>
                   </div>
 
@@ -68,7 +91,7 @@ const TransactionHistory = ({ isLoading, data }: TransactionHistoryProps) => {
                 {/* DETAILS */}
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>
-                    {tx.shares} shares × ${tx.sharePrice}
+                    {tx.shares} {t("shares")} × ${tx.sharePrice}
                   </span>
                   <span>{format(new Date(tx.createdAt), "MMM dd, HH:mm")}</span>
                 </div>
@@ -77,9 +100,73 @@ const TransactionHistory = ({ isLoading, data }: TransactionHistoryProps) => {
           })
         ) : (
           <p className="text-xs text-muted-foreground text-center py-4">
-            No transactions yet
+            {t("no_records_found")}
           </p>
         )}
+        <div className="flex justify-between">
+          <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground">
+            <span>{t("rows_per_page")}</span>
+            <select
+              value={limit}
+              onChange={(e) => {
+                setLimit(Number(e.target.value));
+                setPage(1);
+              }}
+              className="border rounded px-2 py-1 bg-background"
+            >
+              {[5, 10, 20, 50, 100].map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Pagination className="w-50 mx-0">
+            <PaginationContent>
+              {/* PREVIOUS */}
+              <PaginationItem>
+                <PaginationPrevious
+                  title="asd"
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage((p) => Math.max(1, p - 1));
+                  }}
+                />
+              </PaginationItem>
+
+              {/* PAGE NUMBERS */}
+              {Array.from({ length: totalPages }).map((_, i) => {
+                const pageNumber = i + 1;
+                return (
+                  <PaginationItem key={pageNumber}>
+                    <PaginationLink
+                      href="#"
+                      isActive={page === pageNumber}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPage(pageNumber);
+                      }}
+                    >
+                      {pageNumber}
+                    </PaginationLink>
+                  </PaginationItem>
+                );
+              })}
+
+              {/* NEXT */}
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage((p) => Math.min(totalPages, p + 1));
+                  }}
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
       </CardContent>
     </Card>
   );

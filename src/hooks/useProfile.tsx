@@ -7,11 +7,12 @@ import {
   useGetInvestorPurchaseRequestsQuery,
   useGetPurchaseHistoryQuery,
 } from "@/store/api/stocksApi";
-import { base_url } from "@/api/GlobalData";
 import { useUpdateInvestorMutation } from "@/store/api/investorApi";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export const useProfile = () => {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -19,10 +20,14 @@ export const useProfile = () => {
   const [user] = useState<UserData>(
     JSON.parse(localStorage.getItem("user") || "null")
   );
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(5);
 
-  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery(
-    user?._id
-  );
+  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery({
+    id: user?._id,
+    page,
+    limit,
+  });
 
   const { data: purchaseRequests, isLoading: loadingRequests } =
     useGetInvestorPurchaseRequestsQuery(user?._id);
@@ -80,24 +85,24 @@ export const useProfile = () => {
       localStorage.setItem("user", JSON.stringify(res.data));
       setIsEditing(false);
       toast({
-        title: "Update successful",
+        title: t("update_success"),
         variant: "default",
-        description: "Profile information updated successfully",
+        description: t("info_updated"),
         action: (
           <Button
             onClick={() => window.location.reload()}
             className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 bg-background text-foreground shadow-sm`}
           >
-            Refresh
+            {t("refresh")}
           </Button>
         ),
       });
     } catch (error) {
       console.error(error);
       toast({
-        title: "Update failed",
+        title: t("update_failed"),
         variant: "destructive",
-        description: "Error occurred while updating profile information",
+        description: t("error_while_updating"),
       });
     }
   };
@@ -130,5 +135,9 @@ export const useProfile = () => {
     handleProfileImageChange,
     handleSaveProfile,
     isSaving,
+    page,
+    setPage,
+    limit,
+    setLimit,
   };
 };

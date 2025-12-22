@@ -16,8 +16,10 @@ import { useGetStocksQuery, InvestmentCompany } from "@/store/api/stocksApi";
 import { Button } from "@/components/ui/button";
 import { companyId } from "@/api/GlobalData";
 import { Footer } from "@/components/Footer";
+import { useTranslation } from "react-i18next";
 
 const Dashboard = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentCompany | null>(
     null
@@ -47,14 +49,14 @@ const Dashboard = () => {
 
   const stats = [
     {
-      label: "Market Status",
-      value: "Open",
+      label: "market_status",
+      value: t("open"),
       icon: Activity,
       color: "text-success",
       bgColor: "bg-success/10",
     },
     {
-      label: "Top Gainer",
+      label: "top_gainer",
       value: "+2.58%",
       subValue: "NVDA",
       icon: TrendingUp,
@@ -62,14 +64,14 @@ const Dashboard = () => {
       bgColor: "bg-success/10",
     },
     {
-      label: "Total Volume",
+      label: "total_volume",
       value: "324.5M",
       icon: BarChart3,
       color: "text-accent",
       bgColor: "bg-accent/10",
     },
     {
-      label: "Portfolio Value",
+      label: "portfolio_value",
       value: "$12,450",
       icon: DollarSign,
       color: "text-primary",
@@ -89,10 +91,10 @@ const Dashboard = () => {
           className="mb-8"
         >
           <h1 className="text-xl md:text-4xl font-bold text-foreground mb-2">
-            Markets Overview
+            {t("markets_overview")}
           </h1>
           <p className="text-muted-foreground text-sm md:text-xl">
-            Track real-time stock prices and trade with confidence
+            {t("home_letter")}
           </p>
         </motion.div>
 
@@ -118,7 +120,9 @@ const Dashboard = () => {
                   <stat.icon className={`w-5 h-5 ${stat.color}`} />
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">{stat.label}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {t(stat.label)}
+                  </p>
                   <p className={`text-lg font-bold ${stat.color}`}>
                     {stat.value}
                   </p>
@@ -145,7 +149,7 @@ const Dashboard = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground " />
               <Input
                 type="text"
-                placeholder="Search stocks by name or symbol..."
+                placeholder={t("search")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 bg-card text-xs"
@@ -161,7 +165,7 @@ const Dashboard = () => {
               <RefreshCw className="w-5 h-5 md:hidden" />
 
               {/* Desktop: Text */}
-              <span className="hidden md:inline">Refresh</span>
+              <span className="hidden md:inline">{t("refresh")}</span>
 
               {isLoading && (
                 <span className="flex items-center gap-2">
@@ -222,11 +226,9 @@ const Dashboard = () => {
               <Search className="w-8 h-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-semibold text-foreground mb-2">
-              No stocks found
+              {t("no_records_found")}
             </h3>
-            <p className="text-muted-foreground">
-              Try adjusting your search query
-            </p>
+            <p className="text-muted-foreground">{t("adjust_query")}</p>
           </motion.div>
         )}
       </main>

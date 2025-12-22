@@ -1,14 +1,8 @@
 import { motion } from "framer-motion";
-import { cn, formatNumber, formatNumberCompact } from "@/lib/utils";
 import { InvestmentCompany } from "@/store/api/stocksApi";
-import {
-  Search,
-  TrendingUp,
-  Activity,
-  DollarSign,
-  BarChart3,
-  TrendingDown,
-} from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 interface StockCardProps {
   stock: InvestmentCompany;
   onAction: (type: "buy" | "sell") => void;
@@ -16,10 +10,7 @@ interface StockCardProps {
 }
 
 export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
-  const availabilityRatio =
-    stock?.totalShares && stock?.availableShares
-      ? (stock?.availableShares / stock?.totalShares) * 100
-      : 0;
+  const { t } = useTranslation();
 
   return (
     <motion.div
@@ -65,7 +56,7 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
         <p className="text-4xl font-bold text-foreground">
           {stock?.currency || "$"} {stock?.sharePrice?.toFixed(2) ?? "—"}
         </p>
-        <p className="text-xs text-muted-foreground">Price per share</p>
+        <p className="text-xs text-muted-foreground">{t("price_per_share")}</p>
       </div>
 
       {/* Shares */}

@@ -7,10 +7,12 @@ import {
   useRegisterMutation,
 } from "@/store/api/authApi";
 import { companyId } from "@/api/GlobalData";
+import { useTranslation } from "react-i18next";
 
 type AuthMode = "login" | "register";
 
 export const useAuth = () => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<AuthMode>("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showWarn, setShowWarn] = useState(false);
@@ -64,43 +66,42 @@ export const useAuth = () => {
     let valid = true;
     if (formData.phoneNumber?.length < 7) {
       toast({
-        title: "Please enter a valid phone number",
+        title: t("enter_valid_phone"),
         variant: "destructive",
-        description: "A valid phone number must be longer than 7 digits",
+        description: t("valid_phone"),
       });
       valid = false;
     }
     if (formData.password?.length < 6) {
       toast({
-        title: "Please enter a valid password",
+        title: t("enter_valid_pass"),
         variant: "destructive",
-        description: "A valid password must be longer than 6 charachters",
+        description: t("valid_pass"),
       });
       valid = false;
     }
     if (showLengthError) {
       toast({
-        title: "Please enter a valid phone number",
+        title: t("enter_valid_phone"),
         variant: "destructive",
-        description:
-          "A valid phone number must be between 10 and 14 digits, including country code",
+        description: t("valid_phone"),
       });
       valid = false;
     }
     if (showWarn) {
       toast({
-        title: "Please enter a valid phone number",
+        title: t("enter_valid_phone"),
         variant: "destructive",
-        description: "Only numbers are allowed",
+        description: t("only_numbers"),
       });
       valid = false;
     }
     if (mode === "register") {
       if (formData.fullName?.length < 2) {
         toast({
-          title: "Please enter a valid name",
+          title: t("enter_valid_name"),
           variant: "destructive",
-          description: "A valid name must be longer than 2 charachters",
+          description: t("valid_name"),
         });
         valid = false;
       }
@@ -132,18 +133,16 @@ export const useAuth = () => {
       setIsAuthenticated(true);
 
       toast({
-        title: mode === "login" ? "Welcome back!" : "Account created!",
-        description: `Signed in as ${response.user.fullName}`,
+        title: mode === "login" ? t("welcome") : t("account_created"),
+        description: `${t("signed_in_as")} ${response.user.fullName}`,
       });
 
       navigate("/");
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Authentication failed",
-        description:
-          error?.data?.message ||
-          "Please check your credentials and try again.",
+        title: t("auth_failed"),
+        description: error?.data?.message || t("check_credits"),
       });
     }
   };
