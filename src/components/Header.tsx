@@ -74,8 +74,8 @@ export const Header = () => {
             backdrop-blur-md shadow-sm transition hover:border-primary/50
             focus:outline-none focus:ring-2 focus:ring-primary/40 text-center"
           >
-            <option value="en">EN</option>
-            <option value="ar">AR</option>
+            <option value="en">{t("en")}</option>
+            <option value="ar">{t("ar")}</option>
           </select>
 
           {/* Logout */}
