@@ -65,18 +65,24 @@ export const Header = () => {
         {/* RIGHT — User Actions */}
         <div className="flex items-center gap-3">
           {/* Language selector */}
-          <select
-            value={(i18n.language || "").split("-")[0] || "en"}
-            onChange={(e) => i18n.changeLanguage(e.target.value)}
-            aria-label="Language"
-            className="appearance-none rounded-lg border border-border/60
-            bg-background/60 px-3 py-1.5 pr-8 text-sm font-medium text-foreground
-            backdrop-blur-md shadow-sm transition hover:border-primary/50
-            focus:outline-none focus:ring-2 focus:ring-primary/40 text-center"
-          >
-            <option value="en">{t("en")}</option>
-            <option value="ar">{t("ar")}</option>
-          </select>
+          <div className="relative">
+            <select
+              value={(i18n.language || "").split("-")[0] || "en"}
+              onChange={(e) => i18n.changeLanguage(e.target.value)}
+              aria-label="Language"
+              className="appearance-none rounded-lg border border-border/60 bg-background/60
+      pl-9 pr-8 py-1.5 text-sm font-medium backdrop-blur-md shadow-sm transition
+      hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/40"
+            >
+              <option value="en">{t("en")}</option>
+              <option value="ar">{t("ar")}</option>
+            </select>
+
+            {/* Globe icon */}
+            <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground">
+              {i18n.language === "ar" ? "🇸🇾" : "🇬🇧"}
+            </span>
+          </div>
 
           {/* Logout */}
           <Button
