@@ -12,6 +12,7 @@ import { base_url, companyId } from "@/api/GlobalData";
 import { UserData } from "@/store/api/authApi";
 import { Input } from "./ui/input";
 import { useTranslation } from "react-i18next";
+import { isLoggedIn } from "@/hooks/helpers";
 
 interface BuyModalProps {
   stock: InvestmentCompany | null;
@@ -27,6 +28,7 @@ export const BuyModal = ({
   tradType,
 }: BuyModalProps) => {
   const { t } = useTranslation();
+  const loggedIn = isLoggedIn();
   const [quantity, setQuantity] = useState(1);
   const [description, setDescription] = useState("");
   const [isPaid, setIsPaid] = useState(false);
@@ -56,6 +58,14 @@ export const BuyModal = ({
   };
 
   const handleBuy = async () => {
+    if (!loggedIn) {
+      toast({
+        variant: "destructive",
+        title: t("login_required"),
+        description: t("login_msg"),
+      });
+      return;
+    }
     try {
       await createPurchaseRequest({
         companyId,
@@ -229,7 +239,7 @@ export const BuyModal = ({
                     >
                       <input
                         type="radio"
-                        className="mr-2"
+                        className="ms-2"
                         checked={(type === "paid") === isPaid}
                         onChange={() => setIsPaid(type === "paid")}
                       />
@@ -240,7 +250,7 @@ export const BuyModal = ({
               )}
 
               {/* BANK QR */}
-              {isPaid && (
+              {tradType === "buy" && isPaid && (
                 <div className="grid grid-cols-2 gap-3 mb-6">
                   {stock.bankQR?.map((bank, i) => (
                     <button

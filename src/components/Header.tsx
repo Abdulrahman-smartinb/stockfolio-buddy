@@ -1,16 +1,18 @@
 import { motion } from "framer-motion";
-import { LogOut, TrendingUp, User, Home } from "lucide-react";
+import { LogOut, TrendingUp, User, Home, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { isLoggedIn } from "@/hooks/helpers";
 
 export const Header = () => {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  const loggedIn = isLoggedIn();
 
   const handleLogout = () => {
     logout();
@@ -54,7 +56,9 @@ export const Header = () => {
           <Button
             variant={path === "/profile" ? "secondary" : "ghost"}
             size="sm"
-            onClick={() => navigate("/profile")}
+            onClick={() =>
+              loggedIn ? navigate("/profile") : navigate("/auth")
+            }
             className="gap-2"
           >
             <User className="w-4 h-4" />
@@ -85,18 +89,33 @@ export const Header = () => {
           </div>
 
           {/* Logout */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className={cn(
-              "text-muted-foreground hover:text-destructive",
-              "flex items-center gap-2"
-            )}
-          >
-            <LogOut className="w-4 h-4" />
-            <span className="hidden md:inline">{t("logout")}</span>
-          </Button>
+          {loggedIn ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className={cn(
+                "text-muted-foreground hover:text-destructive",
+                "flex items-center gap-2"
+              )}
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden md:inline">{t("logout")}</span>
+            </Button>
+          ) : (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout}
+              className={cn(
+                "text-muted-foreground hover:text-white",
+                "flex items-center gap-2"
+              )}
+            >
+              <LogIn className="w-4 h-4" />
+              <span className="hidden md:inline">{t("login_register")}</span>
+            </Button>
+          )}
         </div>
       </div>
     </motion.header>
