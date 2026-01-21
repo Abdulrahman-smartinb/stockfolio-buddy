@@ -1,5 +1,5 @@
+import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 import { motion } from "framer-motion";
-import { InvestmentCompany } from "@/store/api/stocksApi";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -25,13 +25,13 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex gap-2">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
-            {stock?.symbol?.toUpperCase()}
+            {stock?.tradeName?.charAt(0).toUpperCase()}
           </div>
 
           <div>
-            <h3 className="font-bold text-foreground">{stock?.companyName}</h3>
+            <h3 className="font-bold text-foreground">{stock?.tradeName}</h3>
             <p className="text-xs text-muted-foreground">
-              {stock?.industry || "—"}
+              {stock?.primaryBusinessObjective || "—"}
             </p>
           </div>
         </div>
@@ -54,7 +54,8 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
       {/* Price */}
       <div className="mb-3">
         <p className="text-4xl font-bold text-foreground">
-          {stock?.currency || "$"} {stock?.sharePrice?.toFixed(2) ?? "—"}
+          {stock?.reqInvestAmount?.currency || "$"}{" "}
+          {stock?.sharePrice?.toFixed(2) ?? "—"}
         </p>
         <p className="text-xs text-muted-foreground">{t("price_per_share")}</p>
       </div>

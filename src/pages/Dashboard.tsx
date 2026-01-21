@@ -12,34 +12,30 @@ import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { StockCard } from "@/components/StockCard";
 import { BuyModal } from "@/components/BuyModal";
-import { useGetStocksQuery, InvestmentCompany } from "@/store/api/stocksApi";
+import { useGetStocksQuery } from "@/store/api/stocksApi";
 import { Button } from "@/components/ui/button";
-import { companyId } from "@/api/GlobalData";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
+import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentCompany | null>(
-    null
+    null,
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
 
-  const {
-    data: stocks = [],
-    isLoading,
-    refetch,
-  } = useGetStocksQuery({
-    companyId,
-  });
+  const { data: stocks = [], isLoading, refetch } = useGetStocksQuery(null);
 
   const filteredStocks = stocks.filter(
     (stock) =>
-      stock.companyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      stock.industry?.toLowerCase().includes(searchQuery.toLowerCase())
+      stock.tradeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      stock.primaryBusinessObjective
+        ?.toLowerCase()
+        .includes(searchQuery.toLowerCase()),
   );
 
   const handleStockClick = (stock: InvestmentCompany, type: string) => {

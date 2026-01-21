@@ -1,19 +1,5 @@
+import { AuthState, User } from "@/interfaces/Auth";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-interface User {
-  _id: string;
-  fullName: string;
-  phoneNumber: string;
-  email?: string;
-  companyId?: string;
-  active: boolean;
-}
-
-interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-}
 
 const getUserFromStorage = (): User | null => {
   const userStr = localStorage.getItem("user");

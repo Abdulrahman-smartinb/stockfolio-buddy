@@ -6,7 +6,6 @@ import {
   useLogoutMutation,
   useRegisterMutation,
 } from "@/store/api/authApi";
-import { companyId } from "@/api/GlobalData";
 import { useTranslation } from "react-i18next";
 
 type AuthMode = "login" | "register";
@@ -23,7 +22,7 @@ export const useAuth = () => {
     password: "",
   });
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("authToken"))
+    Boolean(localStorage.getItem("authToken")),
   );
 
   const navigate = useNavigate();
@@ -124,7 +123,6 @@ export const useAuth = () => {
               fullName: formData.fullName,
               phoneNumber: formData.phoneNumber,
               password: formData.password,
-              companyId: companyId,
             }).unwrap();
 
       // ✅ Save auth data

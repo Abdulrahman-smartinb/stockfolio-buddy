@@ -11,24 +11,7 @@ import {
   PaginationPrevious,
 } from "./ui/pagination";
 import { useTranslation } from "react-i18next";
-
-interface TransactionItem {
-  type: string;
-  shares: number;
-  sharePrice: number;
-  purchaseValue: number;
-  createdAt: string;
-}
-
-interface TransactionHistoryProps {
-  isLoading: boolean;
-  data?: TransactionItem[];
-  page?: number;
-  setPage?: any;
-  limit?: number;
-  setLimit?: any;
-  totalPages?: number;
-}
+import { TransactionHistoryProps } from "@/interfaces/Transaction";
 
 const TransactionHistory = ({
   isLoading,

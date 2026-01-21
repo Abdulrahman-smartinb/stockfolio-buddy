@@ -2,8 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { format } from "date-fns";
-import { PendingRequestItem } from "@/store/api/stocksApi";
 import { useTranslation } from "react-i18next";
+import { PendingRequestItem } from "@/interfaces/Stocks";
 
 interface PendingRequestsProps {
   isLoading: boolean;

@@ -2,17 +2,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, CheckCircle, Text } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  InvestmentCompany,
-  useCreatePurchaseRequestMutation,
-} from "@/store/api/stocksApi";
+import { useCreatePurchaseRequestMutation } from "@/store/api/stocksApi";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { base_url, companyId } from "@/api/GlobalData";
+import { base_url } from "@/api/GlobalData";
 import { UserData } from "@/store/api/authApi";
 import { Input } from "./ui/input";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "@/hooks/helpers";
+import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 
 interface BuyModalProps {
   stock: InvestmentCompany | null;
@@ -39,12 +37,12 @@ export const BuyModal = ({
 
   const { toast } = useToast();
   const user: UserData | null = JSON.parse(
-    localStorage.getItem("user") || "null"
+    localStorage.getItem("user") || "null",
   );
 
   if (!stock) return null;
 
-  const totalCost = stock.sharePrice * quantity;
+  const totalCost = stock?.sharePrice * quantity;
 
   const handleQuantityChange = (delta: number) => {
     setQuantity((q) => Math.min(1000, Math.max(1, q + delta)));
@@ -68,12 +66,11 @@ export const BuyModal = ({
     }
     try {
       await createPurchaseRequest({
-        companyId,
         data: {
           investorId: user?._id,
           type: tradType,
           shares: quantity,
-          sharePrice: stock.sharePrice,
+          sharePrice: stock?.sharePrice,
           description,
           paymentStatus: isPaid ? "paid" : "unpaid",
         },
@@ -82,7 +79,7 @@ export const BuyModal = ({
       toast({
         title: t("request_sent"),
         description: `${t("request_buy")} ${quantity} ${t(
-          "shares_sent_success"
+          "shares_sent_success",
         )}`,
       });
 
@@ -135,12 +132,12 @@ export const BuyModal = ({
                       "w-16 h-10 rounded-xl flex items-center justify-center font-bold",
                       tradType === "sell"
                         ? "bg-destructive/20 text-destructive"
-                        : "bg-primary/20 text-primary"
+                        : "bg-primary/20 text-primary",
                     )}
                   >
-                    {stock.symbol}
+                    {stock?.tradeName?.charAt(0)?.toUpperCase()}
                   </div>
-                  <h2 className="text-lg font-bold">{stock.companyName}</h2>
+                  <h2 className="text-lg font-bold">{stock?.tradeName}</h2>
                 </div>
                 <button
                   onClick={() => {
@@ -160,7 +157,8 @@ export const BuyModal = ({
                   {t("share_price")}
                 </span>
                 <span className="text-xl font-bold">
-                  ${stock.sharePrice.toFixed(2)}
+                  {stock?.reqInvestAmount?.currency}{" "}
+                  {stock?.sharePrice?.toFixed(2)}
                 </span>
               </div>
 
@@ -208,7 +206,7 @@ export const BuyModal = ({
                   "rounded-xl p-4 mb-6 flex justify-between border",
                   tradType === "sell"
                     ? "bg-destructive/5 border-destructive/20"
-                    : "bg-primary/5 border-primary/20"
+                    : "bg-primary/5 border-primary/20",
                 )}
               >
                 <span className="text-muted-foreground">
@@ -217,52 +215,72 @@ export const BuyModal = ({
                 <span
                   className={cn(
                     "text-xl font-bold",
-                    tradType === "sell" ? "text-destructive" : "text-primary"
+                    tradType === "sell" ? "text-destructive" : "text-primary",
                   )}
                 >
-                  ${totalCost.toFixed(2)}
+                  {stock?.reqInvestAmount?.currency} {totalCost.toFixed(2)}
                 </span>
               </div>
 
               {/* PAYMENT */}
               {tradType === "buy" && (
                 <div className="grid gap-3 mb-6">
-                  {["unpaid", "paid"].map((type) => (
-                    <label
-                      key={type}
-                      className={cn(
-                        "rounded-xl border p-3 cursor-pointer transition",
-                        (type === "paid") === isPaid
-                          ? "border-primary bg-primary/5"
-                          : "hover:bg-muted/40"
-                      )}
-                    >
-                      <input
-                        type="radio"
-                        className="ms-2"
-                        checked={(type === "paid") === isPaid}
-                        onChange={() => setIsPaid(type === "paid")}
-                      />
-                      <strong className="capitalize">{t(type)}</strong>
+                  {/* Unpaid */}
+                  <label
+                    className={cn(
+                      "rounded-xl border p-3 cursor-pointer transition",
+                      isPaid === false
+                        ? "border-primary bg-primary/5"
+                        : "hover:bg-muted/40",
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      className="ms-2"
+                      checked={isPaid === false}
+                      onChange={() => setIsPaid(false)}
+                    />
+                    <strong className="ms-1">{t("unpaid")}</strong>
+                  </label>
+
+                  {/* Paid */}
+                  <label
+                    className={cn(
+                      "rounded-xl border p-3 cursor-pointer transition",
+                      isPaid === true
+                        ? "border-primary bg-primary/5"
+                        : "hover:bg-muted/40",
+                    )}
+                  >
+                    <input
+                      type="radio"
+                      className="ms-2"
+                      checked={isPaid === true}
+                      disabled={stock?.bankQR?.length < 1}
+                      onChange={() => setIsPaid(true)}
+                    />
+                    <strong className="ms-1">{t("paid")}</strong>
+                    <label className="ms-2 text-xs text-destructive">
+                      (No online payment method provided)
                     </label>
-                  ))}
+                  </label>
                 </div>
               )}
 
               {/* BANK QR */}
               {tradType === "buy" && isPaid && (
                 <div className="grid grid-cols-2 gap-3 mb-6">
-                  {stock.bankQR?.map((bank, i) => (
+                  {stock?.bankQR?.map((bank, i) => (
                     <button
                       key={i}
                       onClick={() =>
                         setQrPopup(
-                          `${base_url}investmentCompanies/${bank.qrCode}`
+                          `${base_url}investmentCompanies/${bank?.qrCode}`,
                         )
                       }
                       className="border rounded-xl p-3 text-sm font-semibold text-primary hover:bg-primary/10"
                     >
-                      {bank.name}
+                      {bank?.name}
                     </button>
                   ))}
                 </div>

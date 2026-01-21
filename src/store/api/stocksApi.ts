@@ -4,107 +4,19 @@ import {
   stocksEP,
 } from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
-
-export interface InvestmentCompany {
-  _id: string;
-  companyName: string;
-  email?: string;
-  description?: string;
-  industry?: string;
-  country?: string;
-
-  valuation?: number;
-  sharePrice?: number;
-  totalShares?: number;
-  availableShares?: number;
-
-  currency?: string;
-  logo?: string;
-  website?: string;
-  status?: string;
-  bankQR?: [
-    { name?: string; accountNumber?: string; qrCode?: string; _id?: string }
-  ];
-
-  foundersArray?: {
-    investorId: string;
-    shares: number;
-  }[];
-
-  companyId: string;
-
-  createdAt: string;
-  updatedAt: string;
-  id: string;
-  symbol: string;
-  name: string;
-  price: number;
-  change: number;
-  changePercent: number;
-  volume: number;
-  marketCap: string;
-}
-
-interface ApiResponse<T> {
-  status: boolean;
-  message: string;
-  data: T;
-}
-
-export interface CreatePurchaseRequestPayload {
-  investorId: string;
-  type: string;
-  shares: number;
-  sharePrice: number;
-  description?: string;
-  paymentStatus: string;
-}
-
-export interface PurchaseHistoryItem {
-  _id: string;
-  investorId: string;
-  counterpartyId: string;
-  companyId: string;
-  type: string;
-  shares: number;
-  sharePrice: number;
-  purchaseValue: number;
-  description?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-export interface PurchaseHistory {
-  status: boolean;
-  message: string;
-  data: PurchaseHistoryItem[];
-  totalPages: number;
-}
-
-export interface PendingRequestItem {
-  _id: string;
-  investorId?: string;
-  type?: string;
-  shares?: number;
-  sharePrice?: number;
-  description?: string;
-  companyId?: string;
-  paymentStatus?: string;
-  status?: string;
-  createdAt: string;
-}
-export interface PendingRequests {
-  status: boolean;
-  message: string;
-  data: PendingRequestItem[];
-}
+import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
+import {
+  CreatePurchaseRequestPayload,
+  PurchaseHistory,
+} from "@/interfaces/Stocks";
+import { ApiResponse } from "@/interfaces/Global";
 
 export const stocksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get all investment companies
-    getStocks: builder.query<InvestmentCompany[], { companyId: string }>({
-      query: ({ companyId }) => ({
+    getStocks: builder.query<InvestmentCompany[], {}>({
+      query: () => ({
         url: stocksEP,
-        params: { companyId },
       }),
       transformResponse: (response: ApiResponse<InvestmentCompany[]>) =>
         response.data,
@@ -112,13 +24,10 @@ export const stocksApi = baseApi.injectEndpoints({
     }),
 
     // Get one investment company
-    getStock: builder.query<
-      InvestmentCompany,
-      { id: string; companyId: string }
-    >({
-      query: ({ id, companyId }) => ({
+    getStock: builder.query<InvestmentCompany, { id: string }>({
+      query: ({ id }) => ({
         url: `${stocksEP}/${id}`,
-        params: { companyId },
+        params: {},
       }),
       transformResponse: (response: ApiResponse<InvestmentCompany>) =>
         response.data,
@@ -128,12 +37,12 @@ export const stocksApi = baseApi.injectEndpoints({
     // Create purchase request
     createPurchaseRequest: builder.mutation<
       any,
-      { companyId: string; data: CreatePurchaseRequestPayload }
+      { data: CreatePurchaseRequestPayload }
     >({
-      query: ({ companyId, data }) => ({
+      query: ({ data }) => ({
         url: sharePurchaseRequestEP,
         method: "POST",
-        params: { companyId },
+        params: {},
         body: data,
       }),
       invalidatesTags: ["Stocks"],

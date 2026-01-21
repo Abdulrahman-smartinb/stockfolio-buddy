@@ -10,7 +10,6 @@ export interface RegisterRequest {
   fullName: string;
   phoneNumber: string;
   password: string;
-  companyId: string;
 }
 
 export interface AuthResponse {
@@ -24,7 +23,6 @@ export interface UserData {
   phoneNumber: string;
   email?: string;
   ownedShares: number;
-  companyId?: string;
   active: boolean;
   profileImage?: string;
   birthDate?: string;
