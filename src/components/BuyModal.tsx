@@ -11,9 +11,11 @@ import { Input } from "./ui/input";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "@/hooks/helpers";
 import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
+import { CompanyInfo } from "@/interfaces/CompanyInfo";
 
 interface BuyModalProps {
   stock: InvestmentCompany | null;
+  company: CompanyInfo;
   isOpen: boolean;
   tradType: string;
   onClose: () => void;
@@ -21,13 +23,15 @@ interface BuyModalProps {
 
 export const BuyModal = ({
   stock,
+  company,
   isOpen,
   onClose,
   tradType,
 }: BuyModalProps) => {
   const { t } = useTranslation();
   const loggedIn = isLoggedIn();
-  const [quantity, setQuantity] = useState(1);
+  const minQuantity = stock?.minInvestAmount ?? 1;
+  const [quantity, setQuantity] = useState(minQuantity);
   const [description, setDescription] = useState("");
   const [isPaid, setIsPaid] = useState(false);
   const [qrPopup, setQrPopup] = useState<string | null>(null);
@@ -45,14 +49,14 @@ export const BuyModal = ({
   const totalCost = stock?.sharePrice * quantity;
 
   const handleQuantityChange = (delta: number) => {
-    setQuantity((q) => Math.min(1000, Math.max(1, q + delta)));
+    setQuantity((q) => Math.min(1000, Math.max(minQuantity, q + delta)));
   };
+
   const handleQuantityInput = (value: string) => {
     const num = Number(value);
-
     if (Number.isNaN(num)) return;
 
-    setQuantity(Math.min(1000, Math.max(1, num)));
+    setQuantity(Math.min(1000, Math.max(minQuantity, num)));
   };
 
   const handleBuy = async () => {
@@ -73,6 +77,7 @@ export const BuyModal = ({
           sharePrice: stock?.sharePrice,
           description,
           paymentStatus: isPaid ? "paid" : "unpaid",
+          seller: stock?._id,
         },
       }).unwrap();
 
@@ -167,11 +172,17 @@ export const BuyModal = ({
                 <Button
                   variant="outline"
                   size="icon"
+                  disabled={quantity <= minQuantity}
+                  style={
+                    quantity <= minQuantity ? { cursor: "not-allowed" } : {}
+                  }
                   onClick={() => handleQuantityChange(-1)}
                 >
                   <Minus />
                 </Button>
                 <Input
+                  type="number"
+                  min={minQuantity}
                   className="text-center w-auto"
                   value={quantity}
                   onChange={(e) => handleQuantityInput(e.target.value)}
@@ -256,13 +267,15 @@ export const BuyModal = ({
                       type="radio"
                       className="ms-2"
                       checked={isPaid === true}
-                      disabled={stock?.bankQR?.length < 1}
+                      disabled={company?.bankQR?.length < 1}
                       onChange={() => setIsPaid(true)}
                     />
                     <strong className="ms-1">{t("paid")}</strong>
-                    <label className="ms-2 text-xs text-destructive">
-                      (No online payment method provided)
-                    </label>
+                    {company?.bankQR?.length < 1 && (
+                      <label className="ms-2 text-xs text-destructive">
+                        (No online payment method provided)
+                      </label>
+                    )}
                   </label>
                 </div>
               )}
@@ -270,7 +283,7 @@ export const BuyModal = ({
               {/* BANK QR */}
               {tradType === "buy" && isPaid && (
                 <div className="grid grid-cols-2 gap-3 mb-6">
-                  {stock?.bankQR?.map((bank, i) => (
+                  {company?.bankQR?.map((bank, i) => (
                     <button
                       key={i}
                       onClick={() =>

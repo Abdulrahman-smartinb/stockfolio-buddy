@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
+import { useGetCompanyInfoQuery } from "@/store/api/companyInfoApi";
 
 const Dashboard = () => {
   const { t, i18n } = useTranslation();
@@ -27,6 +28,9 @@ const Dashboard = () => {
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
+
+  const { data: company, isLoading: isLoadingCom } =
+    useGetCompanyInfoQuery(null);
 
   const { data: stocks = [], isLoading, refetch } = useGetStocksQuery(null);
 
@@ -154,7 +158,7 @@ const Dashboard = () => {
             </div>
 
             <Button
-              disabled={isLoading}
+              disabled={isLoading || isLoadingCom}
               className="h-12 w-12 md:w-32 shrink-0 flex items-center justify-center gap-2"
               onClick={refetch}
             >
@@ -164,7 +168,7 @@ const Dashboard = () => {
               {/* Desktop: Text */}
               <span className="hidden md:inline">{t("refresh")}</span>
 
-              {isLoading && (
+              {(isLoading || isLoadingCom) && (
                 <span className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -182,7 +186,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Stocks Grid */}
-        {isLoading ? (
+        {isLoading || isLoadingCom ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="glass-card rounded-xl p-5 animate-pulse">
@@ -213,7 +217,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {!isLoading && filteredStocks.length === 0 && (
+        {!isLoading && !isLoadingCom && filteredStocks.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -232,6 +236,7 @@ const Dashboard = () => {
 
       <BuyModal
         stock={selectedStock}
+        company={company}
         isOpen={isBuyModalOpen}
         tradType={tradeType}
         onClose={() => {

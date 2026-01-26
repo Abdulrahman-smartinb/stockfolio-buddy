@@ -5,6 +5,7 @@ export interface CreatePurchaseRequestPayload {
   sharePrice: number;
   description?: string;
   paymentStatus: string;
+  seller: string;
 }
 
 export interface PurchaseHistoryItem {

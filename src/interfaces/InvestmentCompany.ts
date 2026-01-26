@@ -39,7 +39,6 @@ export interface InvestmentCompany {
   associationMemorandumIncorp?: [string];
   associationAndBylaws?: [string];
   financialStatements?: [string];
-  bankQR: [BankQr];
   approvedBy?: string;
   active?: boolean;
 }
@@ -64,10 +63,4 @@ export interface Owner {
 export interface BoardMember {
   name?: string;
   position?: string;
-}
-
-export interface BankQr {
-  name?: string;
-  accountNumber?: string;
-  qrCode?: string;
 }

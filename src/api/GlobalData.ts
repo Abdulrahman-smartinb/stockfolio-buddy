@@ -8,3 +8,5 @@ export const stocksEP = "api/clientCompany";
 export const sharePurchaseRequestEP = "api/sharePurchaseRequest";
 export const investorSharesEP = "api/investorShares";
 export const investorEP = "api/investor";
+export const companyInfoEP = "api/companyinfo";
+export const companyId = "696787619853de2e8b0a86df";
