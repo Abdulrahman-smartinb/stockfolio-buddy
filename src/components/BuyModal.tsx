@@ -6,12 +6,12 @@ import { useCreatePurchaseRequestMutation } from "@/store/api/stocksApi";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { base_url } from "@/api/GlobalData";
-import { UserData } from "@/store/api/authApi";
 import { Input } from "./ui/input";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "@/hooks/helpers";
 import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 import { CompanyInfo } from "@/interfaces/CompanyInfo";
+import { UserData } from "@/interfaces/UserData";
 
 interface BuyModalProps {
   stock: InvestmentCompany | null;

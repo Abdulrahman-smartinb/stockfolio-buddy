@@ -18,12 +18,14 @@ export const useAuth = () => {
   const [showLengthError, setShowLengthError] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
-    phoneNumber: "",
-    password: "",
+    phone: "905384171533",
+    password: "000000",
   });
   const [isAuthenticated, setIsAuthenticated] = useState(
     Boolean(localStorage.getItem("authToken")),
   );
+
+  const userData = JSON.parse(localStorage.getItem("user") || "{}");
 
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -41,7 +43,7 @@ export const useAuth = () => {
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      phoneNumber: numericValue,
+      phone: numericValue,
     }));
 
     if (rawValue !== numericValue) {
@@ -63,7 +65,7 @@ export const useAuth = () => {
 
   const validate = () => {
     let valid = true;
-    if (formData.phoneNumber?.length < 7) {
+    if (formData.phone?.length < 7) {
       toast({
         title: t("enter_valid_phone"),
         variant: "destructive",
@@ -116,23 +118,24 @@ export const useAuth = () => {
       const response =
         mode === "login"
           ? await loginApi({
-              phoneNumber: formData.phoneNumber,
+              phone: formData.phone,
               password: formData.password,
             }).unwrap()
           : await registerApi({
               fullName: formData.fullName,
-              phoneNumber: formData.phoneNumber,
+              phone: formData.phone,
               password: formData.password,
             }).unwrap();
 
-      // ✅ Save auth data
       localStorage.setItem("authToken", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
+      localStorage.setItem("profile", JSON.stringify(response.profile));
+      localStorage.setItem("role", JSON.stringify(response.role));
       setIsAuthenticated(true);
 
       toast({
         title: mode === "login" ? t("welcome") : t("account_created"),
-        description: `${t("signed_in_as")} ${response.user.fullName}`,
+        description: t("signed_in"),
       });
 
       navigate("/");
@@ -146,7 +149,7 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    await logoutApi().unwrap();
+    await logoutApi(userData?._id).unwrap();
     localStorage.clear();
     setIsAuthenticated(false);
     navigate("/auth");

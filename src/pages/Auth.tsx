@@ -152,7 +152,7 @@ const Auth = () => {
                       className={`ps-10 h-11 ${
                         showWarn || showLengthError ? "border-red-500" : ""
                       }`}
-                      value={formData.phoneNumber}
+                      value={formData.phone}
                       onChange={handlePhoneNumberChange}
                       placeholder="905**********"
                       required

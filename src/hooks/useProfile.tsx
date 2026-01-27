@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./use-toast";
 import { useAuth } from "./useAuth";
-import { UserData } from "@/store/api/authApi";
 import {
   useGetInvestorPurchaseRequestsQuery,
   useGetPurchaseHistoryQuery,
@@ -10,16 +9,18 @@ import {
 import { useUpdateInvestorMutation } from "@/store/api/investorApi";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
+import { UserData } from "@/interfaces/UserData";
 
 export const useProfile = () => {
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   const [user] = useState<UserData>(
-    JSON.parse(localStorage.getItem("user") || "null")
+    JSON.parse(localStorage.getItem("profile") || "null"),
   );
+  const role = localStorage.getItem("role");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
@@ -37,7 +38,7 @@ export const useProfile = () => {
   const [editData, setEditData] = useState({
     fullName: user?.fullName || "",
     birthDate: user?.birthDate || "",
-    phoneNumber: user?.phoneNumber || "",
+    phone: user?.phone || "",
     email: user?.email || "",
     profileImageFile: null as File | null,
     profilePreview: user?.profileImage ? `${user.profileImage}` : "",
@@ -70,12 +71,13 @@ export const useProfile = () => {
       if (editData.profileImageFile) {
         formData.append("profileImage", editData.profileImageFile);
       }
-      if (editData.phoneNumber) {
-        formData.append("phoneNumber", editData.phoneNumber);
+      if (editData.phone) {
+        formData.append("phone", editData.phone);
       }
       if (editData.email) {
         formData.append("email", editData.email);
       }
+      formData.append("role", role);
 
       const res = await updateInvestor({
         id: user._id,
@@ -90,10 +92,10 @@ export const useProfile = () => {
         description: t("info_updated"),
         action: (
           <Button
-            onClick={() => window.location.reload()}
+            onClick={logout}
             className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 bg-background text-foreground shadow-sm`}
           >
-            {t("refresh")}
+            {t("logout")}
           </Button>
         ),
       });
@@ -139,5 +141,6 @@ export const useProfile = () => {
     setPage,
     limit,
     setLimit,
+    role,
   };
 };

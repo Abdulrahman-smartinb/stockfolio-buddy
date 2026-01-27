@@ -1,7 +1,7 @@
 export interface User {
   _id: string;
   fullName: string;
-  phoneNumber: string;
+  phone: string;
   email?: string;
   active: boolean;
 }

@@ -8,7 +8,7 @@ export interface InvestmentCompany {
   dateIncorporation?: string;
   governorate?: string;
   registeredLegalAddress?: string;
-  phoneNumber?: string;
+  phone?: string;
   email?: string;
   website?: string;
   owners?: [Owner];

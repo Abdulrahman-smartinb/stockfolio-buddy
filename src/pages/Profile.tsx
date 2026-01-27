@@ -41,6 +41,7 @@ const Profile = () => {
     setPage,
     limit,
     setLimit,
+    role,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -62,7 +63,7 @@ const Profile = () => {
     {
       ownedShares: 0,
       investedValue: 0,
-    }
+    },
   );
 
   const stats = [
@@ -265,17 +266,15 @@ const Profile = () => {
                         {t("phone")}
                       </p>
                       {!isEditing ? (
-                        <p className="text-sm font-medium">
-                          {user?.phoneNumber}
-                        </p>
+                        <p className="text-sm font-medium">{user?.phone}</p>
                       ) : (
                         <Input
                           className="h-8 text-sm"
-                          value={editData.phoneNumber}
+                          value={editData.phone}
                           onChange={(e) =>
                             setEditData((p) => ({
                               ...p,
-                              phoneNumber: e.target.value,
+                              phone: e.target.value,
                             }))
                           }
                         />
@@ -317,25 +316,29 @@ const Profile = () => {
           </motion.div>
 
           {/* TRANSACTION HISTORY */}
-          <motion.div variants={itemVariants}>
-            <TransactionHistory
-              isLoading={isLoading}
-              data={purchaseHistory?.data}
-              page={page}
-              setPage={setPage}
-              limit={limit}
-              setLimit={setLimit}
-              totalPages={purchaseHistory?.totalPages}
-            />
-          </motion.div>
+          {role === "investor" && (
+            <motion.div variants={itemVariants}>
+              <TransactionHistory
+                isLoading={isLoading}
+                data={purchaseHistory?.data}
+                page={page}
+                setPage={setPage}
+                limit={limit}
+                setLimit={setLimit}
+                totalPages={purchaseHistory?.totalPages}
+              />
+            </motion.div>
+          )}
 
           {/* PENDING REQUESTS */}
-          <motion.div variants={itemVariants}>
-            <PendingRequests
-              isLoading={loadingRequests}
-              data={purchaseRequests?.data}
-            />
-          </motion.div>
+          {role === "investor" && (
+            <motion.div variants={itemVariants}>
+              <PendingRequests
+                isLoading={loadingRequests}
+                data={purchaseRequests?.data}
+              />
+            </motion.div>
+          )}
         </motion.div>
       </main>
       <Footer />

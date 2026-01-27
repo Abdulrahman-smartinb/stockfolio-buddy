@@ -14,11 +14,6 @@ export const Header = () => {
   const { t, i18n } = useTranslation();
   const loggedIn = isLoggedIn();
 
-  const handleLogout = () => {
-    logout();
-    navigate("/auth");
-  };
-
   const path = location.pathname;
 
   return (
@@ -93,10 +88,10 @@ export const Header = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleLogout}
+              onClick={logout}
               className={cn(
                 "text-muted-foreground hover:text-destructive",
-                "flex items-center gap-2"
+                "flex items-center gap-2",
               )}
             >
               <LogOut className="w-4 h-4" />
@@ -106,10 +101,10 @@ export const Header = () => {
             <Button
               variant="ghost"
               size="sm"
-              onClick={handleLogout}
+              onClick={() => navigate("/auth")}
               className={cn(
                 "text-muted-foreground hover:text-white",
-                "flex items-center gap-2"
+                "flex items-center gap-2",
               )}
             >
               <LogIn className="w-4 h-4" />
