@@ -10,6 +10,7 @@ import {
   Phone,
   PenBox,
   CheckCircle2,
+  Verified,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
@@ -18,6 +19,10 @@ import TransactionHistory from "@/components/TransactionHistory";
 import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
+import GlobalModal from "@/components/GlobalModal";
+import { useRef, useState } from "react";
+import { CameraCapture } from "@/components/CameraCapture";
+import { Button } from "@/components/ui/button";
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -42,6 +47,21 @@ const Profile = () => {
     limit,
     setLimit,
     role,
+    openVerify,
+    setOpenVerify,
+    setIdPhoto,
+    livePhoto,
+    setLivePhoto,
+    idNumber,
+    setIdNumber,
+    passportNumber,
+    setPassportNumber,
+    handleSubmit,
+    isSubmitting,
+    handleClose,
+    livePhotoPreview,
+    setLivePhotoPreview,
+    REVIEW_STATUS_STYLES,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -84,6 +104,9 @@ const Profile = () => {
       bgColor: "bg-primary/10",
     },
   ];
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const [openCamera, setOpenCamera] = useState(false);
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -154,25 +177,39 @@ const Profile = () => {
                     {t("personal_info")}
                   </CardTitle>
 
-                  <button
-                    onClick={
-                      isEditing ? handleSaveProfile : () => setIsEditing(true)
-                    }
-                    disabled={isSaving}
-                    className="flex items-center gap-1 text-xs sm:text-sm text-primary"
-                  >
-                    {isEditing ? (
-                      <>
-                        <CheckCircle2 className="w-4 h-4" />
-                        {t("save")}
-                      </>
-                    ) : (
-                      <>
-                        <PenBox className="w-4 h-4" />
-                        {t("edit")}
-                      </>
-                    )}
-                  </button>
+                  <div className={`flex ${isMobile && "flex-col"} gap-2`}>
+                    {!isEditing &&
+                      user?.reviewStatus !== "approved" &&
+                      user?.reviewStatus !== "pending" && (
+                        <button
+                          onClick={() => setOpenVerify(true)}
+                          style={{ color: "#0051ff" }}
+                          className="flex items-center gap-1 text-xs sm:text-sm"
+                        >
+                          <Verified className="w-4 h-4" />
+                          {t("verify")}
+                        </button>
+                      )}
+                    <button
+                      onClick={
+                        isEditing ? handleSaveProfile : () => setIsEditing(true)
+                      }
+                      disabled={isSaving}
+                      className="flex items-center gap-1 text-xs sm:text-sm text-primary"
+                    >
+                      {isEditing ? (
+                        <>
+                          <CheckCircle2 className="w-4 h-4" />
+                          {t("save")}
+                        </>
+                      ) : (
+                        <>
+                          <PenBox className="w-4 h-4" />
+                          {t("edit")}
+                        </>
+                      )}
+                    </button>
+                  </div>
                 </div>
               </CardHeader>
 
@@ -210,11 +247,16 @@ const Profile = () => {
                     {!isEditing ? (
                       <>
                         <p className="text-sm sm:text-xl font-semibold">
-                          {user?.fullName}
+                          {user?.fullName} -{" "}
+                          <span
+                            className={REVIEW_STATUS_STYLES[user?.reviewStatus]}
+                          >
+                            {t(user?.reviewStatus)}
+                          </span>
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {t("member_since")}{" "}
-                          {format(user?.createdAt, "MMM yyyy")}
+                          {format(user?.createdAt || Date.now(), "MMM yyyy")}
                         </p>
                       </>
                     ) : (
@@ -341,6 +383,100 @@ const Profile = () => {
           )}
         </motion.div>
       </main>
+
+      <GlobalModal
+        isOpen={openVerify}
+        onSubmit={handleSubmit}
+        title={t("verify")}
+        content={
+          <div>
+            <div className="flex items-center gap-3 p-3 bg-muted/50">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground ms-2">
+                  {t("id_number")}
+                </p>
+                <Input
+                  type="number"
+                  className="h-8 text-sm"
+                  value={idNumber}
+                  onChange={(e) => setIdNumber(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted/50">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground ms-2">
+                  {t("passport_number")}
+                </p>
+                <Input
+                  type="number"
+                  className="h-8 text-sm"
+                  value={passportNumber}
+                  onChange={(e) => setPassportNumber(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted/50">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground ms-2">
+                  {t("id_photo")}
+                </p>
+                <Input
+                  type="file"
+                  accept="image/*,.pdf"
+                  className="h-10 text-sm"
+                  onChange={(e) => setIdPhoto(e.target.files?.[0] ?? null)}
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-muted/50">
+              <div className="flex-1">
+                <p className="text-xs text-muted-foreground ms-2">
+                  {t("live_photo")}
+                </p>
+                {isMobile && (
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    capture="user"
+                    onChange={(e) => setLivePhoto(e.target.files?.[0] ?? null)}
+                  />
+                )}
+                {!isMobile && (
+                  <Button
+                    variant="accent"
+                    size="sm"
+                    className="shrink-0 flex items-center justify-center gap-2"
+                    onClick={() => setOpenCamera(true)}
+                  >
+                    {t("open_camera")}
+                  </Button>
+                )}
+
+                {openCamera && (
+                  <CameraCapture
+                    onCapture={(file) => {
+                      setLivePhoto(file);
+                      setLivePhotoPreview(URL.createObjectURL(file));
+                    }}
+                    onClose={() => setOpenCamera(false)}
+                  />
+                )}
+
+                {livePhoto && (
+                  <div className="gap-2 mt-2">
+                    <p>{t("photo_preview")}:</p>
+                    <img className="rounded-lg" src={livePhotoPreview} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        }
+        isLoading={isSubmitting}
+        onClose={handleClose}
+      />
+
       <Footer />
     </div>
   );

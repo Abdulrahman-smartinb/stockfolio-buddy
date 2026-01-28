@@ -1,10 +1,10 @@
 import { investorEP } from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
 
-export const stocksApi = baseApi.injectEndpoints({
+export const investorApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getOneInvestor: builder.query({
-      query: (id) => `${investorEP}/${id}`,
+      query: ({ id }) => `${investorEP}/${id}`,
     }),
     updateInvestor: builder.mutation({
       query: ({ id, data }) => ({
@@ -16,4 +16,5 @@ export const stocksApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useUpdateInvestorMutation, useGetOneInvestorQuery } = stocksApi;
+export const { useUpdateInvestorMutation, useGetOneInvestorQuery } =
+  investorApi;

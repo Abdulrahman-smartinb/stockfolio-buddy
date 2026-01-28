@@ -87,5 +87,22 @@
   "next": "Next",
   "more": "More",
   "login_required": "Log in required",
-  "login_msg": "To use this feature, you must be logged in"
+  "login_msg": "To use this feature, you must be logged in",
+  "verify": "Verify account",
+  "loading": "Loading",
+  "id_number": "ID number",
+  "passport_number": "Passport number",
+  "profile_verify_request": "Profile verify request has been sent",
+  "request_failed": "Request failed",
+  "error_while_saving": "Error occurred while saving",
+  "fill_all": "Please fill in all the data",
+  "live_photo": "Live photo",
+  "id_photo": "ID photo",
+  "open_camera": "Open camera",
+  "photo_preview": "Photo preview",
+  "capture": "Capture",
+  "permission_denied": "Camera access denied!",
+  "permission_denied_desc": "Please allow the use of the camera to take the photo",
+  "draft": "Draft",
+  "approved": "Verified"
 }
