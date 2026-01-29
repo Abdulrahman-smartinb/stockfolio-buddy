@@ -104,5 +104,19 @@
   "permission_denied": "Camera access denied!",
   "permission_denied_desc": "Please allow the use of the camera to take the photo",
   "draft": "Draft",
-  "approved": "Verified"
+  "approved": "Verified",
+  "pls_select": "Please select",
+  "bank_transfer": "Bank transfer (Syria)",
+  "sham_cash": "Sham Cash",
+  "usdt": "USDT Wallet",
+  "beneficiary_full_name": "Beneficiary full name",
+  "beneficiary_address": "Beneficiary address",
+  "bank_name": "Bank name",
+  "account_number": "Account number",
+  "qr_code_optional": "QR code (Optional)",
+  "wallet_address": "Wallet address",
+  "wallet_qr": "Wallet QR (Optional)",
+  "payment_method": "Preferred payment method",
+  "transfer_network": "Transfer network",
+  "payment_method_required": "Payment method is required"
 }

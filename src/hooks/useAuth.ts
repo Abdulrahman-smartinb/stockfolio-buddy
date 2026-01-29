@@ -18,7 +18,7 @@ export const useAuth = () => {
   const [showLengthError, setShowLengthError] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
-    phone: "905384171533",
+    phone: "905384171534",
     password: "000000",
   });
   const [isAuthenticated, setIsAuthenticated] = useState(

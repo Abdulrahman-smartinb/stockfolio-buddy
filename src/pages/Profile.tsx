@@ -11,6 +11,7 @@ import {
   PenBox,
   CheckCircle2,
   Verified,
+  Camera,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
@@ -62,6 +63,14 @@ const Profile = () => {
     livePhotoPreview,
     setLivePhotoPreview,
     REVIEW_STATUS_STYLES,
+    paymentMethod,
+    setPaymentMethod,
+    bankData,
+    setBankData,
+    shamCashData,
+    setShamCashData,
+    usdtData,
+    setUsdtData,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -178,7 +187,8 @@ const Profile = () => {
                   </CardTitle>
 
                   <div className={`flex ${isMobile && "flex-col"} gap-2`}>
-                    {!isEditing &&
+                    {role !== "investor" &&
+                      !isEditing &&
                       user?.reviewStatus !== "approved" &&
                       user?.reviewStatus !== "pending" && (
                         <button
@@ -247,12 +257,19 @@ const Profile = () => {
                     {!isEditing ? (
                       <>
                         <p className="text-sm sm:text-xl font-semibold">
-                          {user?.fullName} -{" "}
-                          <span
-                            className={REVIEW_STATUS_STYLES[user?.reviewStatus]}
-                          >
-                            {t(user?.reviewStatus)}
-                          </span>
+                          {user?.fullName}
+                          {role !== "investor" && (
+                            <>
+                              -{" "}
+                              <span
+                                className={
+                                  REVIEW_STATUS_STYLES[user?.reviewStatus]
+                                }
+                              >
+                                {t(user?.reviewStatus)}
+                              </span>
+                            </>
+                          )}
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {t("member_since")}{" "}
@@ -277,7 +294,7 @@ const Profile = () => {
                 {/* INFO GRID */}
                 <div className="grid gap-3 sm:grid-cols-3">
                   {/* EMAIL */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
                     <Mail className="w-4 h-4 text-primary" />
                     <div className="flex-1">
                       <p className="text-xs text-muted-foreground">
@@ -301,7 +318,7 @@ const Profile = () => {
                   </div>
 
                   {/* PHONE */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
                     <Phone className="w-4 h-4 text-primary" />
                     <div className="flex-1">
                       <p className="text-xs text-muted-foreground">
@@ -325,7 +342,7 @@ const Profile = () => {
                   </div>
 
                   {/* BIRTH DATE */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                  <div className="flex items-center gap-3 p-3 rounded-lg">
                     <Calendar className="w-4 h-4 text-primary" />
                     <div className="flex-1">
                       <p className="text-xs text-muted-foreground">
@@ -389,50 +406,55 @@ const Profile = () => {
         onSubmit={handleSubmit}
         title={t("verify")}
         content={
-          <div>
-            <div className="flex items-center gap-3 p-3 bg-muted/50">
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground ms-2">
-                  {t("id_number")}
+          <div className="max-h-[60vh] overflow-y-auto">
+            <p className="mx-auto p-1 bg-warning/30 rounded-sm text-center">
+              <span className="text-destructive">*</span> indicates required
+              fields
+            </p>
+            <div className="flex items-center gap-3 p-3">
+              <div className="flex w-full items-center">
+                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
+                  {t("id_number")} <span className="text-destructive">*</span>
                 </p>
                 <Input
                   type="number"
-                  className="h-8 text-sm"
+                  className="h-8 text-sm w-[80%]"
                   value={idNumber}
                   onChange={(e) => setIdNumber(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-muted/50">
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground ms-2">
-                  {t("passport_number")}
+            <div className="flex items-center gap-3 p-3">
+              <div className="flex w-full items-center">
+                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
+                  {t("passport_number")}{" "}
+                  <span className="text-destructive">*</span>
                 </p>
                 <Input
                   type="number"
-                  className="h-8 text-sm"
+                  className="h-8 text-sm w-[80%]"
                   value={passportNumber}
                   onChange={(e) => setPassportNumber(e.target.value)}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-muted/50">
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground ms-2">
-                  {t("id_photo")}
+            <div className="flex items-center gap-3 p-3">
+              <div className="flex w-full items-center">
+                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
+                  {t("id_photo")} <span className="text-destructive">*</span>
                 </p>
                 <Input
                   type="file"
                   accept="image/*,.pdf"
-                  className="h-10 text-sm"
+                  className="h-10 text-sm w-[80%]"
                   onChange={(e) => setIdPhoto(e.target.files?.[0] ?? null)}
                 />
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-muted/50">
-              <div className="flex-1">
-                <p className="text-xs text-muted-foreground ms-2">
-                  {t("live_photo")}
+            <div className="flex items-center gap-3 p-3">
+              <div className="flex w-full items-center">
+                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
+                  {t("live_photo")} <span className="text-destructive">*</span>
                 </p>
                 {isMobile && (
                   <Input
@@ -442,14 +464,15 @@ const Profile = () => {
                     onChange={(e) => setLivePhoto(e.target.files?.[0] ?? null)}
                   />
                 )}
-                {!isMobile && (
+
+                {!isMobile && !openCamera && !livePhoto && (
                   <Button
                     variant="accent"
                     size="sm"
                     className="shrink-0 flex items-center justify-center gap-2"
                     onClick={() => setOpenCamera(true)}
                   >
-                    {t("open_camera")}
+                    <Camera />
                   </Button>
                 )}
 
@@ -463,13 +486,249 @@ const Profile = () => {
                   />
                 )}
 
-                {livePhoto && (
-                  <div className="gap-2 mt-2">
-                    <p>{t("photo_preview")}:</p>
+                {livePhoto && !openCamera && (
+                  <div className="gap-2 mt-2 w-[70%] ps-2">
+                    <p>
+                      {t("photo_preview")}:{" "}
+                      {!isMobile && (
+                        <span
+                          className="text-[#0060aa] cursor-pointer"
+                          onClick={() => setOpenCamera(true)}
+                        >
+                          Retake
+                        </span>
+                      )}
+                    </p>
                     <img className="rounded-lg" src={livePhotoPreview} />
                   </div>
                 )}
               </div>
+            </div>
+            <div className="flex items-center gap-3 px-3 pt-3">
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground ms-2">
+                  {t("payment_method")}{" "}
+                  <span className="text-destructive">*</span>
+                </p>
+                <select
+                  className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-base ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  <option value="">{t("pls_select")}</option>
+                  <option value="bank">{t("bank_transfer")}</option>
+                  <option value="shamcash">{t("sham_cash")}</option>
+                  <option value="usdt">{t("usdt")}</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              {paymentMethod === "bank" && (
+                <div className="flex items-center gap-3 p-3">
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("beneficiary_full_name")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={bankData?.beneficiaryFullName ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          beneficiaryFullName: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("beneficiary_address")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={bankData?.beneficiaryAddress ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          beneficiaryAddress: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("bank_name")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={bankData?.bankName ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          bankName: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("account_number")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={bankData?.accountNumber ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          accountNumber: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+              {paymentMethod === "shamcash" && (
+                <div className="flex items-center gap-3 p-3">
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("account_number")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={shamCashData?.accountNumber ?? ""}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          accountNumber: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("qr_code_optional")}
+                    </p>
+                    <Input
+                      type="file"
+                      className="h-8 text-sm"
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          qrCode: e.target.files[0],
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("beneficiary_full_name")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={shamCashData?.beneficiaryName}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          beneficiaryName: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("beneficiary_address")}
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={shamCashData?.beneficiaryAddress}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          beneficiaryAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
+              {paymentMethod === "usdt" && (
+                <div className="flex items-center gap-3 p-3">
+                  <div className="flex-1">
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("transfer_network")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <select
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        setUsdtData((prev) => ({
+                          ...prev,
+                          transferNetwork: value === "other" ? "" : value,
+                          otherNetwork: value === "other" ? "" : undefined,
+                        }));
+                      }}
+                      className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-base ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
+                    >
+                      <option value="">{t("pls_select")}</option>
+                      <option value="TRC20">TRC20</option>
+                      <option value="ERC20">ERC20</option>
+                      <option value="BEP20">BEP20</option>
+                      <option value="other">{t("other")}</option>
+                    </select>
+                    {usdtData?.otherNetwork !== undefined && (
+                      <>
+                        <p className="text-sm text-muted-foreground ms-2 mt-2">
+                          {t("transfer_network")}{" "}
+                          <span className="text-destructive">*</span>
+                        </p>
+                        <Input
+                          type="text"
+                          className="h-8 text-sm"
+                          value={usdtData.otherNetwork}
+                          onChange={(e) =>
+                            setUsdtData((prev) => ({
+                              ...prev,
+                              otherNetwork: e.target.value,
+                              transferNetwork: e.target.value,
+                            }))
+                          }
+                        />
+                      </>
+                    )}
+
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("wallet_address")}{" "}
+                      <span className="text-destructive">*</span>
+                    </p>
+                    <Input
+                      type="string"
+                      className="h-8 text-sm"
+                      value={usdtData?.walletAddress ?? ""}
+                      onChange={(e) =>
+                        setUsdtData({
+                          ...usdtData,
+                          walletAddress: e.target.value,
+                        })
+                      }
+                    />
+                    <p className="text-sm text-muted-foreground ms-2 mt-2">
+                      {t("wallet_qr")}
+                    </p>
+                    <Input
+                      type="file"
+                      className="h-8 text-sm"
+                      onChange={(e) =>
+                        setUsdtData({
+                          ...usdtData,
+                          walletQr: e.target.files[0],
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         }

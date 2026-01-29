@@ -12,7 +12,7 @@ import {
 } from "@/store/api/investorApi";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
-import { UserData } from "@/interfaces/UserData";
+import { BankTranfer, ShamCash, Usdt, UserData } from "@/interfaces/UserData";
 import {
   useGetOneApplicantQuery,
   useUpdateApplicantProfileMutation,
@@ -37,6 +37,10 @@ export const useProfile = () => {
   const [livePhotoPreview, setLivePhotoPreview] = useState<any>();
   const [idNumber, setIdNumber] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [bankData, setBankData] = useState<BankTranfer>();
+  const [shamCashData, setShamCashData] = useState<ShamCash>();
+  const [usdtData, setUsdtData] = useState<Usdt>();
 
   const { data: applicant, isLoading: isLoadingUser } = useGetOneApplicantQuery(
     { id: authUser?._id },
@@ -156,39 +160,107 @@ export const useProfile = () => {
     visible: { opacity: 1, y: 0 },
   };
 
+  const isBankTransferValid = (data?: BankTranfer) => {
+    if (!data) return false;
+
+    const { beneficiaryFullName, beneficiaryAddress, bankName, accountNumber } =
+      data;
+
+    return (
+      beneficiaryFullName?.trim() &&
+      beneficiaryAddress?.trim() &&
+      bankName?.trim() &&
+      accountNumber?.trim()
+    );
+  };
+
+  const isShamCashValid = (data?: ShamCash) => {
+    if (!data) return false;
+
+    const { accountNumber } = data;
+
+    // beneficiaryName is preferred but NOT required
+    return accountNumber?.trim();
+  };
+
+  const isUsdtValid = (data?: Usdt) => {
+    if (!data) return false;
+
+    const { transferNetwork, walletAddress } = data;
+
+    return transferNetwork?.trim() && walletAddress?.trim();
+  };
+
+  const isPaymentDataValid = () => {
+    switch (paymentMethod) {
+      case "bank":
+        return isBankTransferValid(bankData);
+
+      case "shamCash":
+        return isShamCashValid(shamCashData);
+
+      case "usdt":
+        return isUsdtValid(usdtData);
+
+      default:
+        return false;
+    }
+  };
+
   const handleSubmit = async () => {
     if (!idPhoto || !livePhoto || !passportNumber || !idNumber) {
       toast({ title: t("fill_all"), variant: "destructive" });
       return;
     }
+    if (!paymentMethod) {
+      toast({
+        title: t("payment_method_required"),
+        variant: "destructive",
+      });
+      return;
+    }
     try {
       const formData = new FormData();
 
-      if (idPhoto) {
-        formData.append("idPhoto", idPhoto);
-      }
-      if (livePhoto) {
-        formData.append("livePhoto", livePhoto);
-      }
-      if (passportNumber) {
-        formData.append("passportNumber", passportNumber);
-      }
-      if (idNumber) {
-        formData.append("idNumber", idNumber);
-      }
+      formData.append("idPhoto", idPhoto);
+      formData.append("livePhoto", livePhoto);
+      formData.append("passportNumber", passportNumber);
+      formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
+      formData.append("paymentMethod", paymentMethod);
+
+      if (paymentMethod === "bank") {
+        formData.append("bankTransfer", JSON.stringify(bankData));
+      }
+      if (paymentMethod === "shamCash") {
+        const { qrCode, ...rest } = shamCashData!;
+        formData.append("shamCash", JSON.stringify(rest));
+
+        if (qrCode) {
+          formData.append("qrCode", qrCode);
+        }
+      }
+
+      if (paymentMethod === "usdt") {
+        const { walletQr, ...rest } = usdtData!;
+        formData.append("usdt", JSON.stringify(rest));
+
+        if (walletQr) {
+          formData.append("walletQr", walletQr);
+        }
+      }
 
       await submit({
         id: user.authUserId,
         data: formData,
       }).unwrap();
 
-      handleClose();
-      toast({
-        title: t("request_sent"),
-        variant: "default",
-        description: t("profile_verify_request"),
-      });
+      // handleClose();
+      // toast({
+      //   title: t("request_sent"),
+      //   variant: "default",
+      //   description: t("profile_verify_request"),
+      // });
     } catch (error) {
       console.error(submitError || error);
       toast({
@@ -250,5 +322,13 @@ export const useProfile = () => {
     livePhotoPreview,
     setLivePhotoPreview,
     REVIEW_STATUS_STYLES,
+    paymentMethod,
+    setPaymentMethod,
+    bankData,
+    setBankData,
+    shamCashData,
+    setShamCashData,
+    usdtData,
+    setUsdtData,
   };
 };

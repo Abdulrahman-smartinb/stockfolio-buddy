@@ -104,5 +104,19 @@
   "permission_denied": "تم رفض الوصول للكاميرا!",
   "permission_denied_desc": "يرجى السماح باستخدام الكاميرا لالتقاط الصورة",
   "draft": "مسودة",
-  "approved": "تم التوثيق"
+  "approved": "تم التوثيق",
+  "pls_select": "يرجى الاختيار",
+  "bank_transfer": "حوالة بنكية (سورية)",
+  "sham_cash": "شام كاش",
+  "usdt": "محفظة USDT",
+  "beneficiary_full_name": "الاسم الكامل للمستفيد",
+  "beneficiary_address": "عنوان المستفيد",
+  "bank_name": "اسم المصرف",
+  "account_number": "رقم الحساب",
+  "qr_code_optional": "رمز QR (اختياري)",
+  "wallet_address": "عنوان المحفظة",
+  "wallet_qr": "رمز QR للمحفظة (اختياري)",
+  "payment_method": "طريقة الدفع المفضلة",
+  "transfer_network": "شبكة التحويل",
+  "payment_method_required": "طريقة الدفع مطلوبة"
 }
