@@ -3,16 +3,19 @@ import { useGetInvestmentEntitiesQuery } from "@/store/api/investmentEntityApi";
 import { Activity, BarChart3, DollarSign, TrendingUp } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { isInvestor } from "./helpers";
 
 const useDashboard = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
-    null,
+    null
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
+  const [verfiyModalOpen, setVerfiyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
+  const canTrade = isInvestor();
 
   const {
     data: stocks = [],
@@ -23,6 +26,11 @@ const useDashboard = () => {
   });
 
   const handleStockClick = (stock: InvestmentEntity, type: string) => {
+    if (!canTrade) {
+      console.log("Not investor");
+      setVerfiyModalOpen(true);
+      return;
+    }
     setSelectedStock(stock);
     setTradeType(type);
     setIsBuyModalOpen(true);
@@ -69,6 +77,8 @@ const useDashboard = () => {
     setSelectedStock,
     isBuyModalOpen,
     setIsBuyModalOpen,
+    verfiyModalOpen,
+    setVerfiyModalOpen,
     tradeType,
     stocks,
     isLoading,

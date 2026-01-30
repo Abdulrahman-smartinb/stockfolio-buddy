@@ -5,3 +5,12 @@ export const isLoggedIn = () => {
   if (!token || !user) loggedIn = false;
   return loggedIn;
 };
+
+export const isInvestor = () => {
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user?.role === "investor";
+  } catch {
+    return false;
+  }
+};

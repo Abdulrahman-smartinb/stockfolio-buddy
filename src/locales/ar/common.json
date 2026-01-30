@@ -120,5 +120,7 @@
   "transfer_network": "شبكة التحويل",
   "payment_method_required": "طريقة الدفع مطلوبة",
   "investmentfund": "صندوق استثماري",
-  "clientcompany": "شركة استثمارية"
+  "clientcompany": "شركة استثمارية",
+  "verify_subtitle": "يرجى إكمال عملية التحقق من الهوية (KYC) لتفعيل إمكانية التداول.",
+  "indicates_required_fields": "تشير إلى الحقول المطلوبة"
 }

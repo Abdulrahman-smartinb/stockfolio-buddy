@@ -42,14 +42,18 @@ export const useProfile = () => {
   const [shamCashData, setShamCashData] = useState<ShamCash>();
   const [usdtData, setUsdtData] = useState<Usdt>();
 
-  const { data: applicant, isLoading: isLoadingUser } = useGetOneApplicantQuery(
+  const {
+    data: applicant,
+    isLoading: isLoadingUser,
+    refetch,
+  } = useGetOneApplicantQuery(
     { id: authUser?._id },
-    { skip: role === "investor" },
+    { skip: role === "investor" }
   );
   const { data: investor, isLoading: isLoadingInvestor } =
     useGetOneInvestorQuery(
       { id: authUser?._id },
-      { skip: role === "applicant" },
+      { skip: role === "applicant" }
     );
 
   useEffect(() => {

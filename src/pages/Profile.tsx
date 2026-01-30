@@ -20,14 +20,14 @@ import TransactionHistory from "@/components/TransactionHistory";
 import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
-import GlobalModal from "@/components/GlobalModal";
-import { useRef, useState } from "react";
-import { CameraCapture } from "@/components/CameraCapture";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { VerifyAccountModal } from "@/components/VerifyAccountModal";
+import { isInvestor } from "@/hooks/helpers";
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+  const canTrade = isInvestor();
   const {
     user,
     purchaseHistory,
@@ -50,27 +50,8 @@ const Profile = () => {
     role,
     openVerify,
     setOpenVerify,
-    setIdPhoto,
-    livePhoto,
-    setLivePhoto,
-    idNumber,
-    setIdNumber,
-    passportNumber,
-    setPassportNumber,
-    handleSubmit,
-    isSubmitting,
     handleClose,
-    livePhotoPreview,
-    setLivePhotoPreview,
     REVIEW_STATUS_STYLES,
-    paymentMethod,
-    setPaymentMethod,
-    bankData,
-    setBankData,
-    shamCashData,
-    setShamCashData,
-    usdtData,
-    setUsdtData,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -92,7 +73,7 @@ const Profile = () => {
     {
       ownedShares: 0,
       investedValue: 0,
-    },
+    }
   );
 
   const stats = [
@@ -115,7 +96,6 @@ const Profile = () => {
   ];
 
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-  const [openCamera, setOpenCamera] = useState(false);
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -139,43 +119,46 @@ const Profile = () => {
           </motion.div>
 
           {/* Stats Grid */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-          >
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.1 + index * 0.05 }}
-                className="glass-card rounded-xl p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}
-                  >
-                    <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">
-                      {t(stat.label)}
-                    </p>
-                    <p className={`text-lg font-bold ${stat.color}`}>
-                      {stat.value}
-                    </p>
-                    {stat.subValue && (
+          {canTrade && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
+            >
+              {stats.map((stat, index) => (
+                <motion.div
+                  key={stat.label}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 + index * 0.05 }}
+                  className="glass-card rounded-xl p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                    >
+                      <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                    </div>
+                    <div>
                       <p className="text-xs text-muted-foreground">
-                        {stat.subValue}
+                        {t(stat.label)}
                       </p>
-                    )}
+                      <p className={`text-lg font-bold ${stat.color}`}>
+                        {stat.value}
+                      </p>
+                      {stat.subValue && (
+                        <p className="text-xs text-muted-foreground">
+                          {stat.subValue}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
           {/* PERSONAL INFO */}
           <motion.div variants={itemVariants}>
             <Card className="border-border/50">
@@ -401,339 +384,11 @@ const Profile = () => {
         </motion.div>
       </main>
 
-      <GlobalModal
+      <VerifyAccountModal
         isOpen={openVerify}
-        onSubmit={handleSubmit}
-        title={t("verify")}
-        content={
-          <div className="max-h-[60vh] overflow-y-auto">
-            <p className="mx-auto p-1 bg-warning/30 rounded-sm text-center">
-              <span className="text-destructive">*</span> indicates required
-              fields
-            </p>
-            <div className="flex items-center gap-3 p-3">
-              <div className="flex w-full items-center">
-                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
-                  {t("id_number")} <span className="text-destructive">*</span>
-                </p>
-                <Input
-                  type="number"
-                  className="h-8 text-sm w-[80%]"
-                  value={idNumber}
-                  onChange={(e) => setIdNumber(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3">
-              <div className="flex w-full items-center">
-                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
-                  {t("passport_number")}{" "}
-                  <span className="text-destructive">*</span>
-                </p>
-                <Input
-                  type="number"
-                  className="h-8 text-sm w-[80%]"
-                  value={passportNumber}
-                  onChange={(e) => setPassportNumber(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3">
-              <div className="flex w-full items-center">
-                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
-                  {t("id_photo")} <span className="text-destructive">*</span>
-                </p>
-                <Input
-                  type="file"
-                  accept="image/*,.pdf"
-                  className="h-10 text-sm w-[80%]"
-                  onChange={(e) => setIdPhoto(e.target.files?.[0] ?? null)}
-                />
-              </div>
-            </div>
-            <div className="flex items-center gap-3 p-3">
-              <div className="flex w-full items-center">
-                <p className="text-sm text-muted-foreground ms-2 w-[20%]">
-                  {t("live_photo")} <span className="text-destructive">*</span>
-                </p>
-                {isMobile && (
-                  <Input
-                    type="file"
-                    accept="image/*"
-                    capture="user"
-                    onChange={(e) => setLivePhoto(e.target.files?.[0] ?? null)}
-                  />
-                )}
-
-                {!isMobile && !openCamera && !livePhoto && (
-                  <Button
-                    variant="accent"
-                    size="sm"
-                    className="shrink-0 flex items-center justify-center gap-2"
-                    onClick={() => setOpenCamera(true)}
-                  >
-                    <Camera />
-                  </Button>
-                )}
-
-                {openCamera && (
-                  <CameraCapture
-                    onCapture={(file) => {
-                      setLivePhoto(file);
-                      setLivePhotoPreview(URL.createObjectURL(file));
-                    }}
-                    onClose={() => setOpenCamera(false)}
-                  />
-                )}
-
-                {livePhoto && !openCamera && (
-                  <div className="gap-2 mt-2 w-[70%] ps-2">
-                    <p>
-                      {t("photo_preview")}:{" "}
-                      {!isMobile && (
-                        <span
-                          className="text-[#0060aa] cursor-pointer"
-                          onClick={() => setOpenCamera(true)}
-                        >
-                          Retake
-                        </span>
-                      )}
-                    </p>
-                    <img className="rounded-lg" src={livePhotoPreview} />
-                  </div>
-                )}
-              </div>
-            </div>
-            <div className="flex items-center gap-3 px-3 pt-3">
-              <div className="flex-1">
-                <p className="text-sm text-muted-foreground ms-2">
-                  {t("payment_method")}{" "}
-                  <span className="text-destructive">*</span>
-                </p>
-                <select
-                  className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-base ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
-                  value={paymentMethod}
-                  onChange={(e) => setPaymentMethod(e.target.value)}
-                >
-                  <option value="">{t("pls_select")}</option>
-                  <option value="bank">{t("bank_transfer")}</option>
-                  <option value="shamcash">{t("sham_cash")}</option>
-                  <option value="usdt">{t("usdt")}</option>
-                </select>
-              </div>
-            </div>
-            <div className="flex flex-col">
-              {paymentMethod === "bank" && (
-                <div className="flex items-center gap-3 p-3">
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("beneficiary_full_name")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={bankData?.beneficiaryFullName ?? ""}
-                      onChange={(e) =>
-                        setBankData({
-                          ...bankData,
-                          beneficiaryFullName: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("beneficiary_address")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={bankData?.beneficiaryAddress ?? ""}
-                      onChange={(e) =>
-                        setBankData({
-                          ...bankData,
-                          beneficiaryAddress: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("bank_name")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={bankData?.bankName ?? ""}
-                      onChange={(e) =>
-                        setBankData({
-                          ...bankData,
-                          bankName: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("account_number")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={bankData?.accountNumber ?? ""}
-                      onChange={(e) =>
-                        setBankData({
-                          ...bankData,
-                          accountNumber: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              )}
-              {paymentMethod === "shamcash" && (
-                <div className="flex items-center gap-3 p-3">
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("account_number")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={shamCashData?.accountNumber ?? ""}
-                      onChange={(e) =>
-                        setShamCashData({
-                          ...shamCashData,
-                          accountNumber: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("qr_code_optional")}
-                    </p>
-                    <Input
-                      type="file"
-                      className="h-8 text-sm"
-                      onChange={(e) =>
-                        setShamCashData({
-                          ...shamCashData,
-                          qrCode: e.target.files[0],
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("beneficiary_full_name")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={shamCashData?.beneficiaryName}
-                      onChange={(e) =>
-                        setShamCashData({
-                          ...shamCashData,
-                          beneficiaryName: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("beneficiary_address")}
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={shamCashData?.beneficiaryAddress}
-                      onChange={(e) =>
-                        setShamCashData({
-                          ...shamCashData,
-                          beneficiaryAddress: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              )}
-              {paymentMethod === "usdt" && (
-                <div className="flex items-center gap-3 p-3">
-                  <div className="flex-1">
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("transfer_network")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <select
-                      onChange={(e) => {
-                        const value = e.target.value;
-
-                        setUsdtData((prev) => ({
-                          ...prev,
-                          transferNetwork: value === "other" ? "" : value,
-                          otherNetwork: value === "other" ? "" : undefined,
-                        }));
-                      }}
-                      className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-base ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
-                    >
-                      <option value="">{t("pls_select")}</option>
-                      <option value="TRC20">TRC20</option>
-                      <option value="ERC20">ERC20</option>
-                      <option value="BEP20">BEP20</option>
-                      <option value="other">{t("other")}</option>
-                    </select>
-                    {usdtData?.otherNetwork !== undefined && (
-                      <>
-                        <p className="text-sm text-muted-foreground ms-2 mt-2">
-                          {t("transfer_network")}{" "}
-                          <span className="text-destructive">*</span>
-                        </p>
-                        <Input
-                          type="text"
-                          className="h-8 text-sm"
-                          value={usdtData.otherNetwork}
-                          onChange={(e) =>
-                            setUsdtData((prev) => ({
-                              ...prev,
-                              otherNetwork: e.target.value,
-                              transferNetwork: e.target.value,
-                            }))
-                          }
-                        />
-                      </>
-                    )}
-
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("wallet_address")}{" "}
-                      <span className="text-destructive">*</span>
-                    </p>
-                    <Input
-                      type="string"
-                      className="h-8 text-sm"
-                      value={usdtData?.walletAddress ?? ""}
-                      onChange={(e) =>
-                        setUsdtData({
-                          ...usdtData,
-                          walletAddress: e.target.value,
-                        })
-                      }
-                    />
-                    <p className="text-sm text-muted-foreground ms-2 mt-2">
-                      {t("wallet_qr")}
-                    </p>
-                    <Input
-                      type="file"
-                      className="h-8 text-sm"
-                      onChange={(e) =>
-                        setUsdtData({
-                          ...usdtData,
-                          walletQr: e.target.files[0],
-                        })
-                      }
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        }
-        isLoading={isSubmitting}
         onClose={handleClose}
+        t={t}
+        isMobile={isMobile}
       />
 
       <Footer />

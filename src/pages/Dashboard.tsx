@@ -7,8 +7,11 @@ import { BuyModal } from "@/components/BuyModal";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import useDashboard from "@/hooks/useDashboard";
+import { CheckVerificationModal } from "@/components/CheckVerificationModal";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const {
     t,
     isRtl,
@@ -18,6 +21,8 @@ const Dashboard = () => {
     setSelectedStock,
     isBuyModalOpen,
     setIsBuyModalOpen,
+    verfiyModalOpen,
+    setVerfiyModalOpen,
     tradeType,
     stocks,
     isLoading,
@@ -187,6 +192,15 @@ const Dashboard = () => {
         onClose={() => {
           setIsBuyModalOpen(false);
           setSelectedStock(null);
+        }}
+      />
+
+      <CheckVerificationModal
+        isOpen={verfiyModalOpen}
+        onClose={() => setVerfiyModalOpen(false)}
+        onVerify={() => {
+          setVerfiyModalOpen(false);
+          navigate("/profile");
         }}
       />
       <Footer />

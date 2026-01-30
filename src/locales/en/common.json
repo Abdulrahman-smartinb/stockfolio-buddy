@@ -120,5 +120,7 @@
   "transfer_network": "Transfer network",
   "payment_method_required": "Payment method is required",
   "investmentfund": "Investment Fund",
-  "clientcompany": "Investment Company"
+  "clientcompany": "Investment Company",
+  "verify_subtitle": "Complete KYC verification process to enable trading.",
+  "indicates_required_fields": " indicates required fields"
 }
