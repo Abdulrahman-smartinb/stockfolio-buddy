@@ -232,9 +232,9 @@ export const useProfile = () => {
       if (paymentMethod === "bank") {
         formData.append("bankTransfer", JSON.stringify(bankData));
       }
-      if (paymentMethod === "shamCash") {
+      if (paymentMethod === "shamcash") {
         const { qrCode, ...rest } = shamCashData!;
-        formData.append("shamCash", JSON.stringify(rest));
+        formData.append("shamcash", JSON.stringify(rest));
 
         if (qrCode) {
           formData.append("qrCode", qrCode);
@@ -255,12 +255,12 @@ export const useProfile = () => {
         data: formData,
       }).unwrap();
 
-      // handleClose();
-      // toast({
-      //   title: t("request_sent"),
-      //   variant: "default",
-      //   description: t("profile_verify_request"),
-      // });
+      handleClose();
+      toast({
+        title: t("request_sent"),
+        variant: "default",
+        description: t("profile_verify_request"),
+      });
     } catch (error) {
       console.error(submitError || error);
       toast({
