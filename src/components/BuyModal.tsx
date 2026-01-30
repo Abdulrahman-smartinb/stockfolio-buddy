@@ -1,21 +1,12 @@
-import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, CheckCircle, Text } from "lucide-react";
+import { X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useCreatePurchaseRequestMutation } from "@/store/api/stocksApi";
-import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
-import { base_url } from "@/api/GlobalData";
 import { Input } from "./ui/input";
-import { useTranslation } from "react-i18next";
-import { isLoggedIn } from "@/hooks/helpers";
-import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
-import { CompanyInfo } from "@/interfaces/CompanyInfo";
-import { UserData } from "@/interfaces/UserData";
+import useBuyModal from "@/hooks/useBuyModal";
+import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 
 interface BuyModalProps {
-  stock: InvestmentCompany | null;
-  company: CompanyInfo;
+  stock: InvestmentEntity | null;
   isOpen: boolean;
   tradType: string;
   onClose: () => void;
@@ -23,328 +14,106 @@ interface BuyModalProps {
 
 export const BuyModal = ({
   stock,
-  company,
   isOpen,
   onClose,
   tradType,
 }: BuyModalProps) => {
-  const { t } = useTranslation();
-  const loggedIn = isLoggedIn();
-  const minQuantity = stock?.minInvestAmount ?? 1;
-  const [quantity, setQuantity] = useState(minQuantity);
-  const [description, setDescription] = useState("");
-  const [isPaid, setIsPaid] = useState(false);
-  const [qrPopup, setQrPopup] = useState<string | null>(null);
-
-  const [createPurchaseRequest, { isLoading }] =
-    useCreatePurchaseRequestMutation();
-
-  const { toast } = useToast();
-  const user: UserData | null = JSON.parse(
-    localStorage.getItem("user") || "null",
-  );
+  const {
+    t,
+    minQuantity,
+    isLoading,
+    totalCost,
+    handleQuantityChange,
+    handleQuantityInput,
+    handleSubmit,
+    description,
+    setDescription,
+    quantity,
+  } = useBuyModal({ stock, tradeType: tradType, onClose });
 
   if (!stock) return null;
-
-  const totalCost = stock?.sharePrice * quantity;
-
-  const handleQuantityChange = (delta: number) => {
-    setQuantity((q) => Math.min(1000, Math.max(minQuantity, q + delta)));
-  };
-
-  const handleQuantityInput = (value: string) => {
-    const num = Number(value);
-    if (Number.isNaN(num)) return;
-
-    setQuantity(Math.min(1000, Math.max(minQuantity, num)));
-  };
-
-  const handleBuy = async () => {
-    if (!loggedIn) {
-      toast({
-        variant: "destructive",
-        title: t("login_required"),
-        description: t("login_msg"),
-      });
-      return;
-    }
-    try {
-      await createPurchaseRequest({
-        data: {
-          investorId: user?._id,
-          type: tradType,
-          shares: quantity,
-          sharePrice: stock?.sharePrice,
-          description,
-          paymentStatus: isPaid ? "paid" : "unpaid",
-          seller: stock?._id,
-        },
-      }).unwrap();
-
-      toast({
-        title: t("request_sent"),
-        description: `${t("request_buy")} ${quantity} ${t(
-          "shares_sent_success",
-        )}`,
-      });
-
-      onClose();
-      setQuantity(1);
-      setDescription("");
-      setIsPaid(false);
-    } catch {
-      toast({
-        variant: "destructive",
-        title: t("order_failed"),
-        description: t("try_again"),
-      });
-    }
-  };
 
   return (
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* OVERLAY (handles centering + scroll) */}
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center
                        bg-background/80 backdrop-blur-sm p-4 overflow-y-auto"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => {
-              onClose();
-              setDescription("");
-              setQuantity(1);
-            }}
+            onClick={onClose}
           >
-            {/* MODAL */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-md bg-white dark:bg-gray-800
-                         rounded-2xl shadow-2xl p-5
-                         max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
+              className="relative w-full max-w-md bg-white dark:bg-gray-800
+                         rounded-2xl shadow-2xl p-5 max-h-[90vh] overflow-y-auto"
             >
               {/* HEADER */}
-              <div className="flex items-center justify-between mb-5">
-                <div className="flex items-center gap-3">
-                  <div
-                    className={cn(
-                      "w-16 h-10 rounded-xl flex items-center justify-center font-bold",
-                      tradType === "sell"
-                        ? "bg-destructive/20 text-destructive"
-                        : "bg-primary/20 text-primary",
-                    )}
-                  >
-                    {stock?.tradeName?.charAt(0)?.toUpperCase()}
-                  </div>
-                  <h2 className="text-lg font-bold">{stock?.tradeName}</h2>
-                </div>
-                <button
-                  onClick={() => {
-                    onClose();
-                    setDescription("");
-                    setQuantity(1);
-                  }}
-                  className="p-2 rounded-full hover:bg-muted"
-                >
-                  <X className="w-5 h-5" />
+              <div className="flex justify-between mb-5">
+                <h2 className="text-lg font-bold">{stock.fullLegalName}</h2>
+                <button onClick={onClose}>
+                  <X />
                 </button>
               </div>
 
               {/* PRICE */}
               <div className="bg-muted/50 rounded-xl p-3 mb-6 flex justify-between">
-                <span className="text-muted-foreground">
-                  {t("share_price")}
-                </span>
-                <span className="text-xl font-bold">
-                  {stock?.reqInvestAmount?.currency}{" "}
-                  {stock?.sharePrice?.toFixed(2)}
-                </span>
+                <span>{t("share_price")}</span>
+                <span className="font-bold">$ {stock.sharePrice}</span>
               </div>
 
               {/* QUANTITY */}
-              <div className="flex items-center justify-center gap-4 mb-6">
+              <div className="flex gap-3 mb-6 justify-center">
                 <Button
-                  variant="outline"
                   size="icon"
                   disabled={quantity <= minQuantity}
-                  style={
-                    quantity <= minQuantity ? { cursor: "not-allowed" } : {}
-                  }
                   onClick={() => handleQuantityChange(-1)}
                 >
                   <Minus />
                 </Button>
                 <Input
                   type="number"
-                  min={minQuantity}
-                  className="text-center w-auto"
                   value={quantity}
                   onChange={(e) => handleQuantityInput(e.target.value)}
+                  className="w-24 text-center"
                 />
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => handleQuantityChange(1)}
-                >
+                <Button size="icon" onClick={() => handleQuantityChange(1)}>
                   <Plus />
                 </Button>
               </div>
 
               {/* DESCRIPTION */}
-              <div className="mb-6">
-                <label className="text-sm text-muted-foreground mb-2 block">
-                  {t("description")} {t("optional")}
-                </label>
-                <div className="relative">
-                  <Text className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input
-                    className="pl-10"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </div>
-              </div>
+              <Input
+                placeholder={t("description")}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="mb-6"
+              />
 
               {/* TOTAL */}
-              <div
-                className={cn(
-                  "rounded-xl p-4 mb-6 flex justify-between border",
-                  tradType === "sell"
-                    ? "bg-destructive/5 border-destructive/20"
-                    : "bg-primary/5 border-primary/20",
-                )}
-              >
-                <span className="text-muted-foreground">
-                  {t("estimated_total")}
-                </span>
-                <span
-                  className={cn(
-                    "text-xl font-bold",
-                    tradType === "sell" ? "text-destructive" : "text-primary",
-                  )}
-                >
-                  {stock?.reqInvestAmount?.currency} {totalCost.toFixed(2)}
-                </span>
+              <div className="rounded-xl border p-4 mb-6 flex justify-between">
+                <span>{t("estimated_total")}</span>
+                <span className="font-bold">$ {totalCost.toFixed(2)}</span>
               </div>
-
-              {/* PAYMENT */}
-              {tradType === "buy" && (
-                <div className="grid gap-3 mb-6">
-                  {/* Unpaid */}
-                  <label
-                    className={cn(
-                      "rounded-xl border p-3 cursor-pointer transition",
-                      isPaid === false
-                        ? "border-primary bg-primary/5"
-                        : "hover:bg-muted/40",
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      className="ms-2"
-                      checked={isPaid === false}
-                      onChange={() => setIsPaid(false)}
-                    />
-                    <strong className="ms-1">{t("unpaid")}</strong>
-                  </label>
-
-                  {/* Paid */}
-                  <label
-                    className={cn(
-                      "rounded-xl border p-3 cursor-pointer transition",
-                      isPaid === true
-                        ? "border-primary bg-primary/5"
-                        : "hover:bg-muted/40",
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      className="ms-2"
-                      checked={isPaid === true}
-                      disabled={company?.bankQR?.length < 1}
-                      onChange={() => setIsPaid(true)}
-                    />
-                    <strong className="ms-1">{t("paid")}</strong>
-                    {company?.bankQR?.length < 1 && (
-                      <label className="ms-2 text-xs text-destructive">
-                        (No online payment method provided)
-                      </label>
-                    )}
-                  </label>
-                </div>
-              )}
-
-              {/* BANK QR */}
-              {tradType === "buy" && isPaid && (
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                  {company?.bankQR?.map((bank, i) => (
-                    <button
-                      key={i}
-                      onClick={() =>
-                        setQrPopup(
-                          `${base_url}investmentCompanies/${bank?.qrCode}`,
-                        )
-                      }
-                      className="border rounded-xl p-3 text-sm font-semibold text-primary hover:bg-primary/10"
-                    >
-                      {bank?.name}
-                    </button>
-                  ))}
-                </div>
-              )}
 
               {/* ACTIONS */}
               <div className="flex gap-3">
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => {
-                    onClose();
-                    setDescription("");
-                    setQuantity(1);
-                  }}
-                >
+                <Button variant="outline" className="flex-1" onClick={onClose}>
                   {t("cancel")}
                 </Button>
                 <Button
-                  variant={tradType === "sell" ? "destructive" : "success"}
                   className="flex-1"
-                  onClick={handleBuy}
+                  variant={tradType === "sell" ? "destructive" : "success"}
+                  onClick={handleSubmit}
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    t("processing")
-                  ) : (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-1" />
-                      {t("send_request")}
-                    </>
-                  )}
+                  {isLoading ? t("processing") : t("send_request")}
                 </Button>
               </div>
             </motion.div>
           </motion.div>
-
-          {/* QR POPUP */}
-          {qrPopup && (
-            <div
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
-              onClick={() => setQrPopup(null)}
-            >
-              <div
-                className="bg-white dark:bg-gray-900 rounded-xl p-5 max-w-sm"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <img src={qrPopup} className="w-full rounded-lg" />
-              </div>
-            </div>
-          )}
         </>
       )}
     </AnimatePresence>

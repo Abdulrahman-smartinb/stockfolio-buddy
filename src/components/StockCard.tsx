@@ -1,10 +1,10 @@
-import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
+import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { motion } from "framer-motion";
 import { TrendingUp, TrendingDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface StockCardProps {
-  stock: InvestmentCompany;
+  stock: InvestmentEntity;
   onAction: (type: "buy" | "sell") => void;
   index: number;
 }
@@ -25,13 +25,15 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
       <div className="flex items-center justify-between gap-3 mb-4">
         <div className="flex gap-2">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
-            {stock?.tradeName?.charAt(0).toUpperCase()}
+            {stock?.fullLegalName?.charAt(0).toUpperCase()}
           </div>
 
           <div>
-            <h3 className="font-bold text-foreground">{stock?.tradeName}</h3>
+            <h3 className="font-bold text-foreground">
+              {stock?.fullLegalName}
+            </h3>
             <p className="text-xs text-muted-foreground">
-              {stock?.primaryBusinessObjective || "—"}
+              {t(stock?.entityType?.toLowerCase()) || "—"}
             </p>
           </div>
         </div>
@@ -42,20 +44,19 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
           >
             <TrendingUp className={`w-5 h-5 text-success`} />
           </button>
-          <button
+          {/* <button
             onClick={() => onAction("sell")}
             className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-danger"
           >
             <TrendingDown className={`w-5 h-5 text-destructive`} />
-          </button>
+          </button> */}
         </div>
       </div>
 
       {/* Price */}
       <div className="mb-3">
         <p className="text-4xl font-bold text-foreground">
-          {stock?.reqInvestAmount?.currency || "$"}{" "}
-          {stock?.sharePrice?.toFixed(2) ?? "—"}
+          $ {stock?.sharePrice?.toFixed(2) ?? "—"}
         </p>
         <p className="text-xs text-muted-foreground">{t("price_per_share")}</p>
       </div>

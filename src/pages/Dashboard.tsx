@@ -1,84 +1,30 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  Search,
-  TrendingUp,
-  Activity,
-  DollarSign,
-  BarChart3,
-  RefreshCw,
-} from "lucide-react";
+import { Search, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { StockCard } from "@/components/StockCard";
 import { BuyModal } from "@/components/BuyModal";
-import { useGetStocksQuery } from "@/store/api/stocksApi";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
-import { useTranslation } from "react-i18next";
-import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
-import { useGetCompanyInfoQuery } from "@/store/api/companyInfoApi";
+import useDashboard from "@/hooks/useDashboard";
 
 const Dashboard = () => {
-  const { t, i18n } = useTranslation();
-  const isRtl = i18n.language === "ar";
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedStock, setSelectedStock] = useState<InvestmentCompany | null>(
-    null,
-  );
-  const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
-  const [tradeType, setTradeType] = useState("");
-
-  const { data: company, isLoading: isLoadingCom } =
-    useGetCompanyInfoQuery(null);
-
-  const { data: stocks = [], isLoading, refetch } = useGetStocksQuery(null);
-
-  const filteredStocks = stocks.filter(
-    (stock) =>
-      stock.tradeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      stock.primaryBusinessObjective
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase()),
-  );
-
-  const handleStockClick = (stock: InvestmentCompany, type: string) => {
-    setSelectedStock(stock);
-    setTradeType(type);
-    setIsBuyModalOpen(true);
-  };
-
-  const stats = [
-    {
-      label: "market_status",
-      value: t("open"),
-      icon: Activity,
-      color: "text-success",
-      bgColor: "bg-success/10",
-    },
-    {
-      label: "top_gainer",
-      value: "+2.58%",
-      subValue: "NVDA",
-      icon: TrendingUp,
-      color: "text-success",
-      bgColor: "bg-success/10",
-    },
-    {
-      label: "total_volume",
-      value: "324.5M",
-      icon: BarChart3,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
-    },
-    {
-      label: "portfolio_value",
-      value: "$12,450",
-      icon: DollarSign,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-    },
-  ];
+  const {
+    t,
+    isRtl,
+    searchQuery,
+    setSearchQuery,
+    selectedStock,
+    setSelectedStock,
+    isBuyModalOpen,
+    setIsBuyModalOpen,
+    tradeType,
+    stocks,
+    isLoading,
+    refetch,
+    handleStockClick,
+    stats,
+  } = useDashboard();
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -158,7 +104,7 @@ const Dashboard = () => {
             </div>
 
             <Button
-              disabled={isLoading || isLoadingCom}
+              disabled={isLoading}
               className="h-12 w-12 md:w-32 shrink-0 flex items-center justify-center gap-2"
               onClick={refetch}
             >
@@ -168,7 +114,7 @@ const Dashboard = () => {
               {/* Desktop: Text */}
               <span className="hidden md:inline">{t("refresh")}</span>
 
-              {(isLoading || isLoadingCom) && (
+              {isLoading && (
                 <span className="flex items-center gap-2">
                   <motion.div
                     animate={{ rotate: 360 }}
@@ -186,7 +132,7 @@ const Dashboard = () => {
         </motion.div>
 
         {/* Stocks Grid */}
-        {isLoading || isLoadingCom ? (
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="glass-card rounded-xl p-5 animate-pulse">
@@ -206,7 +152,7 @@ const Dashboard = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-4">
-            {filteredStocks.map((stock, index) => (
+            {stocks?.map((stock, index) => (
               <StockCard
                 key={stock._id}
                 stock={stock}
@@ -217,7 +163,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {!isLoading && !isLoadingCom && filteredStocks.length === 0 && (
+        {!isLoading && stocks?.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -236,7 +182,6 @@ const Dashboard = () => {
 
       <BuyModal
         stock={selectedStock}
-        company={company}
         isOpen={isBuyModalOpen}
         tradType={tradeType}
         onClose={() => {

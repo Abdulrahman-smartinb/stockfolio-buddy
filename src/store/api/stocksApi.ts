@@ -14,10 +14,29 @@ import { ApiResponse } from "@/interfaces/Global";
 export const stocksApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get all investment companies
-    getStocks: builder.query<InvestmentCompany[], {}>({
-      query: () => ({
-        url: stocksEP,
-      }),
+    getStocks: builder.query<
+      InvestmentCompany[],
+      {
+        keyword?: string;
+        page?: number;
+        limit?: number;
+        sort?: string;
+      }
+    >({
+      query: ({ keyword, page, limit, sort } = {}) => {
+        const params = new URLSearchParams();
+
+        if (keyword) params.append("keyword", keyword);
+        if (page !== undefined) params.append("page", String(page));
+        if (limit !== undefined) params.append("limit", String(limit));
+        if (sort) params.append("sort", sort);
+
+        const queryString = params.toString();
+
+        return {
+          url: queryString ? `${stocksEP}?${queryString}` : stocksEP,
+        };
+      },
       transformResponse: (response: ApiResponse<InvestmentCompany[]>) =>
         response.data,
       providesTags: ["Stocks"],

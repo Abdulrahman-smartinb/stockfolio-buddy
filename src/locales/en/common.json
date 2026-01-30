@@ -118,5 +118,7 @@
   "wallet_qr": "Wallet QR (Optional)",
   "payment_method": "Preferred payment method",
   "transfer_network": "Transfer network",
-  "payment_method_required": "Payment method is required"
+  "payment_method_required": "Payment method is required",
+  "investmentfund": "Investment Fund",
+  "clientcompany": "Investment Company"
 }

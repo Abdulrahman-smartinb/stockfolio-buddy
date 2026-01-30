@@ -118,5 +118,7 @@
   "wallet_qr": "رمز QR للمحفظة (اختياري)",
   "payment_method": "طريقة الدفع المفضلة",
   "transfer_network": "شبكة التحويل",
-  "payment_method_required": "طريقة الدفع مطلوبة"
+  "payment_method_required": "طريقة الدفع مطلوبة",
+  "investmentfund": "صندوق استثماري",
+  "clientcompany": "شركة استثمارية"
 }
