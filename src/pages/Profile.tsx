@@ -27,7 +27,7 @@ import { isInvestor } from "@/hooks/helpers";
 const Profile = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
-  const canTrade = isInvestor();
+
   const {
     user,
     purchaseHistory,
@@ -50,8 +50,28 @@ const Profile = () => {
     role,
     openVerify,
     setOpenVerify,
+    idPhoto,
+    setIdPhoto,
+    livePhoto,
+    setLivePhoto,
+    idNumber,
+    setIdNumber,
+    passportNumber,
+    setPassportNumber,
+    handleSubmit,
+    isSubmitting,
     handleClose,
+    livePhotoPreview,
+    setLivePhotoPreview,
     REVIEW_STATUS_STYLES,
+    paymentMethod,
+    setPaymentMethod,
+    bankData,
+    setBankData,
+    shamCashData,
+    setShamCashData,
+    usdtData,
+    setUsdtData,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -119,7 +139,7 @@ const Profile = () => {
           </motion.div>
 
           {/* Stats Grid */}
-          {canTrade && (
+          {role === "investor" && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -169,26 +189,54 @@ const Profile = () => {
                     {t("personal_info")}
                   </CardTitle>
 
-                  <div className={`flex ${isMobile && "flex-col"} gap-2`}>
+                  <div
+                    className={`flex items-center gap-2 ${
+                      isMobile ? "flex-col items-stretch" : ""
+                    }`}
+                  >
+                    {/* Verify Account */}
                     {role !== "investor" &&
                       !isEditing &&
                       user?.reviewStatus !== "approved" &&
                       user?.reviewStatus !== "pending" && (
                         <button
                           onClick={() => setOpenVerify(true)}
-                          style={{ color: "#0051ff" }}
-                          className="flex items-center gap-1 text-xs sm:text-sm"
+                          className="
+          inline-flex items-center justify-center gap-2
+          px-3 py-1.5
+          rounded-md
+          text-xs sm:text-sm font-medium
+          border border-primary/30
+          text-primary
+          bg-primary/5
+          hover:bg-primary/10
+          transition
+        "
                         >
                           <Verified className="w-4 h-4" />
                           {t("verify")}
                         </button>
                       )}
+
+                    {/* Edit / Save */}
                     <button
                       onClick={
                         isEditing ? handleSaveProfile : () => setIsEditing(true)
                       }
                       disabled={isSaving}
-                      className="flex items-center gap-1 text-xs sm:text-sm text-primary"
+                      className={`
+      inline-flex items-center justify-center gap-2
+      px-3 py-1.5
+      rounded-md
+      text-xs sm:text-sm font-medium
+      transition
+      ${
+        isEditing
+          ? "bg-primary text-white hover:bg-primary/90"
+          : "border border-border text-muted-foreground hover:bg-muted"
+      }
+      ${isSaving ? "opacity-60 cursor-not-allowed" : ""}
+    `}
                     >
                       {isEditing ? (
                         <>
@@ -389,6 +437,26 @@ const Profile = () => {
         onClose={handleClose}
         t={t}
         isMobile={isMobile}
+        idNumber={idNumber}
+        setIdNumber={setIdNumber}
+        passportNumber={passportNumber}
+        setPassportNumber={setPassportNumber}
+        idPhoto={idPhoto}
+        setIdPhoto={setIdPhoto}
+        livePhoto={livePhoto}
+        setLivePhoto={setLivePhoto}
+        livePhotoPreview={livePhotoPreview}
+        setLivePhotoPreview={setLivePhotoPreview}
+        paymentMethod={paymentMethod}
+        setPaymentMethod={setPaymentMethod}
+        bankData={bankData}
+        setBankData={setBankData}
+        shamCashData={shamCashData}
+        setShamCashData={setShamCashData}
+        usdtData={usdtData}
+        setUsdtData={setUsdtData}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
 
       <Footer />

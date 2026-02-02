@@ -20,11 +20,12 @@ const useDashboard = () => {
   const {
     data: stocks = [],
     isLoading,
+    error,
     refetch,
   } = useGetInvestmentEntitiesQuery({
     keyword: searchQuery,
   });
-
+  console.log(error);
   const handleStockClick = (stock: InvestmentEntity, type: string) => {
     if (!canTrade) {
       console.log("Not investor");

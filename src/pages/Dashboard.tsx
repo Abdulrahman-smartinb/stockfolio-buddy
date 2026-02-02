@@ -7,8 +7,9 @@ import { BuyModal } from "@/components/BuyModal";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import useDashboard from "@/hooks/useDashboard";
-import { CheckVerificationModal } from "@/components/CheckVerificationModal";
+
 import { useNavigate } from "react-router-dom";
+import { CheckVerificationModal } from "@/components/CheckVerificationModal";
 
 const Dashboard = () => {
   const navigate = useNavigate();

@@ -1,41 +1,68 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "./use-toast";
-import { isLoggedIn } from "./helpers";
+import { clamp, generateQuickShareOptions, isLoggedIn } from "./helpers";
 import { useCreateShareTradeRequestMutation } from "@/store/api/shares/shareTradeRequestApi";
 
 const useBuyModal = ({ stock, tradeType, onClose }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
+
   const loggedIn = isLoggedIn();
-  const minQuantity = stock?.minInvestShare ?? 1;
   const user = JSON.parse(localStorage.getItem("profile") || "{}");
-  console.log(`stock`, stock);
 
-  const [quantity, setQuantity] = useState(1);
-  const [description, setDescription] = useState("");
+  const minShares = Math.max(1, Number(stock?.minInvestShare || 1));
+  const maxShares = Math.max(
+    minShares,
+    Number(stock?.maxInvestShare || minShares)
+  );
 
-  const [createShareTradeRequest, { isLoading }] =
+  const [shares, setShares] = useState(minShares);
+  const [note, setNote] = useState("");
+
+  const [createTradeRequest, { isLoading }] =
     useCreateShareTradeRequestMutation();
 
-  const totalCost = stock?.sharePrice * quantity;
-
+  /** Reset when stock changes */
   useEffect(() => {
-    if (stock) setQuantity(stock?.minInvestShare);
-  }, [stock]);
+    setShares(minShares);
+  }, [minShares]);
 
-  const handleQuantityChange = (delta: number) => {
-    setQuantity((q) => Math.min(1000, Math.max(minQuantity, q + delta)));
+  /** Quick-select options (chips) */
+  const quickShareOptions = useMemo(
+    () => generateQuickShareOptions(minShares, maxShares, 4),
+    [minShares, maxShares]
+  );
+
+  /** Quick option select */
+  const selectQuickOption = (value: number) => {
+    setShares(clamp(value, minShares, maxShares));
   };
 
-  const handleQuantityInput = (value: string) => {
-    const num = Number(value);
-    if (!Number.isNaN(num)) {
-      setQuantity(Math.min(1000, Math.max(minQuantity, num)));
-    }
+  const totalCost = useMemo(
+    () => Number(stock?.sharePrice || 0) * shares,
+    [shares, stock]
+  );
+
+  /** Quantity controls */
+  const increaseShares = () =>
+    setShares((v) => clamp(v + minShares, minShares, maxShares));
+
+  const decreaseShares = () =>
+    setShares((v) => clamp(v - minShares, minShares, maxShares));
+
+  const setSharesFromInput = (value: string) => {
+    if (value === "") return;
+
+    if (!/^\d+$/.test(value)) return;
+
+    const parsed = Number(value);
+
+    setShares(parsed);
   };
 
-  const handleSubmit = async () => {
+  /** Submit */
+  const submitTradeRequest = async () => {
     if (!loggedIn) {
       toast({
         variant: "destructive",
@@ -46,29 +73,27 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     }
 
     try {
-      await createShareTradeRequest({
+      await createTradeRequest({
         data: {
           userId: user?._id,
-          tradeType: tradeType,
+          tradeType,
           sourceType: stock?.entityType,
-          source: stock._id,
-          numberOfShares: quantity,
-          pricePerShare: stock.sharePrice,
-          description,
+          source: stock?._id,
+          numberOfShares: shares,
+          pricePerShare: stock?.sharePrice,
+          description: note,
           paymentStatus: "unpaid",
         },
       }).unwrap();
 
       toast({
         title: t("request_sent"),
-        description: `${t("request_buy")} ${quantity} ${t(
-          "shares_sent_success",
-        )}`,
+        description: t("request_success"),
       });
 
       onClose();
-      setQuantity(minQuantity);
-      setDescription("");
+      setShares(minShares);
+      setNote("");
     } catch {
       toast({
         variant: "destructive",
@@ -80,15 +105,22 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   return {
     t,
-    minQuantity,
-    isLoading,
+    shares,
+    minShares,
+    maxShares,
+    quickShareOptions,
     totalCost,
-    handleQuantityChange,
-    handleQuantityInput,
-    handleSubmit,
-    description,
-    setDescription,
-    quantity,
+    note,
+    isLoading,
+
+    setShares,
+    setNote,
+    increaseShares,
+    decreaseShares,
+    setSharesFromInput,
+    selectQuickOption,
+    submitTradeRequest,
   };
 };
+
 export default useBuyModal;

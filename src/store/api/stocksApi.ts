@@ -1,6 +1,7 @@
 import {
   investorSharesEP,
   sharePurchaseRequestEP,
+  shareTradeRequestEP,
   stocksEP,
 } from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
@@ -71,11 +72,15 @@ export const stocksApi = baseApi.injectEndpoints({
       { id: string; page: number; limit: number }
     >({
       query: ({ id, page, limit }) =>
-        `${investorSharesEP}/${id}?page=${page}&limit=${limit}`,
+        `${shareTradeRequestEP}/${id}?page=${page}&limit=${limit}`,
       providesTags: ["Stocks"],
     }),
+
     getInvestorPurchaseRequests: builder.query<PurchaseHistory, string>({
-      query: (id) => `${sharePurchaseRequestEP}/investor/${id}`,
+      query: (id) => {
+        console.log("getInvestorPurchaseRequests id:", id);
+        return `${shareTradeRequestEP}/investor/${id}`;
+      },
       providesTags: ["Stocks"],
     }),
   }),

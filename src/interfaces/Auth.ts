@@ -3,6 +3,7 @@ export interface User {
   fullName: string;
   phone: string;
   email?: string;
+  country: String;
   active: boolean;
 }
 

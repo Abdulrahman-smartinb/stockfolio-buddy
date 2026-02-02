@@ -80,7 +80,7 @@
   "auth_failed": "Authentication failed",
   "check_credits": "Please check your credentials and try again",
   "update_success": "Update successful",
-  "info_updated": "Information updated successfully. The new data will be available after you log in again",
+  "info_updated": "Information updated successfully ",
   "update_failed": "Update failed",
   "error_while_updating": "Error occurred while updating information",
   "previous": "Previous",
@@ -122,5 +122,6 @@
   "investmentfund": "Investment Fund",
   "clientcompany": "Investment Company",
   "verify_subtitle": "Complete KYC verification process to enable trading.",
-  "indicates_required_fields": " indicates required fields"
+  "indicates_required_fields": " indicates required fields",
+  "shares_out_of_range": "Number of shares is outside the allowed range."
 }

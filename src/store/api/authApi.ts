@@ -11,6 +11,7 @@ export interface RegisterRequest {
   fullName: string;
   phone: string;
   password: string;
+  country: string;
 }
 
 export interface AuthResponse {

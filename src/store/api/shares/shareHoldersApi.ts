@@ -4,7 +4,10 @@ import { baseApi } from "../baseApi";
 export const shareHoldersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getShareHolderStatics: builder.query({
-      query: ({ id }) => `${sharesholdingEP}/${id}`,
+      query: ({ holderType, holderId }) => ({
+        url: `${sharesholdingEP}/sharesSummary`,
+        params: { holderType, holderId },
+      }),
     }),
   }),
 });

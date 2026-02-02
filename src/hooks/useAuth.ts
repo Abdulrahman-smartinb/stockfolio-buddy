@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/hooks/useAuth.ts
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./use-toast";
 import {
@@ -7,28 +8,48 @@ import {
   useRegisterMutation,
 } from "@/store/api/authApi";
 import { useTranslation } from "react-i18next";
+import COUNTRIES from "@/data/countries.json";
 
 type AuthMode = "login" | "register";
 
+const normalizeDigits = (value: string) => value.replace(/\D/g, "");
+
+const buildE164Phone = (dialCode: string, localPhone: string) => {
+  const d = dialCode.startsWith("+") ? dialCode : `+${dialCode}`;
+  const p = normalizeDigits(localPhone);
+  return `${d}${p}`;
+};
+
 export const useAuth = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const [mode, setMode] = useState<AuthMode>("login");
   const [showPassword, setShowPassword] = useState(false);
   const [showWarn, setShowWarn] = useState(false);
   const [showLengthError, setShowLengthError] = useState(false);
+
+  const defaultCountry = COUNTRIES[0]; // Syria default (change if you want)
   const [formData, setFormData] = useState({
     fullName: "",
-    phone: "905384171534",
-    password: "000000",
+    phone: "", // LOCAL digits only
+    country: defaultCountry.code,
+    dialCode: defaultCountry.dialCode,
+    password: "",
   });
+
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("authToken")),
+    Boolean(localStorage.getItem("authToken"))
   );
 
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const profile = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("profile") || "{}");
+    } catch {
+      return {};
+    }
+  }, []);
 
   const [loginApi, { isLoading: loginLoading }] = useLoginMutation();
   const [registerApi, { isLoading: registerLoading }] = useRegisterMutation();
@@ -36,36 +57,48 @@ export const useAuth = () => {
 
   const isLoading = loginLoading || registerLoading;
 
+  const selectedCountry = useMemo(
+    () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
+    [formData.country]
+  );
+
+  const handleCountryChange = (countryCode: string) => {
+    const country = COUNTRIES.find((c) => c.code === countryCode);
+    if (!country) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      country: country.code,
+      dialCode: country.dialCode,
+    }));
+  };
+
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const rawValue = e.target.value;
+    const numericValue = normalizeDigits(rawValue);
 
-    const numericValue = rawValue.replace(/[^0-9]/g, "");
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
+    setFormData((prev) => ({
+      ...prev,
       phone: numericValue,
     }));
 
-    if (rawValue !== numericValue) {
-      setShowWarn(true);
-    } else {
-      setShowWarn(false);
-    }
+    setShowWarn(rawValue !== numericValue);
 
+    // Validate LOCAL length only (country-specific rules can be added later)
     const length = numericValue.length;
-    const MIN_LENGTH = 10;
+    const MIN_LENGTH = 6;
     const MAX_LENGTH = 14;
 
-    if (length > 0 && (length < MIN_LENGTH || length > MAX_LENGTH)) {
-      setShowLengthError(true);
-    } else {
-      setShowLengthError(false);
-    }
+    setShowLengthError(
+      length > 0 && (length < MIN_LENGTH || length > MAX_LENGTH)
+    );
   };
 
   const validate = () => {
     let valid = true;
-    if (formData.phone?.length < 7) {
+
+    const localPhone = normalizeDigits(formData.phone);
+    if (localPhone.length < 6) {
       toast({
         title: t("enter_valid_phone"),
         variant: "destructive",
@@ -73,6 +106,7 @@ export const useAuth = () => {
       });
       valid = false;
     }
+
     if (formData.password?.length < 6) {
       toast({
         title: t("enter_valid_pass"),
@@ -81,6 +115,7 @@ export const useAuth = () => {
       });
       valid = false;
     }
+
     if (showLengthError) {
       toast({
         title: t("enter_valid_phone"),
@@ -89,6 +124,7 @@ export const useAuth = () => {
       });
       valid = false;
     }
+
     if (showWarn) {
       toast({
         title: t("enter_valid_phone"),
@@ -97,8 +133,9 @@ export const useAuth = () => {
       });
       valid = false;
     }
+
     if (mode === "register") {
-      if (formData.fullName?.length < 2) {
+      if (formData.fullName?.trim().length < 2) {
         toast({
           title: t("enter_valid_name"),
           variant: "destructive",
@@ -106,7 +143,16 @@ export const useAuth = () => {
         });
         valid = false;
       }
+      if (!formData.country) {
+        toast({
+          title: t("auth_failed"),
+          variant: "destructive",
+          description: t("pls_select") || "Please select a country",
+        });
+        valid = false;
+      }
     }
+
     return valid;
   };
 
@@ -114,23 +160,26 @@ export const useAuth = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    const fullPhone = buildE164Phone(formData.dialCode, formData.phone);
+
     try {
       const response =
         mode === "login"
           ? await loginApi({
-              phone: formData.phone,
+              phone: fullPhone,
               password: formData.password,
             }).unwrap()
           : await registerApi({
               fullName: formData.fullName,
-              phone: formData.phone,
+              phone: fullPhone,
+              country: formData.country,
               password: formData.password,
             }).unwrap();
 
       localStorage.setItem("authToken", response.token);
-      localStorage.setItem("user", JSON.stringify(response.user));
       localStorage.setItem("profile", JSON.stringify(response.profile));
       localStorage.setItem("role", JSON.stringify(response.role));
+
       setIsAuthenticated(true);
 
       toast({
@@ -149,25 +198,38 @@ export const useAuth = () => {
   };
 
   const logout = async () => {
-    await logoutApi(userData?._id).unwrap();
-    localStorage.clear();
-    setIsAuthenticated(false);
-    navigate("/auth");
+    try {
+      await logoutApi(profile?.authUserId).unwrap();
+    } finally {
+      localStorage.clear();
+      setIsAuthenticated(false);
+      navigate("/auth");
+    }
   };
 
   return {
+    // ui state
     mode,
     setMode,
     showPassword,
     setShowPassword,
+    showWarn,
+    showLengthError,
+
+    // data
     formData,
     setFormData,
     isLoading,
-    handleSubmit,
     isAuthenticated,
+
+    // country support
+    COUNTRIES,
+    selectedCountry,
+    handleCountryChange,
+
+    // actions
+    handleSubmit,
     logout,
     handlePhoneNumberChange,
-    showWarn,
-    showLengthError,
   };
 };

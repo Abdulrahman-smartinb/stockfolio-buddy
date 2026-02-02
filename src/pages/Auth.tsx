@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 const Auth = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+
   const {
     mode,
     setMode,
@@ -28,6 +29,11 @@ const Auth = () => {
     handlePhoneNumberChange,
     showWarn,
     showLengthError,
+
+    // ✅ from new hook
+    COUNTRIES,
+    selectedCountry,
+    handleCountryChange,
   } = useAuth();
 
   return (
@@ -39,7 +45,6 @@ const Auth = () => {
       <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--accent)/0.15),transparent_50%)]" />
-
         <div className="relative z-10 flex flex-col justify-center px-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -128,7 +133,10 @@ const Auth = () => {
                         className="ps-10 h-11"
                         value={formData.fullName}
                         onChange={(e) =>
-                          setFormData({ ...formData, fullName: e.target.value })
+                          setFormData((p) => ({
+                            ...p,
+                            fullName: e.target.value,
+                          }))
                         }
                         required
                       />
@@ -141,22 +149,49 @@ const Auth = () => {
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">
                     {t("phone_number")}
                   </label>
-                  <div className="relative">
-                    <Phone
-                      className={`absolute ${
-                        isRtl ? "right" : "left"
-                      }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
-                    />
-                    <Input
-                      type="tel"
-                      className={`ps-10 h-11 ${
-                        showWarn || showLengthError ? "border-red-500" : ""
-                      }`}
-                      value={formData.phone}
-                      onChange={handlePhoneNumberChange}
-                      placeholder="905**********"
-                      required
-                    />
+
+                  <div className="flex gap-2">
+                    {/* ✅ COUNTRY SELECT (sets country + dialCode in hook) */}
+                    <select
+                      className="h-11 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                      value={formData.country}
+                      onChange={(e) => handleCountryChange(e.target.value)}
+                    >
+                      {COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name} ({c.dialCode})
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* ✅ PHONE INPUT (LOCAL digits only) */}
+                    <div className="relative flex-1">
+                      <Phone
+                        className={`absolute ${
+                          isRtl ? "right" : "left"
+                        }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                      />
+
+                      {/* show dial code as a prefix chip */}
+                      <div
+                        className={`absolute top-1/2 -translate-y-1/2 ${
+                          isRtl ? "right-9" : "left-9"
+                        } text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground`}
+                      >
+                        {selectedCountry.dialCode}
+                      </div>
+
+                      <Input
+                        type="tel"
+                        className={`h-11 ${isRtl ? "pr-28" : "pl-28"} ${
+                          showWarn || showLengthError ? "border-red-500" : ""
+                        }`}
+                        value={formData.phone}
+                        onChange={handlePhoneNumberChange}
+                        placeholder="5XXXXXXXX"
+                        required
+                      />
+                    </div>
                   </div>
 
                   {(showWarn || showLengthError) && (
@@ -182,16 +217,16 @@ const Auth = () => {
                       className="ps-10 pr-10 h-11"
                       value={formData.password}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
+                        setFormData((p) => ({
+                          ...p,
                           password: e.target.value,
-                        })
+                        }))
                       }
                       required
                     />
                     <button
                       type="button"
-                      onClick={() => setShowPassword(!showPassword)}
+                      onClick={() => setShowPassword((v) => !v)}
                       className={`absolute ${
                         isRtl ? "left" : "right"
                       }-3 top-1/2 -translate-y-1/2 text-muted-foreground`}

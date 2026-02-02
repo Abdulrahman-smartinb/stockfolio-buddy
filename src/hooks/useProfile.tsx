@@ -17,6 +17,7 @@ import {
   useGetOneApplicantQuery,
   useUpdateApplicantProfileMutation,
 } from "@/store/api/applicantApi";
+import { useGetShareHolderStaticsQuery } from "@/store/api/shares/shareHoldersApi";
 
 export const useProfile = () => {
   const { t } = useTranslation();
@@ -25,7 +26,7 @@ export const useProfile = () => {
   const { toast } = useToast();
 
   const role = JSON.parse(localStorage.getItem("role") || "");
-  const authUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const profile = JSON.parse(localStorage.getItem("profile") || "{}");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
 
@@ -45,14 +46,17 @@ export const useProfile = () => {
   const {
     data: applicant,
     isLoading: isLoadingUser,
-    refetch,
-  } = useGetOneApplicantQuery(
-    { id: authUser?._id },
-    { skip: role === "investor" }
-  );
-  const { data: investor, isLoading: isLoadingInvestor } =
-    useGetOneInvestorQuery(
-      { id: authUser?._id },
+    refetch: refetchApplicant,
+  } = useGetOneApplicantQuery({ id: profile?.authUserId });
+  const {
+    data: investor,
+    isLoading: isLoadingInvestor,
+    refetch: refetchInvestor,
+  } = useGetOneInvestorQuery({ id: profile?.authUserId });
+
+  const { data: SharesData, isLoading: LoadingShares } =
+    useGetShareHolderStaticsQuery(
+      { holderId: profile?.authUserId, holderType: "investors" },
       { skip: role === "applicant" }
     );
 
@@ -71,7 +75,11 @@ export const useProfile = () => {
   });
 
   const { data: purchaseRequests, isLoading: loadingRequests } =
-    useGetInvestorPurchaseRequestsQuery(user?._id);
+    useGetInvestorPurchaseRequestsQuery(user?._id, {
+      skip: !user?._id,
+    });
+  console.log(user);
+  console.log("purchaseRequests", purchaseRequests);
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
@@ -85,7 +93,7 @@ export const useProfile = () => {
     profileImageFile: null as File | null,
     profilePreview: user?.profileImage ? `${user.profileImage}` : "",
   });
-
+  console.log(editData);
   useEffect(() => {
     if (!isAuthenticated) navigate("/auth");
   }, [isAuthenticated, navigate]);
@@ -100,6 +108,19 @@ export const useProfile = () => {
       profilePreview: URL.createObjectURL(file),
     }));
   };
+
+  useEffect(() => {
+    if (!user) return;
+
+    setEditData({
+      fullName: user.fullName ?? "",
+      birthDate: user.birthDate ?? "",
+      phone: user.phone ?? "",
+      email: user.email ?? "",
+      profileImageFile: null,
+      profilePreview: user.profileImage ? String(user.profileImage) : "",
+    });
+  }, [user]);
 
   const handleSaveProfile = async () => {
     try {
@@ -125,21 +146,13 @@ export const useProfile = () => {
         id: user._id,
         data: formData,
       }).unwrap();
-
-      localStorage.setItem("user", JSON.stringify(res.data));
+      if (role === "applicant") refetchApplicant();
+      else refetchInvestor();
       setIsEditing(false);
       toast({
         title: t("update_success"),
         variant: "default",
         description: t("info_updated"),
-        action: (
-          <Button
-            onClick={logout}
-            className={`flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all duration-200 bg-background text-foreground shadow-sm`}
-          >
-            {t("logout")}
-          </Button>
-        ),
       });
     } catch (error) {
       console.error(error);

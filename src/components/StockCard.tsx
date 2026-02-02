@@ -16,10 +16,10 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.3 }}
+      transition={{ duration: 0.1 }}
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
-      className="glass-card rounded-xl p-5 cursor-pointer hover:border-primary/30 transition-all duration-300"
+      className="glass-card rounded-xl p-5 cursor-pointer hover:border-primary/30 transition-all duration-100"
     >
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">

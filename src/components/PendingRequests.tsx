@@ -12,6 +12,7 @@ interface PendingRequestsProps {
 
 const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
   const { t } = useTranslation();
+
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -26,8 +27,15 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
           <div className="h-20 bg-muted/50 rounded-lg animate-pulse" />
         ) : data?.length ? (
           data.map((request) => {
-            const isBuy = request.type === "buy";
-            const total = request.shares * request.sharePrice;
+            const isBuy = request.tradeType === "buy";
+            const shares = Number(request.numberOfShares || 0);
+            const price = Number(request.pricePerShare || 0);
+            const total = shares * price;
+
+            const title =
+              request.source?.fullLegalName ||
+              request.source?.tradeName ||
+              t("unknown_asset");
 
             return (
               <div
@@ -67,20 +75,30 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
                             : "border-destructive text-destructive"
                         }`}
                       >
-                        {request.type.toUpperCase()}
+                        {request.tradeType.toUpperCase()}
                       </Badge>
 
                       <Badge
                         variant="secondary"
                         className="text-[10px] capitalize"
                       >
-                        {t(request.status)}
+                        {t(request.requestStatus)}
+                      </Badge>
+
+                      <Badge
+                        variant="outline"
+                        className="text-[10px] px-2 py-0.5 capitalize"
+                      >
+                        {request.sourceType}
                       </Badge>
                     </div>
 
+                    {/* Asset name */}
+                    <p className="text-xs font-medium leading-tight">{title}</p>
+
+                    {/* Shares x price */}
                     <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
-                      {request.shares} {t("shares")} × $
-                      {request.sharePrice.toFixed(2)}
+                      {shares} {t("shares")} × ${price.toFixed(2)}
                     </p>
                   </div>
                 </div>

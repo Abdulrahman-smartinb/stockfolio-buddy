@@ -1,11 +1,9 @@
 // src/components/modals/VerifyAccountModal.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Camera, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Alert } from "./ui/alert";
-import { useProfile } from "@/hooks/useProfile";
 import { CameraCapture } from "./CameraCapture";
 
 const Field = ({ label, required, children }) => {
@@ -22,37 +20,35 @@ const Field = ({ label, required, children }) => {
 };
 
 export const VerifyAccountModal = ({
-  // modal
   isOpen,
+  onClose,
+  onSubmit,
+  isSubmitting,
   t,
   isMobile,
-  onClose,
+
+  idNumber,
+  setIdNumber,
+  passportNumber,
+  setPassportNumber,
+  idPhoto,
+  setIdPhoto,
+  livePhoto,
+  setLivePhoto,
+  livePhotoPreview,
+  setLivePhotoPreview,
+
+  paymentMethod,
+  setPaymentMethod,
+  bankData,
+  setBankData,
+  shamCashData,
+  setShamCashData,
+  usdtData,
+  setUsdtData,
 }) => {
   if (!isOpen) return null;
   const [openCamera, setOpenCamera] = useState(false);
-  const {
-    idPhoto,
-    setIdPhoto,
-    livePhoto,
-    setLivePhoto,
-    idNumber,
-    setIdNumber,
-    passportNumber,
-    setPassportNumber,
-    handleSubmit,
-    isSubmitting,
-    livePhotoPreview,
-    setLivePhotoPreview,
-    REVIEW_STATUS_STYLES,
-    paymentMethod,
-    setPaymentMethod,
-    bankData,
-    setBankData,
-    shamCashData,
-    setShamCashData,
-    usdtData,
-    setUsdtData,
-  } = useProfile();
 
   const disableSubmit =
     !idNumber ||
@@ -439,7 +435,7 @@ export const VerifyAccountModal = ({
               {t("cancel") || "Cancel"}
             </Button>
 
-            <Button onClick={handleSubmit} disabled={disableSubmit}>
+            <Button onClick={onSubmit} disabled={disableSubmit}>
               {isSubmitting
                 ? t("loading") || "Loading..."
                 : t("verify_now") || "Verify Now"}
