@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { LogOut, TrendingUp, User, Home, LogIn } from "lucide-react";
+import { LogOut, User, Home, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "@/hooks/helpers";
+import logo from "../../public/jadwa.webp";
 
 export const Header = () => {
   const { logout } = useAuth();
@@ -28,8 +29,8 @@ export const Header = () => {
           className="flex items-center gap-3 cursor-pointer"
           onClick={() => navigate("/")}
         >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
-            <TrendingUp className="w-5 h-5 text-primary-foreground" />
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+            <img src={logo} alt="Jadwa Logo" />
           </div>
           <span className="text-lg font-bold gradient-text hidden sm:block">
             JADWA INVEST

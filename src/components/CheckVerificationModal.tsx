@@ -1,9 +1,10 @@
-// src/components/VerifyAccountModal.jsx
 import { motion, AnimatePresence } from "framer-motion";
 import { ShieldAlert, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next";
 
 export const CheckVerificationModal = ({ isOpen, onClose, onVerify }) => {
+  const { t } = useTranslation();
   if (!isOpen) return null;
 
   return (
@@ -30,34 +31,33 @@ export const CheckVerificationModal = ({ isOpen, onClose, onVerify }) => {
 
           {/* Title */}
           <h2 className="text-lg font-semibold text-center mb-2">
-            Account Verification Required
+            {t("acc_verification_req")}
           </h2>
 
           {/* Description */}
           <p className="text-sm text-muted-foreground text-center mb-6">
-            You are not registered as an investor yet. To buy or sell shares,
-            you must verify your account first.
+            {t("acc_verification_req_desc")}
           </p>
 
           {/* Benefits */}
           <div className="bg-muted/40 rounded-lg p-3 mb-6 text-sm">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>Access investment opportunities</span>
+              <span>{t("access_invest_opp")}</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>Buy & sell shares securely</span>
+              <span>{t("buy_sell_securely")}</span>
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex gap-3">
             <Button variant="outline" className="flex-1" onClick={onClose}>
-              Cancel
+              {t("cancel")}
             </Button>
             <Button className="flex-1" onClick={onVerify}>
-              Verify Now
+              {t("verify_now")}
             </Button>
           </div>
         </motion.div>

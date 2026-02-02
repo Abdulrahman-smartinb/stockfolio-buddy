@@ -1,6 +1,6 @@
-// export const base_url = "http://192.168.1.15/";
+export const base_url = "http://192.168.1.15/";
 // export const base_url = "http://localhost:80/";
-export const base_url = "https://api-invest.smartinb.com";
+// export const base_url = "https://api-invest.smartinb.com";
 export const loginEP = "api/investor/auth/login";
 export const logoutEP = "api/investor/auth/logout";
 export const registerEP = "api/investor/auth/register";

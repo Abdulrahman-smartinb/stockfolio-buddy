@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingUp, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
+import { Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -20,13 +20,9 @@ const Auth = () => {
     setFormData,
     isLoading,
     handleSubmit,
-    handlePhoneNumberChange,
     showWarn,
     showLengthError,
-
     COUNTRIES,
-    selectedCountry,
-    handleCountryChange,
   } = useAuth();
 
   return (

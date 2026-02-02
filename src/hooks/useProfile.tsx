@@ -21,9 +21,11 @@ import { useGetShareHolderStaticsQuery } from "@/store/api/shares/shareHoldersAp
 
 export const useProfile = () => {
   const { t } = useTranslation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const role = JSON.parse(localStorage.getItem("role") || "");
   const profile = JSON.parse(localStorage.getItem("profile") || "{}");
@@ -38,6 +40,7 @@ export const useProfile = () => {
   const [livePhotoPreview, setLivePhotoPreview] = useState<any>();
   const [idNumber, setIdNumber] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
+  const [passportExpDate, setPassportExpDate] = useState();
   const [paymentMethod, setPaymentMethod] = useState("");
   const [bankData, setBankData] = useState<BankTranfer>();
   const [shamCashData, setShamCashData] = useState<ShamCash>();
@@ -47,18 +50,24 @@ export const useProfile = () => {
     data: applicant,
     isLoading: isLoadingUser,
     refetch: refetchApplicant,
-  } = useGetOneApplicantQuery({ id: profile?.authUserId });
+  } = useGetOneApplicantQuery(
+    { id: profile?.authUserId },
+    { skip: role === "investor" },
+  );
   const {
     data: investor,
     isLoading: isLoadingInvestor,
     refetch: refetchInvestor,
-  } = useGetOneInvestorQuery({ id: profile?.authUserId });
+  } = useGetOneInvestorQuery(
+    { id: profile?.authUserId },
+    { skip: role === "applicant" },
+  );
 
-  const { data: SharesData, isLoading: LoadingShares } =
-    useGetShareHolderStaticsQuery(
-      { holderId: profile?.authUserId, holderType: "investors" },
-      { skip: role === "applicant" }
-    );
+  // const { data: SharesData, isLoading: LoadingShares } =
+  //   useGetShareHolderStaticsQuery(
+  //     { holderId: profile?.authUserId, holderType: "investors" },
+  //     { skip: role === "applicant" },
+  //   );
 
   useEffect(() => {
     if (role === "investor") {
@@ -78,8 +87,7 @@ export const useProfile = () => {
     useGetInvestorPurchaseRequestsQuery(user?._id, {
       skip: !user?._id,
     });
-  console.log(user);
-  console.log("purchaseRequests", purchaseRequests);
+
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
@@ -93,7 +101,7 @@ export const useProfile = () => {
     profileImageFile: null as File | null,
     profilePreview: user?.profileImage ? `${user.profileImage}` : "",
   });
-  console.log(editData);
+
   useEffect(() => {
     if (!isAuthenticated) navigate("/auth");
   }, [isAuthenticated, navigate]);
@@ -142,7 +150,7 @@ export const useProfile = () => {
       }
       formData.append("role", role);
 
-      const res = await updateInvestor({
+      await updateInvestor({
         id: user._id,
         data: formData,
       }).unwrap();
@@ -194,10 +202,9 @@ export const useProfile = () => {
   const isShamCashValid = (data?: ShamCash) => {
     if (!data) return false;
 
-    const { accountNumber } = data;
+    const { accountNumber, beneficiaryName } = data;
 
-    // beneficiaryName is preferred but NOT required
-    return accountNumber?.trim();
+    return accountNumber?.trim() && beneficiaryName?.trim();
   };
 
   const isUsdtValid = (data?: Usdt) => {
@@ -225,47 +232,49 @@ export const useProfile = () => {
   };
 
   const handleSubmit = async () => {
-    if (!idPhoto || !livePhoto || !passportNumber || !idNumber) {
+    if (!idPhoto || !livePhoto || !idNumber) {
       toast({ title: t("fill_all"), variant: "destructive" });
       return;
     }
-    if (!paymentMethod) {
-      toast({
-        title: t("payment_method_required"),
-        variant: "destructive",
-      });
-      return;
-    }
+    // if (!paymentMethod || isPaymentDataValid()) {
+    //   toast({
+    //     title: t("payment_method_required"),
+    //     variant: "destructive",
+    //   });
+    //   return;
+    // }
     try {
       const formData = new FormData();
 
       formData.append("idPhoto", idPhoto);
       formData.append("livePhoto", livePhoto);
       formData.append("passportNumber", passportNumber);
+      if (passportNumber?.trim()?.length > 0)
+        formData.append("passportExpDate", passportExpDate);
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
-      formData.append("paymentMethod", paymentMethod);
+      // formData.append("paymentMethod", paymentMethod);
 
-      if (paymentMethod === "bank") {
-        formData.append("bankTransfer", JSON.stringify(bankData));
-      }
-      if (paymentMethod === "shamcash") {
-        const { qrCode, ...rest } = shamCashData!;
-        formData.append("shamcash", JSON.stringify(rest));
+      // if (paymentMethod === "bank") {
+      //   formData.append("bankTransfer", JSON.stringify(bankData));
+      // }
+      // if (paymentMethod === "shamcash") {
+      //   const { qrCode, ...rest } = shamCashData!;
+      //   formData.append("shamcash", JSON.stringify(rest));
 
-        if (qrCode) {
-          formData.append("qrCode", qrCode);
-        }
-      }
+      //   if (qrCode) {
+      //     formData.append("qrCode", qrCode);
+      //   }
+      // }
 
-      if (paymentMethod === "usdt") {
-        const { walletQr, ...rest } = usdtData!;
-        formData.append("usdt", JSON.stringify(rest));
+      // if (paymentMethod === "usdt") {
+      //   const { walletQr, ...rest } = usdtData!;
+      //   formData.append("usdt", JSON.stringify(rest));
 
-        if (walletQr) {
-          formData.append("walletQr", walletQr);
-        }
-      }
+      //   if (walletQr) {
+      //     formData.append("walletQr", walletQr);
+      //   }
+      // }
 
       await submit({
         id: user.authUserId,
@@ -333,6 +342,8 @@ export const useProfile = () => {
     setIdNumber,
     passportNumber,
     setPassportNumber,
+    passportExpDate,
+    setPassportExpDate,
     handleSubmit,
     isSubmitting,
     handleClose,
@@ -347,5 +358,6 @@ export const useProfile = () => {
     setShamCashData,
     usdtData,
     setUsdtData,
+    isMobile,
   };
 };

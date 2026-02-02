@@ -20,9 +20,9 @@ import TransactionHistory from "@/components/TransactionHistory";
 import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
-import { isInvestor } from "@/hooks/helpers";
+import { Field } from "@/components/ui/Field";
+import { base_url } from "@/api/GlobalData";
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
@@ -58,6 +58,8 @@ const Profile = () => {
     setIdNumber,
     passportNumber,
     setPassportNumber,
+    passportExpDate,
+    setPassportExpDate,
     handleSubmit,
     isSubmitting,
     handleClose,
@@ -72,6 +74,7 @@ const Profile = () => {
     setShamCashData,
     usdtData,
     setUsdtData,
+    isMobile,
   } = useProfile();
 
   const transactions = purchaseHistory?.data ?? [];
@@ -93,7 +96,7 @@ const Profile = () => {
     {
       ownedShares: 0,
       investedValue: 0,
-    }
+    },
   );
 
   const stats = [
@@ -114,8 +117,6 @@ const Profile = () => {
       bgColor: "bg-primary/10",
     },
   ];
-
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -201,17 +202,7 @@ const Profile = () => {
                       user?.reviewStatus !== "pending" && (
                         <button
                           onClick={() => setOpenVerify(true)}
-                          className="
-          inline-flex items-center justify-center gap-2
-          px-3 py-1.5
-          rounded-md
-          text-xs sm:text-sm font-medium
-          border border-primary/30
-          text-primary
-          bg-primary/5
-          hover:bg-primary/10
-          transition
-        "
+                          className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium border border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 transition"
                         >
                           <Verified className="w-4 h-4" />
                           {t("verify")}
@@ -224,19 +215,7 @@ const Profile = () => {
                         isEditing ? handleSaveProfile : () => setIsEditing(true)
                       }
                       disabled={isSaving}
-                      className={`
-      inline-flex items-center justify-center gap-2
-      px-3 py-1.5
-      rounded-md
-      text-xs sm:text-sm font-medium
-      transition
-      ${
-        isEditing
-          ? "bg-primary text-white hover:bg-primary/90"
-          : "border border-border text-muted-foreground hover:bg-muted"
-      }
-      ${isSaving ? "opacity-60 cursor-not-allowed" : ""}
-    `}
+                      className={`inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition ${isEditing ? "bg-primary text-white hover:bg-primary/90" : "border border-border text-muted-foreground hover:bg-muted"} ${isSaving ? "opacity-60 cursor-not-allowed" : ""}`}
                     >
                       {isEditing ? (
                         <>
@@ -260,7 +239,7 @@ const Profile = () => {
                   <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                     {editData.profilePreview ? (
                       <img
-                        src={editData.profilePreview}
+                        src={base_url + `Investor/` + editData.profilePreview}
                         className="w-full h-full object-cover"
                       />
                     ) : (
@@ -404,6 +383,225 @@ const Profile = () => {
               </CardContent>
             </Card>
           </motion.div>
+          <motion.div variants={itemVariants}>
+            {/* Payment Section */}
+            <div className="rounded-xl border p-4 space-y-4">
+              <div className="text-sm font-semibold">
+                {t("payment_section") || "Payment Method"}
+              </div>
+
+              <Field label={t("payment_method")} required>
+                <select
+                  className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                >
+                  <option value="">{t("pls_select")}</option>
+                  <option value="bank">{t("bank_transfer")}</option>
+                  <option value="shamcash">{t("sham_cash")}</option>
+                  <option value="usdt">{t("usdt")}</option>
+                </select>
+              </Field>
+
+              {/* BANK */}
+              {paymentMethod === "bank" && (
+                <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                  <div className="text-sm font-medium">
+                    {t("bank_details") || "Bank Details"}
+                  </div>
+
+                  <Field label={t("beneficiary_full_name")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={bankData?.beneficiaryFullName ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          beneficiaryFullName: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("beneficiary_address")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={bankData?.beneficiaryAddress ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          beneficiaryAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("bank_name")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={bankData?.bankName ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          bankName: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("account_number")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={bankData?.accountNumber ?? ""}
+                      onChange={(e) =>
+                        setBankData({
+                          ...bankData,
+                          accountNumber: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+                </div>
+              )}
+
+              {/* SHAMCASH */}
+              {paymentMethod === "shamcash" && (
+                <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                  <div className="text-sm font-medium">
+                    {t("shamcash_details") || "ShamCash Details"}
+                  </div>
+
+                  <Field label={t("account_number")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={shamCashData?.accountNumber ?? ""}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          accountNumber: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("qr_code_optional")} required={false}>
+                    <Input
+                      type="file"
+                      className="h-10 text-sm"
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          qrCode: e.target.files?.[0] ?? null,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("beneficiary_full_name")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={shamCashData?.beneficiaryName ?? ""}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          beneficiaryName: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("beneficiary_address")} required={false}>
+                    <Input
+                      className="h-10 text-sm"
+                      value={shamCashData?.beneficiaryAddress ?? ""}
+                      onChange={(e) =>
+                        setShamCashData({
+                          ...shamCashData,
+                          beneficiaryAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+                </div>
+              )}
+
+              {/* USDT */}
+              {paymentMethod === "usdt" && (
+                <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+                  <div className="text-sm font-medium">
+                    {t("usdt_details") || "USDT Details"}
+                  </div>
+
+                  <Field label={t("transfer_network")} required>
+                    <select
+                      value={
+                        usdtData?.transferNetwork
+                          ? usdtData.transferNetwork
+                          : ""
+                      }
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setUsdtData((prev) => ({
+                          ...prev,
+                          transferNetwork: value === "other" ? "" : value,
+                          otherNetwork: value === "other" ? "" : undefined,
+                        }));
+                      }}
+                      className="flex h-11 w-full rounded-lg border border-input bg-background px-4 py-2 text-sm ring-offset-background transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-primary"
+                    >
+                      <option value="">{t("pls_select")}</option>
+                      <option value="TRC20">TRC20</option>
+                      <option value="ERC20">ERC20</option>
+                      <option value="BEP20">BEP20</option>
+                      <option value="other">{t("other")}</option>
+                    </select>
+                  </Field>
+
+                  {usdtData?.otherNetwork !== undefined && (
+                    <Field label={t("transfer_network")} required>
+                      <Input
+                        className="h-10 text-sm"
+                        value={usdtData.otherNetwork}
+                        onChange={(e) =>
+                          setUsdtData((prev) => ({
+                            ...prev,
+                            otherNetwork: e.target.value,
+                            transferNetwork: e.target.value,
+                          }))
+                        }
+                      />
+                    </Field>
+                  )}
+
+                  <Field label={t("wallet_address")} required>
+                    <Input
+                      className="h-10 text-sm"
+                      value={usdtData?.walletAddress ?? ""}
+                      onChange={(e) =>
+                        setUsdtData({
+                          ...usdtData,
+                          walletAddress: e.target.value,
+                        })
+                      }
+                    />
+                  </Field>
+
+                  <Field label={t("wallet_qr")} required={false}>
+                    <Input
+                      type="file"
+                      className="h-10 text-sm"
+                      onChange={(e) =>
+                        setUsdtData({
+                          ...usdtData,
+                          walletQr: e.target.files?.[0] ?? null,
+                        })
+                      }
+                    />
+                  </Field>
+                </div>
+              )}
+            </div>
+          </motion.div>
 
           {/* TRANSACTION HISTORY */}
           {role === "investor" && (
@@ -441,20 +639,14 @@ const Profile = () => {
         setIdNumber={setIdNumber}
         passportNumber={passportNumber}
         setPassportNumber={setPassportNumber}
+        passportExpDate={passportExpDate}
+        setPassportExpDate={setPassportExpDate}
         idPhoto={idPhoto}
         setIdPhoto={setIdPhoto}
         livePhoto={livePhoto}
         setLivePhoto={setLivePhoto}
         livePhotoPreview={livePhotoPreview}
         setLivePhotoPreview={setLivePhotoPreview}
-        paymentMethod={paymentMethod}
-        setPaymentMethod={setPaymentMethod}
-        bankData={bankData}
-        setBankData={setBankData}
-        shamCashData={shamCashData}
-        setShamCashData={setShamCashData}
-        usdtData={usdtData}
-        setUsdtData={setUsdtData}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
       />

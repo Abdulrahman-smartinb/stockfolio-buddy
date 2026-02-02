@@ -145,7 +145,7 @@ export const useAuth = () => {
         toast({
           title: t("auth_failed"),
           variant: "destructive",
-          description: t("pls_select") || "Please select a country",
+          description: t("pls_select"),
         });
         valid = false;
       }
@@ -187,11 +187,21 @@ export const useAuth = () => {
 
       navigate("/");
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: t("auth_failed"),
-        description: error?.data?.message || t("check_credits"),
-      });
+      const message = error?.data?.message;
+      if (message === "Already logged in") {
+        toast({
+          variant: "destructive",
+          title: t("already_logged_in"),
+          description: t("pls_logout"),
+          duration: 10000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: t("auth_failed"),
+          description: error?.data?.message || t("check_credits"),
+        });
+      }
     }
   };
 

@@ -10,6 +10,8 @@ import useDashboard from "@/hooks/useDashboard";
 
 import { useNavigate } from "react-router-dom";
 import { CheckVerificationModal } from "@/components/CheckVerificationModal";
+import { VerifyAccountModal } from "@/components/VerifyAccountModal";
+import { useProfile } from "@/hooks/useProfile";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -31,6 +33,35 @@ const Dashboard = () => {
     handleStockClick,
     stats,
   } = useDashboard();
+
+  const {
+    openVerify,
+    setOpenVerify,
+    idPhoto,
+    setIdPhoto,
+    livePhoto,
+    setLivePhoto,
+    idNumber,
+    setIdNumber,
+    passportNumber,
+    setPassportNumber,
+    passportExpDate,
+    setPassportExpDate,
+    handleSubmit,
+    isSubmitting,
+    handleClose,
+    livePhotoPreview,
+    setLivePhotoPreview,
+    paymentMethod,
+    setPaymentMethod,
+    bankData,
+    setBankData,
+    shamCashData,
+    setShamCashData,
+    usdtData,
+    setUsdtData,
+    isMobile,
+  } = useProfile();
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -201,8 +232,29 @@ const Dashboard = () => {
         onClose={() => setVerfiyModalOpen(false)}
         onVerify={() => {
           setVerfiyModalOpen(false);
-          navigate("/profile");
+          setOpenVerify(true);
         }}
+      />
+
+      <VerifyAccountModal
+        isOpen={openVerify}
+        onClose={handleClose}
+        t={t}
+        isMobile={isMobile}
+        idNumber={idNumber}
+        setIdNumber={setIdNumber}
+        passportNumber={passportNumber}
+        setPassportNumber={setPassportNumber}
+        passportExpDate={passportExpDate}
+        setPassportExpDate={setPassportExpDate}
+        idPhoto={idPhoto}
+        setIdPhoto={setIdPhoto}
+        livePhoto={livePhoto}
+        setLivePhoto={setLivePhoto}
+        livePhotoPreview={livePhotoPreview}
+        setLivePhotoPreview={setLivePhotoPreview}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
       />
       <Footer />
     </div>
