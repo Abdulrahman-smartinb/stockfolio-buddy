@@ -128,7 +128,7 @@ const Dashboard = () => {
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <div className="flex items-center justify-between space-x-4">
+          <div className="flex items-center justify-between">
             <div className="relative w-full max-w-md">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground " />
               <Input
@@ -142,11 +142,11 @@ const Dashboard = () => {
 
             <Button
               disabled={isLoading}
-              className="h-12 w-12 md:w-32 shrink-0 flex items-center justify-center gap-2"
+              className="h-12 w-12 md:w-32 ms-2"
               onClick={refetch}
             >
               {/* Mobile: Icon */}
-              <RefreshCw className="w-5 h-5 md:hidden" />
+              {!isLoading && <RefreshCw className="w-5 h-5 md:hidden" />}
 
               {/* Desktop: Text */}
               <span className="hidden md:inline">{t("refresh")}</span>

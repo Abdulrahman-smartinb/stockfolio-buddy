@@ -32,7 +32,7 @@ export const Header = () => {
           <div className="w-10 h-10 rounded-xl flex items-center justify-center">
             <img src={logo} alt="Jadwa Logo" />
           </div>
-          <span className="text-lg font-bold gradient-text hidden sm:block">
+          <span className="text-lg font-bold gradient-text sm:block">
             JADWA INVEST
           </span>
         </div>

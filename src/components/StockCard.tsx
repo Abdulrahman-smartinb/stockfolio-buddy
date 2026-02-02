@@ -1,6 +1,6 @@
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { motion } from "framer-motion";
-import { TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface StockCardProps {
@@ -23,7 +23,7 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-2/3">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
             {stock?.fullLegalName?.charAt(0).toUpperCase()}
           </div>
@@ -37,12 +37,14 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
             </p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-1/3">
           <button
             onClick={() => onAction("buy")}
-            className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary"
+            style={{ fontSize: "12px" }}
+            className="w-15 h-10 capitalize rounded-lg bg-primary/10 flex items-center justify-center text-primary pe-2"
           >
-            <TrendingUp className={`w-5 h-5 text-success`} />
+            <TrendingUp className={`w-5 h-5 text-success mx-2`} />
+            {t("buy_shares")}
           </button>
           {/* <button
             onClick={() => onAction("sell")}

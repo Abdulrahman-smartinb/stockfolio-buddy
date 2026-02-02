@@ -137,5 +137,6 @@
   "passport_exp_date": "Passport expiry date",
   "retake": "Retake",
   "already_logged_in": "Already logged in!",
-  "pls_logout": "You have logged in from a different place, please log out of there and try again"
+  "pls_logout": "You have logged in from a different place, please log out of there and try again",
+  "buy_shares": "Buy shares"
 }

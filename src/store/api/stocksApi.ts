@@ -78,7 +78,6 @@ export const stocksApi = baseApi.injectEndpoints({
 
     getInvestorPurchaseRequests: builder.query<PurchaseHistory, string>({
       query: (id) => {
-        console.log("getInvestorPurchaseRequests id:", id);
         return `${shareTradeRequestEP}/investor/${id}`;
       },
       providesTags: ["Stocks"],

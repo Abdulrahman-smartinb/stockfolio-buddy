@@ -10,7 +10,7 @@ const useDashboard = () => {
   const isRtl = i18n.language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
-    null
+    null,
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [verfiyModalOpen, setVerfiyModalOpen] = useState(false);
@@ -25,10 +25,9 @@ const useDashboard = () => {
   } = useGetInvestmentEntitiesQuery({
     keyword: searchQuery,
   });
-  console.log(error);
+
   const handleStockClick = (stock: InvestmentEntity, type: string) => {
     if (!canTrade) {
-      console.log("Not investor");
       setVerfiyModalOpen(true);
       return;
     }
