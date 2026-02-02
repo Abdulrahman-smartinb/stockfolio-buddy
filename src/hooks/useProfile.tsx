@@ -151,7 +151,7 @@ export const useProfile = () => {
       formData.append("role", role);
 
       await updateInvestor({
-        id: user._id,
+        id: user.authUserId,
         data: formData,
       }).unwrap();
       if (role === "applicant") refetchApplicant();
