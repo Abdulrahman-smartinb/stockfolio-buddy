@@ -383,8 +383,8 @@ const Profile = () => {
               </CardContent>
             </Card>
           </motion.div>
-          <motion.div variants={itemVariants}>
-            {/* Payment Section */}
+          {/* <motion.div variants={itemVariants}>
+
             <div className="rounded-xl border p-4 space-y-4">
               <div className="text-sm font-semibold">
                 {t("payment_section") || "Payment Method"}
@@ -403,7 +403,7 @@ const Profile = () => {
                 </select>
               </Field>
 
-              {/* BANK */}
+              
               {paymentMethod === "bank" && (
                 <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
                   <div className="text-sm font-medium">
@@ -464,7 +464,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {/* SHAMCASH */}
+              
               {paymentMethod === "shamcash" && (
                 <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
                   <div className="text-sm font-medium">
@@ -525,7 +525,7 @@ const Profile = () => {
                 </div>
               )}
 
-              {/* USDT */}
+              
               {paymentMethod === "usdt" && (
                 <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
                   <div className="text-sm font-medium">
@@ -601,7 +601,7 @@ const Profile = () => {
                 </div>
               )}
             </div>
-          </motion.div>
+          </motion.div> */}
 
           {/* TRANSACTION HISTORY */}
           {role === "investor" && (
