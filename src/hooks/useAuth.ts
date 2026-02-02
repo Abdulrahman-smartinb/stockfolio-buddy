@@ -1,4 +1,3 @@
-// src/hooks/useAuth.ts
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./use-toast";
@@ -30,17 +29,17 @@ export const useAuth = () => {
   const [showWarn, setShowWarn] = useState(false);
   const [showLengthError, setShowLengthError] = useState(false);
 
-  const defaultCountry = COUNTRIES[0]; // Syria default (change if you want)
+  const defaultCountry = COUNTRIES[0]; // Syria default
   const [formData, setFormData] = useState({
     fullName: "",
-    phone: "", // LOCAL digits only
+    phone: "",
     country: defaultCountry.code,
     dialCode: defaultCountry.dialCode,
     password: "",
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("authToken"))
+    Boolean(localStorage.getItem("authToken")),
   );
 
   const profile = useMemo(() => {
@@ -59,7 +58,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country]
+    [formData.country],
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -84,13 +83,12 @@ export const useAuth = () => {
 
     setShowWarn(rawValue !== numericValue);
 
-    // Validate LOCAL length only (country-specific rules can be added later)
     const length = numericValue.length;
     const MIN_LENGTH = 6;
     const MAX_LENGTH = 14;
 
     setShowLengthError(
-      length > 0 && (length < MIN_LENGTH || length > MAX_LENGTH)
+      length > 0 && (length < MIN_LENGTH || length > MAX_LENGTH),
     );
   };
 

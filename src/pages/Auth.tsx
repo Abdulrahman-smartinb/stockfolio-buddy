@@ -1,17 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  TrendingUp,
-  Lock,
-  User,
-  ArrowRight,
-  Eye,
-  EyeOff,
-  Phone,
-} from "lucide-react";
+import { TrendingUp, Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
+import { PhoneInput } from "@/components/PhoneInput";
+import logo from "../../public/jadwa.webp";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
@@ -30,7 +24,6 @@ const Auth = () => {
     showWarn,
     showLengthError,
 
-    // ✅ from new hook
     COUNTRIES,
     selectedCountry,
     handleCountryChange,
@@ -53,8 +46,8 @@ const Auth = () => {
             className="mb-8"
           >
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-xl">
-                <TrendingUp className="w-7 h-7 text-primary-foreground" />
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center">
+                <img src={logo} alt="Jadwa Logo" />
               </div>
               <h1 className="text-4xl font-bold gradient-text">Jadwa Invest</h1>
             </div>
@@ -77,12 +70,12 @@ const Auth = () => {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
+          className="w-full max-w-lg"
         >
           {/* MOBILE LOGO */}
           <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-primary-foreground" />
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
+              <img src={logo} alt="Jadwa Logo" />
             </div>
             <span className="text-xl font-bold gradient-text">
               Jadwa Invest
@@ -125,9 +118,7 @@ const Auth = () => {
                     </label>
                     <div className="relative">
                       <User
-                        className={`absolute ${
-                          isRtl ? "right" : "left"
-                        }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                        className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
                       />
                       <Input
                         className="ps-10 h-11"
@@ -150,49 +141,22 @@ const Auth = () => {
                     {t("phone_number")}
                   </label>
 
-                  <div className="flex gap-2">
-                    {/* ✅ COUNTRY SELECT (sets country + dialCode in hook) */}
-                    <select
-                      className="h-11 rounded-lg border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                      value={formData.country}
-                      onChange={(e) => handleCountryChange(e.target.value)}
-                    >
-                      {COUNTRIES.map((c) => (
-                        <option key={c.code} value={c.code}>
-                          {c.name} ({c.dialCode})
-                        </option>
-                      ))}
-                    </select>
-
-                    {/* ✅ PHONE INPUT (LOCAL digits only) */}
-                    <div className="relative flex-1">
-                      <Phone
-                        className={`absolute ${
-                          isRtl ? "right" : "left"
-                        }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
-                      />
-
-                      {/* show dial code as a prefix chip */}
-                      <div
-                        className={`absolute top-1/2 -translate-y-1/2 ${
-                          isRtl ? "right-9" : "left-9"
-                        } text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground`}
-                      >
-                        {selectedCountry.dialCode}
-                      </div>
-
-                      <Input
-                        type="tel"
-                        className={`h-11 ${isRtl ? "pr-28" : "pl-28"} ${
-                          showWarn || showLengthError ? "border-red-500" : ""
-                        }`}
-                        value={formData.phone}
-                        onChange={handlePhoneNumberChange}
-                        placeholder="5XXXXXXXX"
-                        required
-                      />
-                    </div>
-                  </div>
+                  <PhoneInput
+                    countries={COUNTRIES}
+                    country={formData.country}
+                    phone={formData.phone}
+                    isRtl={isRtl}
+                    onCountryChange={(country) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        country: country.code,
+                        dialCode: country.dialCode,
+                      }))
+                    }
+                    onPhoneChange={(phone) =>
+                      setFormData((prev) => ({ ...prev, phone }))
+                    }
+                  />
 
                   {(showWarn || showLengthError) && (
                     <p className="text-xs text-red-500 mt-1 leading-tight">
@@ -208,9 +172,7 @@ const Auth = () => {
                   </label>
                   <div className="relative">
                     <Lock
-                      className={`absolute ${
-                        isRtl ? "right" : "left"
-                      }-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                      className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
                     />
                     <Input
                       type={showPassword ? "text" : "password"}
