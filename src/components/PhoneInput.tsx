@@ -7,6 +7,7 @@ export function PhoneInput({
   country,
   phone,
   isRtl,
+  isMobile,
   onCountryChange,
   onPhoneChange,
 }) {
@@ -19,8 +20,9 @@ export function PhoneInput({
   };
 
   return (
-    <div className="flex gap-2">
+    <div className={`${isMobile ? "space-y-2" : "flex"} gap-2`}>
       <CountrySelect
+        classes={isMobile ? "w-[100%]" : "w-[50%]"}
         countries={countries}
         value={country}
         onChange={onCountryChange}

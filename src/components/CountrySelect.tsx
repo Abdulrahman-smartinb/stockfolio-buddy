@@ -10,12 +10,13 @@ type Country = {
 };
 
 type Props = {
+  classes?: string;
   countries: Country[];
   value: string;
   onChange: (country: any) => void;
 };
 
-export function CountrySelect({ countries, value, onChange }: Props) {
+export function CountrySelect({ classes, countries, value, onChange }: Props) {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -31,7 +32,7 @@ export function CountrySelect({ countries, value, onChange }: Props) {
   }, [countries, search]);
 
   return (
-    <div className="relative w-full max-w-[50%]">
+    <div className={`relative w-full ${classes}`}>
       {/* Trigger */}
       <button
         type="button"

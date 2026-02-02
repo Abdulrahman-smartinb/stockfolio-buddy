@@ -24,6 +24,7 @@ const Auth = () => {
     showLengthError,
     COUNTRIES,
   } = useAuth();
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   return (
     <div
@@ -142,6 +143,7 @@ const Auth = () => {
                     country={formData.country}
                     phone={formData.phone}
                     isRtl={isRtl}
+                    isMobile={isMobile}
                     onCountryChange={(country) =>
                       setFormData((prev) => ({
                         ...prev,
