@@ -30,7 +30,10 @@ export const VerifyAccountModal = ({
   if (!isOpen) return null;
   const [openCamera, setOpenCamera] = useState(false);
 
-  const disableSubmit = !idNumber || !idPhoto || !livePhoto;
+  const disableSubmit =
+    !idPhoto ||
+    !livePhoto ||
+    (!idNumber && (!passportNumber || !passportExpDate));
 
   return (
     <AnimatePresence>
@@ -83,7 +86,10 @@ export const VerifyAccountModal = ({
                   {t("identity_section")}
                 </div>
 
-                <Field label={t("id_number")} required>
+                <Field
+                  label={t("id_number")}
+                  required={passportNumber?.length < 1}
+                >
                   <Input
                     type="number"
                     className="h-10 text-sm"
@@ -92,9 +98,12 @@ export const VerifyAccountModal = ({
                   />
                 </Field>
 
-                <Field label={t("passport_number")} required={false}>
+                <Field
+                  label={t("passport_number")}
+                  required={idNumber?.length < 1}
+                >
                   <Input
-                    type="number"
+                    type="text"
                     className="h-10 text-sm"
                     value={passportNumber}
                     onChange={(e) => setPassportNumber(e.target.value)}

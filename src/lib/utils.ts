@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import imageCompression from "browser-image-compression";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -23,7 +24,7 @@ export const formatNumber = (value: number) => {
 
   const withThousands = intPart.replace(
     /\B(?=(\d{3})+(?!\d))/g,
-    thousandSeparator
+    thousandSeparator,
   );
   if (!decimalPart || /^0+$/.test(decimalPart)) {
     return withThousands;
@@ -38,7 +39,7 @@ export const formatNumber = (value: number) => {
  */
 export const formatNumberCompact = (
   value: number,
-  maxDecimals: number = 1
+  maxDecimals: number = 1,
 ): string => {
   if (value === null || value === undefined || isNaN(value)) {
     return "";
@@ -74,4 +75,20 @@ export const formatNumberCompact = (
   }
 
   return (+value.toFixed(maxDecimals)).toString();
+};
+
+/**
+ * 🖼️ On-Browser image compressor
+ * @param {File} file - The image file to be compressed
+ * @returns {File} The compressed image file
+ */
+export const compressImage = async (file: File) => {
+  const options = {
+    maxSizeMB: 1.5, // target size
+    maxWidthOrHeight: 1600,
+    useWebWorker: true,
+    initialQuality: 0.7,
+  };
+
+  return await imageCompression(file, options);
 };

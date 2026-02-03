@@ -32,7 +32,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
   }, [countries, search]);
 
   return (
-    <div className={`relative w-full ${classes}`}>
+    <div className={`relative ${classes}`}>
       {/* Trigger */}
       <button
         type="button"

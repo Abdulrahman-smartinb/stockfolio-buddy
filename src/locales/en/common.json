@@ -103,7 +103,7 @@
   "capture": "Capture",
   "permission_denied": "Camera access denied!",
   "permission_denied_desc": "Please allow the use of the camera to take the photo",
-  "draft": "Draft",
+  "draft": "Unverified",
   "approved": "Verified",
   "pls_select": "Please select",
   "bank_transfer": "Bank transfer (Syria)",

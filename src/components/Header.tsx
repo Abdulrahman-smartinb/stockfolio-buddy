@@ -6,7 +6,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { isLoggedIn } from "@/hooks/helpers";
-import logo from "../../public/jadwa.webp";
+import logo from "../../public/jadwa.png";
 
 export const Header = () => {
   const { logout } = useAuth();

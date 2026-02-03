@@ -1,6 +1,6 @@
 {
   "name": "Jadwa Invest",
-  "short_name": "Jadwa Invest - Trade Smarter",
+  "short_name": "Jadwa",
   "description": "Modern stock trading platform. Track real-time prices and trade smarter.",
   "start_url": "/",
   "display": "standalone",

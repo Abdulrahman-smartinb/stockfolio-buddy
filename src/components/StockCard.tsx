@@ -11,6 +11,7 @@ interface StockCardProps {
 
 export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
   const { t } = useTranslation();
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   return (
     <motion.div
@@ -23,13 +24,16 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
     >
       {/* Header */}
       <div className="flex items-center justify-between gap-3 mb-4">
-        <div className="flex gap-2 w-2/3">
+        <div className="flex gap-2">
           <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center font-bold text-primary">
             {stock?.fullLegalName?.charAt(0).toUpperCase()}
           </div>
 
           <div>
-            <h3 className="font-bold text-foreground">
+            <h3
+              className={`font-bold text-foreground ${isMobile ? "max-w-[180px]" : ""}`}
+              style={{ fontSize: "14px" }}
+            >
               {stock?.fullLegalName}
             </h3>
             <p className="text-xs text-muted-foreground">
@@ -37,7 +41,7 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
             </p>
           </div>
         </div>
-        <div className="flex gap-2 w-1/3">
+        <div className="flex gap-2">
           <button
             onClick={() => onAction("buy")}
             style={{ fontSize: "12px" }}

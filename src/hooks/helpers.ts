@@ -5,7 +5,7 @@ export const isLoggedIn = (): boolean => {
 
 export const isInvestor = () => {
   try {
-    const role = JSON.parse(localStorage.getItem("role") || "");
+    const role = localStorage.getItem("role") || null;
     return role === "investor";
   } catch {
     return false;
@@ -31,7 +31,7 @@ const niceRound = (value: number) => {
 export const generateQuickShareOptions = (
   minShares: number,
   maxShares: number,
-  totalOptions = 4
+  totalOptions = 4,
 ): number[] => {
   const min = Math.max(1, minShares);
   const max = Math.max(min, maxShares);

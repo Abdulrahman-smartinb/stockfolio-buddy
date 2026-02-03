@@ -10,7 +10,6 @@ import {
   useGetOneInvestorQuery,
   useUpdateInvestorMutation,
 } from "@/store/api/investorApi";
-import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { BankTranfer, ShamCash, Usdt, UserData } from "@/interfaces/UserData";
 import {
@@ -18,6 +17,7 @@ import {
   useUpdateApplicantProfileMutation,
 } from "@/store/api/applicantApi";
 import { useGetShareHolderStaticsQuery } from "@/store/api/shares/shareHoldersApi";
+import { compressImage } from "@/lib/utils";
 
 export const useProfile = () => {
   const { t } = useTranslation();
@@ -27,7 +27,9 @@ export const useProfile = () => {
 
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  const role = JSON.parse(localStorage.getItem("role") || "");
+  const [role, setRole] = useState<string | null>(() => {
+    return localStorage.getItem("role");
+  });
   const profile = JSON.parse(localStorage.getItem("profile") || "{}");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
@@ -52,7 +54,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profile?.authUserId },
-    { skip: role === "investor" },
+    { skip: role !== "applicant" },
   );
   const {
     data: investor,
@@ -60,7 +62,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profile?.authUserId },
-    { skip: role === "applicant" },
+    { skip: role !== "investor" },
   );
 
   // const { data: SharesData, isLoading: LoadingShares } =
@@ -70,12 +72,20 @@ export const useProfile = () => {
   //   );
 
   useEffect(() => {
-    if (role === "investor") {
+    console.log(`applicant`, applicant);
+    console.log(`investor`, investor);
+    if (role === "investor" && investor?.data) {
       setUser(investor?.data);
-    } else if (role === "applicant") {
-      setUser(applicant?.data);
+      setRole(investor?.role);
+      localStorage.setItem("role", investor?.role);
     }
-  }, [applicant, investor]);
+
+    if (role === "applicant" && applicant?.data) {
+      setUser(applicant?.data);
+      setRole(applicant?.role);
+      localStorage.setItem("role", applicant?.role);
+    }
+  }, [role, investor, applicant]);
 
   const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery({
     id: user?._id,
@@ -232,7 +242,11 @@ export const useProfile = () => {
   };
 
   const handleSubmit = async () => {
-    if (!idPhoto || !livePhoto || !idNumber) {
+    if (
+      !idPhoto ||
+      !livePhoto ||
+      (!idNumber && (!passportNumber || !passportExpDate))
+    ) {
       toast({ title: t("fill_all"), variant: "destructive" });
       return;
     }
@@ -246,8 +260,17 @@ export const useProfile = () => {
     try {
       const formData = new FormData();
 
-      formData.append("idPhoto", idPhoto);
-      formData.append("livePhoto", livePhoto);
+      const compressedIdPhoto = await compressImage(idPhoto);
+      const compressedLivePhoto = await compressImage(livePhoto);
+      console.log("Original ID photo size: ", idPhoto.size / 1024 / 1024, "MB");
+      console.log(
+        "Compressed ID photo size: ",
+        compressedIdPhoto.size / 1024 / 1024,
+        "MB",
+      );
+
+      formData.append("idPhoto", compressedIdPhoto);
+      formData.append("livePhoto", compressedLivePhoto);
       formData.append("passportNumber", passportNumber);
       if (passportNumber?.trim()?.length > 0)
         formData.append("passportExpDate", passportExpDate);
@@ -313,6 +336,7 @@ export const useProfile = () => {
   };
 
   return {
+    loadingUser: isLoadingUser || isLoadingInvestor,
     user,
     purchaseHistory,
     isLoading,

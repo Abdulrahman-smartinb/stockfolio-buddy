@@ -176,13 +176,14 @@ export const useAuth = () => {
 
       localStorage.setItem("authToken", response.token);
       localStorage.setItem("profile", JSON.stringify(response.profile));
-      localStorage.setItem("role", JSON.stringify(response.role));
+      localStorage.setItem("role", response.role);
 
       setIsAuthenticated(true);
 
       toast({
         title: mode === "login" ? t("welcome") : t("account_created"),
         description: t("signed_in"),
+        duration: 1000,
       });
 
       navigate("/");

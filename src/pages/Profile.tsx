@@ -11,7 +11,6 @@ import {
   PenBox,
   CheckCircle2,
   Verified,
-  Camera,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
@@ -21,14 +20,22 @@ import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
 import { useTranslation } from "react-i18next";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
-import { Field } from "@/components/ui/Field";
 import { base_url } from "@/api/GlobalData";
+import { RingLoader } from "react-spinners";
+import { CSSProperties } from "react";
+
+const override: CSSProperties = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 const Profile = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
 
   const {
+    loadingUser,
     user,
     purchaseHistory,
     isLoading,
@@ -139,251 +146,328 @@ const Profile = () => {
             </p>
           </motion.div>
 
-          {/* Stats Grid */}
-          {role === "investor" && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
-            >
-              {stats.map((stat, index) => (
+          {loadingUser ? (
+            <RingLoader
+              color={"#10b77f"}
+              loading={loadingUser}
+              cssOverride={override}
+              size={150}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+            />
+          ) : (
+            <>
+              {/* Stats Grid */}
+              {role === "investor" && (
                 <motion.div
-                  key={stat.label}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.1 + index * 0.05 }}
-                  className="glass-card rounded-xl p-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
                 >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}
+                  {stats.map((stat, index) => (
+                    <motion.div
+                      key={stat.label}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      className="glass-card rounded-xl p-4"
                     >
-                      <stat.icon className={`w-5 h-5 ${stat.color}`} />
-                    </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">
-                        {t(stat.label)}
-                      </p>
-                      <p className={`text-lg font-bold ${stat.color}`}>
-                        {stat.value}
-                      </p>
-                      {stat.subValue && (
-                        <p className="text-xs text-muted-foreground">
-                          {stat.subValue}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-
-          {/* PERSONAL INFO */}
-          <motion.div variants={itemVariants}>
-            <Card className="border-border/50">
-              <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                    <User className="w-4 h-4 text-primary" />
-                    {t("personal_info")}
-                  </CardTitle>
-
-                  <div
-                    className={`flex items-center gap-2 ${
-                      isMobile ? "flex-col items-stretch" : ""
-                    }`}
-                  >
-                    {/* Verify Account */}
-                    {role !== "investor" &&
-                      !isEditing &&
-                      user?.reviewStatus !== "approved" &&
-                      user?.reviewStatus !== "pending" && (
-                        <button
-                          onClick={() => setOpenVerify(true)}
-                          className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium border border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 transition"
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-10 h-10 rounded-lg ${stat.bgColor} flex items-center justify-center`}
                         >
-                          <Verified className="w-4 h-4" />
-                          {t("verify")}
-                        </button>
-                      )}
+                          <stat.icon className={`w-5 h-5 ${stat.color}`} />
+                        </div>
+                        <div>
+                          <p className="text-xs text-muted-foreground">
+                            {t(stat.label)}
+                          </p>
+                          <p className={`text-lg font-bold ${stat.color}`}>
+                            {stat.value}
+                          </p>
+                          {stat.subValue && (
+                            <p className="text-xs text-muted-foreground">
+                              {stat.subValue}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
 
-                    {/* Edit / Save */}
-                    <button
-                      onClick={
-                        isEditing ? handleSaveProfile : () => setIsEditing(true)
-                      }
-                      disabled={isSaving}
-                      className={`inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition ${isEditing ? "bg-primary text-white hover:bg-primary/90" : "border border-border text-muted-foreground hover:bg-muted"} ${isSaving ? "opacity-60 cursor-not-allowed" : ""}`}
-                    >
-                      {isEditing ? (
-                        <>
-                          <CheckCircle2 className="w-4 h-4" />
-                          {t("save")}
-                        </>
-                      ) : (
-                        <>
-                          <PenBox className="w-4 h-4" />
-                          {t("edit")}
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </CardHeader>
+              {/* PERSONAL INFO */}
+              <motion.div variants={itemVariants}>
+                <Card className="border-border/50">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                        <User className="w-4 h-4 text-primary" />
+                        {t("personal_info")}
+                      </CardTitle>
 
-              <CardContent className="space-y-5">
-                {/* AVATAR + NAME */}
-                <div className="flex items-center gap-3">
-                  <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    {editData.profilePreview ? (
-                      <img
-                        src={base_url + `Investor/` + editData.profilePreview}
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-lg sm:text-2xl font-bold text-white">
-                        {user?.fullName?.charAt(0).toUpperCase()}
-                      </span>
-                    )}
+                      <div
+                        className={`flex items-center gap-2 ${
+                          isMobile ? "flex-col items-stretch" : ""
+                        }`}
+                      >
+                        {/* Verify Account */}
+                        {role !== "investor" &&
+                          !isEditing &&
+                          user?.reviewStatus !== "approved" &&
+                          user?.reviewStatus !== "pending" && (
+                            <button
+                              onClick={() => setOpenVerify(true)}
+                              className="inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium border border-primary/30 text-primary bg-primary/5 hover:bg-primary/10 transition"
+                            >
+                              <Verified className="w-4 h-4" />
+                              {t("verify")}
+                            </button>
+                          )}
 
-                    {isEditing && (
-                      <label className="absolute inset-0 bg-black/50 flex items-center justify-center text-[10px] text-white cursor-pointer">
-                        {t("change")}
-                        <input
-                          type="file"
-                          className="hidden"
-                          accept="image/*"
-                          onChange={(e) =>
-                            handleProfileImageChange(e.target.files?.[0])
+                        {/* Edit / Save */}
+                        <button
+                          onClick={
+                            isEditing
+                              ? handleSaveProfile
+                              : () => setIsEditing(true)
                           }
-                        />
-                      </label>
-                    )}
-                  </div>
-
-                  <div className="flex-1">
-                    {!isEditing ? (
-                      <>
-                        <p className="text-sm sm:text-xl font-semibold">
-                          {user?.fullName}
-                          {role !== "investor" && (
+                          disabled={isSaving}
+                          className={`inline-flex items-center justify-center gap-2 px-3 py-1.5 rounded-md text-xs sm:text-sm font-medium transition ${isEditing ? "bg-primary text-white hover:bg-primary/90" : "border border-border text-muted-foreground hover:bg-muted"} ${isSaving ? "opacity-60 cursor-not-allowed" : ""}`}
+                        >
+                          {isEditing ? (
                             <>
-                              -{" "}
-                              <span
-                                className={
-                                  REVIEW_STATUS_STYLES[user?.reviewStatus]
-                                }
-                              >
-                                {t(user?.reviewStatus)}
-                              </span>
+                              <CheckCircle2 className="w-4 h-4" />
+                              {t("save")}
+                            </>
+                          ) : (
+                            <>
+                              <PenBox className="w-4 h-4" />
+                              {t("edit")}
                             </>
                           )}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {t("member_since")}{" "}
-                          {format(user?.createdAt || Date.now(), "MMM yyyy")}
-                        </p>
-                      </>
-                    ) : (
-                      <Input
-                        className="h-9 text-sm"
-                        value={editData.fullName}
-                        onChange={(e) =>
-                          setEditData((p) => ({
-                            ...p,
-                            fullName: e.target.value,
-                          }))
-                        }
-                      />
-                    )}
-                  </div>
-                </div>
-
-                {/* INFO GRID */}
-                <div className="grid gap-3 sm:grid-cols-3">
-                  {/* EMAIL */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg">
-                    <Mail className="w-4 h-4 text-primary" />
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">
-                        {t("email")}
-                      </p>
-                      {!isEditing ? (
-                        <p className="text-sm font-medium">{user?.email}</p>
-                      ) : (
-                        <Input
-                          className="h-8 text-sm"
-                          value={editData.email}
-                          onChange={(e) =>
-                            setEditData((p) => ({
-                              ...p,
-                              email: e.target.value,
-                            }))
-                          }
-                        />
-                      )}
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                  </CardHeader>
 
-                  {/* PHONE */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg">
-                    <Phone className="w-4 h-4 text-primary" />
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">
-                        {t("phone")}
-                      </p>
-                      {!isEditing ? (
-                        <p className="text-sm font-medium">{user?.phone}</p>
-                      ) : (
-                        <Input
-                          className="h-8 text-sm"
-                          value={editData.phone}
-                          onChange={(e) =>
-                            setEditData((p) => ({
-                              ...p,
-                              phone: e.target.value,
-                            }))
-                          }
-                        />
-                      )}
-                    </div>
-                  </div>
+                  <CardContent className="space-y-5">
+                    {/* AVATAR + NAME */}
+                    <div className="flex items-center gap-3">
+                      <div className="relative w-14 h-14 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                        {editData.profilePreview ? (
+                          <img
+                            src={
+                              base_url + `/Investor/` + editData.profilePreview
+                            }
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-lg sm:text-2xl font-bold text-white">
+                            {user?.fullName?.charAt(0).toUpperCase()}
+                          </span>
+                        )}
 
-                  {/* BIRTH DATE */}
-                  <div className="flex items-center gap-3 p-3 rounded-lg">
-                    <Calendar className="w-4 h-4 text-primary" />
-                    <div className="flex-1">
-                      <p className="text-xs text-muted-foreground">
-                        {t("birth_date")}
-                      </p>
-                      {!isEditing ? (
-                        <p className="text-sm font-medium">
-                          {user?.birthDate
-                            ? format(user?.birthDate, "MMM yyyy")
-                            : "—"}
-                        </p>
-                      ) : (
-                        <Input
-                          type="date"
-                          className="h-8 text-sm"
-                          value={editData.birthDate}
-                          onChange={(e) =>
-                            setEditData((p) => ({
-                              ...p,
-                              birthDate: e.target.value,
-                            }))
-                          }
-                        />
-                      )}
+                        {isEditing && (
+                          <label className="absolute inset-0 bg-black/50 flex items-center justify-center text-[10px] text-white cursor-pointer">
+                            {t("change")}
+                            <input
+                              type="file"
+                              className="hidden"
+                              accept="image/*"
+                              onChange={(e) =>
+                                handleProfileImageChange(e.target.files?.[0])
+                              }
+                            />
+                          </label>
+                        )}
+                      </div>
+
+                      <div className="flex-1">
+                        {!isEditing ? (
+                          <>
+                            <p className="text-sm sm:text-xl font-semibold">
+                              {user?.fullName}
+                              {role !== "investor" && (
+                                <>
+                                  -{" "}
+                                  <span
+                                    className={
+                                      REVIEW_STATUS_STYLES[user?.reviewStatus]
+                                    }
+                                  >
+                                    {t(user?.reviewStatus)}
+                                  </span>
+                                </>
+                              )}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {t("member_since")}{" "}
+                              {format(
+                                user?.createdAt || Date.now(),
+                                "MMM yyyy",
+                              )}
+                            </p>
+                          </>
+                        ) : (
+                          <Input
+                            className="h-9 text-sm"
+                            value={editData.fullName}
+                            onChange={(e) =>
+                              setEditData((p) => ({
+                                ...p,
+                                fullName: e.target.value,
+                              }))
+                            }
+                          />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-          {/* <motion.div variants={itemVariants}>
+
+                    {/* INFO GRID */}
+                    <div className="grid gap-3 sm:grid-cols-3">
+                      {/* EMAIL */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg">
+                        <Mail className="w-4 h-4 text-primary" />
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground">
+                            {t("email")}
+                          </p>
+                          {!isEditing ? (
+                            <p className="text-sm font-medium">{user?.email}</p>
+                          ) : (
+                            <Input
+                              className="h-8 text-sm"
+                              value={editData.email}
+                              onChange={(e) =>
+                                setEditData((p) => ({
+                                  ...p,
+                                  email: e.target.value,
+                                }))
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* PHONE */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg">
+                        <Phone className="w-4 h-4 text-primary" />
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground">
+                            {t("phone")}
+                          </p>
+                          {!isEditing ? (
+                            <p className="text-sm font-medium">{user?.phone}</p>
+                          ) : (
+                            <Input
+                              className="h-8 text-sm"
+                              value={editData.phone}
+                              onChange={(e) =>
+                                setEditData((p) => ({
+                                  ...p,
+                                  phone: e.target.value,
+                                }))
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+
+                      {/* BIRTH DATE */}
+                      <div className="flex items-center gap-3 p-3 rounded-lg">
+                        <Calendar className="w-4 h-4 text-primary" />
+                        <div className="flex-1">
+                          <p className="text-xs text-muted-foreground">
+                            {t("birth_date")}
+                          </p>
+                          {!isEditing ? (
+                            <p className="text-sm font-medium">
+                              {user?.birthDate
+                                ? format(user?.birthDate, "MMM yyyy")
+                                : "—"}
+                            </p>
+                          ) : (
+                            <Input
+                              type="date"
+                              className="h-8 text-sm"
+                              value={editData.birthDate}
+                              onChange={(e) =>
+                                setEditData((p) => ({
+                                  ...p,
+                                  birthDate: e.target.value,
+                                }))
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+
+              {/* TRANSACTION HISTORY */}
+              {role === "investor" && (
+                <motion.div variants={itemVariants}>
+                  <TransactionHistory
+                    isLoading={isLoading}
+                    data={purchaseHistory?.data}
+                    page={page}
+                    setPage={setPage}
+                    limit={limit}
+                    setLimit={setLimit}
+                    totalPages={purchaseHistory?.totalPages}
+                  />
+                </motion.div>
+              )}
+
+              {/* PENDING REQUESTS */}
+              {role === "investor" && (
+                <motion.div variants={itemVariants}>
+                  <PendingRequests
+                    isLoading={loadingRequests}
+                    data={purchaseRequests?.data}
+                  />
+                </motion.div>
+              )}
+            </>
+          )}
+        </motion.div>
+      </main>
+
+      <VerifyAccountModal
+        isOpen={openVerify}
+        onClose={handleClose}
+        t={t}
+        isMobile={isMobile}
+        idNumber={idNumber}
+        setIdNumber={setIdNumber}
+        passportNumber={passportNumber}
+        setPassportNumber={setPassportNumber}
+        passportExpDate={passportExpDate}
+        setPassportExpDate={setPassportExpDate}
+        idPhoto={idPhoto}
+        setIdPhoto={setIdPhoto}
+        livePhoto={livePhoto}
+        setLivePhoto={setLivePhoto}
+        livePhotoPreview={livePhotoPreview}
+        setLivePhotoPreview={setLivePhotoPreview}
+        onSubmit={handleSubmit}
+        isSubmitting={isSubmitting}
+      />
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Profile;
+
+{
+  /* <motion.div variants={itemVariants}>
 
             <div className="rounded-xl border p-4 space-y-4">
               <div className="text-sm font-semibold">
@@ -601,59 +685,5 @@ const Profile = () => {
                 </div>
               )}
             </div>
-          </motion.div> */}
-
-          {/* TRANSACTION HISTORY */}
-          {role === "investor" && (
-            <motion.div variants={itemVariants}>
-              <TransactionHistory
-                isLoading={isLoading}
-                data={purchaseHistory?.data}
-                page={page}
-                setPage={setPage}
-                limit={limit}
-                setLimit={setLimit}
-                totalPages={purchaseHistory?.totalPages}
-              />
-            </motion.div>
-          )}
-
-          {/* PENDING REQUESTS */}
-          {role === "investor" && (
-            <motion.div variants={itemVariants}>
-              <PendingRequests
-                isLoading={loadingRequests}
-                data={purchaseRequests?.data}
-              />
-            </motion.div>
-          )}
-        </motion.div>
-      </main>
-
-      <VerifyAccountModal
-        isOpen={openVerify}
-        onClose={handleClose}
-        t={t}
-        isMobile={isMobile}
-        idNumber={idNumber}
-        setIdNumber={setIdNumber}
-        passportNumber={passportNumber}
-        setPassportNumber={setPassportNumber}
-        passportExpDate={passportExpDate}
-        setPassportExpDate={setPassportExpDate}
-        idPhoto={idPhoto}
-        setIdPhoto={setIdPhoto}
-        livePhoto={livePhoto}
-        setLivePhoto={setLivePhoto}
-        livePhotoPreview={livePhotoPreview}
-        setLivePhotoPreview={setLivePhotoPreview}
-        onSubmit={handleSubmit}
-        isSubmitting={isSubmitting}
-      />
-
-      <Footer />
-    </div>
-  );
-};
-
-export default Profile;
+          </motion.div> */
+}

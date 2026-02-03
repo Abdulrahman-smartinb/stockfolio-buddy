@@ -28,7 +28,7 @@ export function PhoneInput({
         onChange={onCountryChange}
       />
 
-      <div className="relative flex-1">
+      <div className={`relative flex-1 ${isMobile ? "w-[100%]" : "w-[50%]"}`}>
         <Phone className="absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 
         <div className="absolute top-1/2 -translate-y-1/2 ms-9 text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
