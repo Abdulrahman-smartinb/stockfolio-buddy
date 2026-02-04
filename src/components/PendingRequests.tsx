@@ -7,6 +7,7 @@ import { PendingRequestItem } from "@/interfaces/Stocks";
 import { ChangeEvent, useRef } from "react";
 import { useUploadReceiptMutation } from "@/store/api/stocksApi";
 import { toast } from "@/hooks/use-toast";
+import { isMobile } from "@/hooks/helpers";
 
 interface PendingRequestsProps {
   isLoading: boolean;
@@ -166,7 +167,9 @@ const PendingRequests = ({
                 </div>
 
                 {/* Middle side */}
-                <div className="flex items-start gap-3 max-w-[40%]">
+                <div
+                  className={`flex items-start gap-3 ${isMobile ? "max-w-[100%]" : "max-w-[40%]"}`}
+                >
                   {request?.requestStatus === "rejected" && (
                     <div className="border bg-destructive/80 rounded-sm p-2 text-white">
                       <b>{t("rejection_reason")}</b>

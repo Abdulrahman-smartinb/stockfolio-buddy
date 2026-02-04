@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { PhoneInput } from "@/components/PhoneInput";
 import logo from "../../public/jadwa.webp";
+import { isMobile } from "@/hooks/helpers";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
@@ -24,7 +25,6 @@ const Auth = () => {
     showLengthError,
     COUNTRIES,
   } = useAuth();
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   return (
     <div

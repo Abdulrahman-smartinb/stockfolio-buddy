@@ -17,7 +17,6 @@ const useHeader = () => {
   const loggedIn = isLoggedIn();
   const path = location.pathname;
   const userObj = JSON.parse(localStorage.getItem("profile"));
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   const {
     data: notifications = [],
@@ -51,7 +50,6 @@ const useHeader = () => {
     unreadCount,
     userObj,
     refetch,
-    isMobile,
   };
 };
 export default useHeader;

@@ -25,8 +25,6 @@ export const useProfile = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
-
   const profile = JSON.parse(localStorage.getItem("profile") || "{}");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
@@ -373,6 +371,5 @@ export const useProfile = () => {
     setShamCashData,
     usdtData,
     setUsdtData,
-    isMobile,
   };
 };

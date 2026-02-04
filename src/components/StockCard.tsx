@@ -1,3 +1,4 @@
+import { isMobile } from "@/hooks/helpers";
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { motion } from "framer-motion";
 import { TrendingUp } from "lucide-react";
@@ -11,7 +12,6 @@ interface StockCardProps {
 
 export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
   const { t } = useTranslation();
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
   return (
     <motion.div

@@ -23,6 +23,7 @@ import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { base_url } from "@/api/GlobalData";
 import { RingLoader } from "react-spinners";
 import { CSSProperties } from "react";
+import { isMobile } from "@/hooks/helpers";
 
 const override: CSSProperties = {
   display: "block",
@@ -82,7 +83,6 @@ const Profile = () => {
     setShamCashData,
     usdtData,
     setUsdtData,
-    isMobile,
   } = useProfile();
 
   // const transactions = purchaseHistory?.data ?? [];

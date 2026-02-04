@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import logo from "../../public/jadwa.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
+import { isMobile } from "@/hooks/helpers";
 
 export const Header = () => {
   const {
@@ -24,7 +25,6 @@ export const Header = () => {
     unreadCount,
     userObj,
     refetch,
-    isMobile,
   } = useHeader();
 
   return (
@@ -136,7 +136,7 @@ export const Header = () => {
 
             {open && (
               <div
-                className={`absolute ${i18n.language == "en" ? "right" : "left"}-1 mt-3 rounded-xl border border-border bg-background shadow-lg z-50 ${isMobile ? "w-92" : "w-96"}`}
+                className={`absolute ${i18n.language == "en" ? "right" : "left"}-1 mt-3 rounded-xl border border-border bg-background shadow-lg z-50 ${isMobile ? "w-[20rem]" : "w-[24rem]"}`}
               >
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b">

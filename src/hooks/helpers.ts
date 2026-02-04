@@ -55,3 +55,5 @@ export const generateQuickShareOptions = (
 
   return Array.from(options).sort((a, b) => a - b);
 };
+
+export const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
