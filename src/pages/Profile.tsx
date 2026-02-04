@@ -11,6 +11,7 @@ import {
   PenBox,
   CheckCircle2,
   Verified,
+  Gem,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
@@ -123,6 +124,14 @@ const Profile = () => {
       icon: DollarSign,
       color: "text-primary",
       bgColor: "bg-primary/10",
+    },
+
+    {
+      label: t("pending_requests"),
+      value: purchaseRequests?.data?.length ?? 0,
+      icon: Gem,
+      color: "text-warning",
+      bgColor: "bg-warning/10",
     },
   ];
 
