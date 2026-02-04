@@ -429,7 +429,7 @@ const Profile = () => {
                 <motion.div variants={itemVariants}>
                   <PendingRequests
                     isLoading={loadingRequests}
-                    data={purchaseRequests?.data}
+                    data={purchaseRequests}
                   />
                 </motion.div>
               )}

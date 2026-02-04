@@ -8,6 +8,7 @@ import { baseApi } from "./baseApi";
 import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 import {
   CreatePurchaseRequestPayload,
+  PendingRequestItem,
   PurchaseHistory,
 } from "@/interfaces/Stocks";
 import { ApiResponse } from "@/interfaces/Global";
@@ -76,7 +77,7 @@ export const stocksApi = baseApi.injectEndpoints({
       providesTags: ["Stocks"],
     }),
 
-    getInvestorPurchaseRequests: builder.query<PurchaseHistory, string>({
+    getInvestorPurchaseRequests: builder.query<PendingRequestItem[], string>({
       query: (id) => {
         return `${shareTradeRequestEP}/investor/${id}`;
       },

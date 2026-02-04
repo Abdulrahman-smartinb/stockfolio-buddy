@@ -183,7 +183,6 @@ export const useAuth = () => {
       toast({
         title: mode === "login" ? t("welcome") : t("account_created"),
         description: t("signed_in"),
-        duration: 1000,
       });
 
       navigate("/");

@@ -72,8 +72,6 @@ export const useProfile = () => {
   //   );
 
   useEffect(() => {
-    console.log(`applicant`, applicant);
-    console.log(`investor`, investor);
     if (role === "investor" && investor?.data) {
       setUser(investor?.data);
       setRole(investor?.role);
@@ -262,12 +260,6 @@ export const useProfile = () => {
 
       const compressedIdPhoto = await compressImage(idPhoto);
       const compressedLivePhoto = await compressImage(livePhoto);
-      console.log("Original ID photo size: ", idPhoto.size / 1024 / 1024, "MB");
-      console.log(
-        "Compressed ID photo size: ",
-        compressedIdPhoto.size / 1024 / 1024,
-        "MB",
-      );
 
       formData.append("idPhoto", compressedIdPhoto);
       formData.append("livePhoto", compressedLivePhoto);
