@@ -1,5 +1,4 @@
 import {
-  investorSharesEP,
   sharePurchaseRequestEP,
   shareTradeRequestEP,
   stocksEP,
@@ -68,6 +67,7 @@ export const stocksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Stocks"],
     }),
+    //THIS IS GET ONE
     getPurchaseHistory: builder.query<
       PurchaseHistory,
       { id: string; page: number; limit: number }
@@ -83,6 +83,13 @@ export const stocksApi = baseApi.injectEndpoints({
       },
       providesTags: ["Stocks"],
     }),
+    uploadReceipt: builder.mutation({
+      query: ({ id, formData }) => ({
+        url: `${shareTradeRequestEP}/${id}/payment-doc`,
+        method: "PATCH",
+        body: formData,
+      }),
+    }),
   }),
 });
 
@@ -92,4 +99,5 @@ export const {
   useCreatePurchaseRequestMutation,
   useGetPurchaseHistoryQuery,
   useGetInvestorPurchaseRequestsQuery,
+  useUploadReceiptMutation,
 } = stocksApi;

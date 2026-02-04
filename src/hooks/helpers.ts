@@ -5,7 +5,7 @@ export const isLoggedIn = (): boolean => {
 
 export const isInvestor = () => {
   try {
-    const role = localStorage.getItem("role") || null;
+    const role = JSON.parse(localStorage.getItem("profile")).role || null;
     return role === "investor";
   } catch {
     return false;

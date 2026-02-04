@@ -37,10 +37,11 @@ const Profile = () => {
   const {
     loadingUser,
     user,
-    purchaseHistory,
-    isLoading,
+    // purchaseHistory,
+    // isLoading,
     purchaseRequests,
     loadingRequests,
+    refetchRequests,
     isEditing,
     setIsEditing,
     containerVariants,
@@ -84,32 +85,32 @@ const Profile = () => {
     isMobile,
   } = useProfile();
 
-  const transactions = purchaseHistory?.data ?? [];
+  // const transactions = purchaseHistory?.data ?? [];
 
-  const { ownedShares, investedValue } = transactions.reduce(
-    (acc, tx) => {
-      if (tx.type === "buy") {
-        acc.ownedShares += tx.shares;
-        acc.investedValue += tx.purchaseValue;
-      }
+  // const { ownedShares, investedValue } = transactions.reduce(
+  //   (acc, tx) => {
+  //     if (tx.type === "buy") {
+  //       acc.ownedShares += tx.shares;
+  //       acc.investedValue += tx.purchaseValue;
+  //     }
 
-      if (tx.type === "sell") {
-        acc.ownedShares -= tx.shares;
-        acc.investedValue -= tx.purchaseValue;
-      }
+  //     if (tx.type === "sell") {
+  //       acc.ownedShares -= tx.shares;
+  //       acc.investedValue -= tx.purchaseValue;
+  //     }
 
-      return acc;
-    },
-    {
-      ownedShares: 0,
-      investedValue: 0,
-    },
-  );
+  //     return acc;
+  //   },
+  //   {
+  //     ownedShares: 0,
+  //     investedValue: 0,
+  //   },
+  // );
 
   const stats = [
     {
       label: t("total_shares"),
-      value: `${ownedShares} ${t("shares")}`,
+      value: `${1} ${t("shares")}`,
       subValue: "NVDA",
       icon: TrendingUp,
       color: "text-success",
@@ -118,7 +119,7 @@ const Profile = () => {
 
     {
       label: t("shares_value"),
-      value: `${investedValue} USD`,
+      value: `${1} USD`,
       icon: DollarSign,
       color: "text-primary",
       bgColor: "bg-primary/10",
@@ -410,7 +411,7 @@ const Profile = () => {
               </motion.div>
 
               {/* TRANSACTION HISTORY */}
-              {role === "investor" && (
+              {/*role === "investor" && (
                 <motion.div variants={itemVariants}>
                   <TransactionHistory
                     isLoading={isLoading}
@@ -422,7 +423,7 @@ const Profile = () => {
                     totalPages={purchaseHistory?.totalPages}
                   />
                 </motion.div>
-              )}
+              )*/}
 
               {/* PENDING REQUESTS */}
               {role === "investor" && (
@@ -430,6 +431,7 @@ const Profile = () => {
                   <PendingRequests
                     isLoading={loadingRequests}
                     data={purchaseRequests}
+                    refetch={refetchRequests}
                   />
                 </motion.div>
               )}

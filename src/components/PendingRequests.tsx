@@ -4,14 +4,67 @@ import { Clock, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 import { PendingRequestItem } from "@/interfaces/Stocks";
+import { ChangeEvent, useRef } from "react";
+import { useUploadReceiptMutation } from "@/store/api/stocksApi";
+import { toast } from "@/hooks/use-toast";
 
 interface PendingRequestsProps {
   isLoading: boolean;
   data?: PendingRequestItem[];
+  refetch: () => void;
 }
 
-const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
+const PendingRequests = ({
+  isLoading,
+  data,
+  refetch,
+}: PendingRequestsProps) => {
   const { t } = useTranslation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploadReceipt, { isLoading: isUploading, error }] =
+    useUploadReceiptMutation();
+
+  const handleFileChange = async (
+    e: ChangeEvent<HTMLInputElement>,
+    request: PendingRequestItem,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type (Images or PDF)
+    const isPDF = file.type === "application/pdf";
+    const isImage = file.type.startsWith("image/");
+    if (!isPDF && !isImage) {
+      toast({
+        title: t("unsupported_file"),
+        variant: "destructive",
+        description: t("supported_files_pdf_img"),
+        duration: 5000,
+      });
+      return;
+    }
+
+    // Create FormData for the backend
+    const formData = new FormData();
+    formData.append("paymentConfirmationDocument", file);
+
+    try {
+      await uploadReceipt({ id: request._id, formData }).unwrap();
+      toast({
+        title: t("file_uploaded"),
+        variant: "default",
+      });
+      refetch();
+    } catch (err) {
+      console.error("Upload failed", err);
+      toast({
+        title: t("error_while_uploading"),
+        variant: "default",
+        description: error?.data?.message || err.message,
+        duration: 5000,
+      });
+    }
+  };
 
   return (
     <Card>
@@ -25,8 +78,8 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
       <CardContent className="space-y-2">
         {isLoading ? (
           <div className="h-20 bg-muted/50 rounded-lg animate-pulse" />
-        ) : data?.length ? (
-          data.map((request) => {
+        ) : data?.data?.length ? (
+          data?.data?.map((request: PendingRequestItem) => {
             const isBuy = request.tradeType === "buy";
             const shares = Number(request.numberOfShares || 0);
             const price = Number(request.pricePerShare || 0);
@@ -42,8 +95,7 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
                 key={request._id}
                 className="
                   flex flex-col gap-3
-                  rounded-lg bg-muted/30
-                  px-3 py-2.5
+                  rounded-lg bg-muted/30 px-3 py-2.5
                   sm:flex-row sm:items-center sm:justify-between
                 "
               >
@@ -69,27 +121,37 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge
                         variant="outline"
-                        className={`text-[10px] px-2 py-0.5 ${
+                        className={`text-[10px] uppercase px-2 py-0.5 ${
                           isBuy
                             ? "border-primary text-primary"
                             : "border-destructive text-destructive"
                         }`}
                       >
-                        {request.tradeType.toUpperCase()}
+                        {t(request?.tradeType)}
                       </Badge>
 
                       <Badge
-                        variant="secondary"
+                        variant={
+                          request.requestStatus === "approved"
+                            ? "warning"
+                            : request.requestStatus === "pending"
+                              ? "info"
+                              : request.requestStatus === "rejected"
+                                ? "destructive"
+                                : "default"
+                        }
                         className="text-[10px] capitalize"
                       >
-                        {t(request.requestStatus)}
+                        {request.requestStatus === "approved"
+                          ? t("pending_payment_doc")
+                          : t(request.requestStatus)}
                       </Badge>
 
                       <Badge
                         variant="outline"
                         className="text-[10px] px-2 py-0.5 capitalize"
                       >
-                        {request.sourceType}
+                        {t(request?.sourceType?.toLowerCase())}
                       </Badge>
                     </div>
 
@@ -98,9 +160,43 @@ const PendingRequests = ({ isLoading, data }: PendingRequestsProps) => {
 
                     {/* Shares x price */}
                     <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
-                      {shares} {t("shares")} × ${price.toFixed(2)}
+                      {shares} {t("share_s")} × ${price.toFixed(2)}
                     </p>
                   </div>
+                </div>
+
+                {/* Middle side */}
+                <div className="flex items-start gap-3 max-w-[40%]">
+                  {request?.requestStatus === "rejected" && (
+                    <div className="border bg-destructive/80 rounded-sm p-2 text-white">
+                      <b>{t("rejection_reason")}</b>
+                      <p>{request?.rejectionReason}</p>
+                    </div>
+                  )}
+                  {request?.requestStatus === "approved" && (
+                    <>
+                      {/* Hidden Input */}
+                      <input
+                        type="file"
+                        accept=".pdf,image/*"
+                        onChange={(e) => handleFileChange(e, request)}
+                        disabled={isUploading}
+                        className="hidden"
+                        id={`upload-${request?._id}`}
+                      />
+
+                      <label
+                        htmlFor={`upload-${request._id}`}
+                        onClick={() =>
+                          isUploading ? null : fileInputRef.current?.click()
+                        }
+                        className={`border bg-warning/80 rounded-sm p-2 text-white transition-colors hover:bg-warning 
+                          ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
+                      >
+                        <b>{t("click_upload_receipt")}</b>
+                      </label>
+                    </>
+                  )}
                 </div>
 
                 {/* RIGHT SIDE */}

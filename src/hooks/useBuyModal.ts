@@ -99,6 +99,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
         variant: "destructive",
         title: t("order_failed"),
         description: t("try_again"),
+        duration: 3000,
       });
     }
   };

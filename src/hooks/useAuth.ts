@@ -101,6 +101,7 @@ export const useAuth = () => {
         title: t("enter_valid_phone"),
         variant: "destructive",
         description: t("valid_phone"),
+        duration: 3000,
       });
       valid = false;
     }
@@ -110,6 +111,7 @@ export const useAuth = () => {
         title: t("enter_valid_pass"),
         variant: "destructive",
         description: t("valid_pass"),
+        duration: 3000,
       });
       valid = false;
     }
@@ -119,6 +121,7 @@ export const useAuth = () => {
         title: t("enter_valid_phone"),
         variant: "destructive",
         description: t("valid_phone"),
+        duration: 3000,
       });
       valid = false;
     }
@@ -128,6 +131,7 @@ export const useAuth = () => {
         title: t("enter_valid_phone"),
         variant: "destructive",
         description: t("only_numbers"),
+        duration: 3000,
       });
       valid = false;
     }
@@ -138,6 +142,7 @@ export const useAuth = () => {
           title: t("enter_valid_name"),
           variant: "destructive",
           description: t("valid_name"),
+          duration: 3000,
         });
         valid = false;
       }
@@ -146,6 +151,7 @@ export const useAuth = () => {
           title: t("auth_failed"),
           variant: "destructive",
           description: t("pls_select"),
+          duration: 3000,
         });
         valid = false;
       }
@@ -176,7 +182,6 @@ export const useAuth = () => {
 
       localStorage.setItem("authToken", response.token);
       localStorage.setItem("profile", JSON.stringify(response.profile));
-      localStorage.setItem("role", response.role);
 
       setIsAuthenticated(true);
 
@@ -200,6 +205,7 @@ export const useAuth = () => {
           variant: "destructive",
           title: t("auth_failed"),
           description: error?.data?.message || t("check_credits"),
+          duration: 3000,
         });
       }
     }

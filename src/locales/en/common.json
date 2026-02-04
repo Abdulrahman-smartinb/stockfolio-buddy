@@ -22,6 +22,7 @@
   "total_shares": "Total Shares",
   "shares_value": "Shares Value",
   "shares": "Shares",
+  "share_s": "Share(s)",
   "profile_letter": "Manage your account  and view purchase history",
   "personal_info": "Personal Information",
   "save": "Save",
@@ -149,5 +150,12 @@
   "SHARES_REQUEST_CONFIRM_MSG": "Your trade request was confirmed",
   "no_new_notifications": "No new notifications",
   "notifications": "Notifications",
-  "mark_all_read": "Mark all as read"
+  "mark_all_read": "Mark all as read",
+  "pending_payment_doc": "Pending payment document",
+  "confirmed": "Confirmed",
+  "rejection_reason": "Rejection reason",
+  "click_upload_receipt": "Click to upload the payment receipt",
+  "unsupported_file": "Unsupported file type",
+  "supported_files_pdf_img": "Supported file types are PDF and Images",
+  "check_payment": "Checking payment"
 }

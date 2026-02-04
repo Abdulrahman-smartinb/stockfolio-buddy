@@ -179,3 +179,11 @@
     }
   }
 }
+
+.bg-info {
+  background-color: rgb(0, 215, 215);
+}
+
+.text-info-foreground {
+  color: #fff;
+}

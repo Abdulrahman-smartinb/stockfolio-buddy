@@ -35,8 +35,9 @@ export interface PendingRequestItem {
   numberOfShares: number;
   pricePerShare: number;
 
-  requestStatus: "pending" | "approved" | "rejected";
+  requestStatus: "pending" | "approved" | "rejected" | "confirmed";
   paymentStatus: "paid" | "unpaid";
+  rejectionReason?: string;
 
   createdAt: string;
 

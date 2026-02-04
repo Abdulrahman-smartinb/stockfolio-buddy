@@ -22,6 +22,7 @@
   "total_shares": "إجمالي الأسهم",
   "shares_value": "قيمة الأسهم",
   "shares": "الأسهم",
+  "share_s": "سهم/أسهم",
   "profile_letter": "إدارة حسابك وعرض سجل عمليات الشراء",
   "personal_info": "المعلومات الشخصية",
   "save": "حفظ",
@@ -149,5 +150,12 @@
   "SHARES_REQUEST_CONFIRM_MSG": "تم تأكيد طلب التداول الخاص بك",
   "no_new_notifications": "لا يوجد إشعارات جديدة",
   "notifications": "الإشعارات",
-  "mark_all_read": "تحديد الكل كمقروء"
+  "mark_all_read": "تحديد الكل كمقروء",
+  "pending_payment_doc": "في انتظار ملف الدفع",
+  "confirmed": "تمت الموافقة",
+  "rejection_reason": "سبب الرفض",
+  "click_upload_receipt": "انقر لتحميل ملف الدفع",
+  "unsupported_file": "صيغة الملف غير مدعومة",
+  "supported_files_pdf_img": "الملفات المدعومة هي PDF والصور",
+  "check_payment": "يتم التحقق من الدفعة"
 }

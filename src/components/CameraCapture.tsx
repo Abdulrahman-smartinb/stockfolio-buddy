@@ -43,6 +43,7 @@ export const CameraCapture = ({ onCapture, onClose }: CameraCaptureProps) => {
         title: t("permission_denied"),
         variant: "destructive",
         description: t("permission_denied_desc"),
+        duration: 5000,
       });
       console.error("Camera access denied", err);
     }

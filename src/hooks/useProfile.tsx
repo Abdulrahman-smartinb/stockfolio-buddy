@@ -27,9 +27,6 @@ export const useProfile = () => {
 
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-  const [role, setRole] = useState<string | null>(() => {
-    return localStorage.getItem("role");
-  });
   const profile = JSON.parse(localStorage.getItem("profile") || "{}");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(5);
@@ -54,7 +51,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profile?.authUserId },
-    { skip: role !== "applicant" },
+    { skip: profile?.role !== "applicant" },
   );
   const {
     data: investor,
@@ -62,7 +59,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profile?.authUserId },
-    { skip: role !== "investor" },
+    { skip: profile?.role !== "investor" },
   );
 
   // const { data: SharesData, isLoading: LoadingShares } =
@@ -72,29 +69,27 @@ export const useProfile = () => {
   //   );
 
   useEffect(() => {
-    if (role === "investor" && investor?.data) {
+    if (profile?.role === "investor" && investor?.data) {
       setUser(investor?.data);
-      setRole(investor?.role);
-      localStorage.setItem("role", investor?.role);
     }
-
-    if (role === "applicant" && applicant?.data) {
+    if (profile?.role === "applicant" && applicant?.data) {
       setUser(applicant?.data);
-      setRole(applicant?.role);
-      localStorage.setItem("role", applicant?.role);
     }
-  }, [role, investor, applicant]);
+  }, [investor, applicant]);
 
-  const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery({
-    id: user?._id,
-    page,
-    limit,
+  // const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery({
+  //   id: user?._id,
+  //   page,
+  //   limit,
+  // });
+
+  const {
+    data: purchaseRequests,
+    isLoading: loadingRequests,
+    refetch: refetchRequests,
+  } = useGetInvestorPurchaseRequestsQuery(user?._id, {
+    skip: !user?._id,
   });
-
-  const { data: purchaseRequests, isLoading: loadingRequests } =
-    useGetInvestorPurchaseRequestsQuery(user?._id, {
-      skip: !user?._id,
-    });
 
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
   const [submit, { isLoading: isSubmitting, error: submitError }] =
@@ -156,13 +151,13 @@ export const useProfile = () => {
       if (editData.email) {
         formData.append("email", editData.email);
       }
-      formData.append("role", role);
+      formData.append("role", profile?.role);
 
       await updateInvestor({
         id: user.authUserId,
         data: formData,
       }).unwrap();
-      if (role === "applicant") refetchApplicant();
+      if (profile?.role === "applicant") refetchApplicant();
       else refetchInvestor();
       setIsEditing(false);
       toast({
@@ -176,6 +171,7 @@ export const useProfile = () => {
         title: t("update_failed"),
         variant: "destructive",
         description: t("error_while_updating"),
+        duration: 3000,
       });
     }
   };
@@ -245,13 +241,14 @@ export const useProfile = () => {
       !livePhoto ||
       (!idNumber && (!passportNumber || !passportExpDate))
     ) {
-      toast({ title: t("fill_all"), variant: "destructive" });
+      toast({ title: t("fill_all"), variant: "destructive", duration: 3000 });
       return;
     }
     // if (!paymentMethod || isPaymentDataValid()) {
     //   toast({
     //     title: t("payment_method_required"),
     //     variant: "destructive",
+    //     duration: 3000,
     //   });
     //   return;
     // }
@@ -308,6 +305,7 @@ export const useProfile = () => {
         title: t("request_failed"),
         variant: "destructive",
         description: t("error_while_saving"),
+        duration: 3000,
       });
     }
   };
@@ -330,10 +328,11 @@ export const useProfile = () => {
   return {
     loadingUser: isLoadingUser || isLoadingInvestor,
     user,
-    purchaseHistory,
-    isLoading,
+    // purchaseHistory,
+    // isLoading,
     purchaseRequests,
     loadingRequests,
+    refetchRequests,
     isEditing,
     setIsEditing,
     containerVariants,
@@ -347,7 +346,7 @@ export const useProfile = () => {
     setPage,
     limit,
     setLimit,
-    role,
+    role: profile?.role,
     openVerify,
     setOpenVerify,
     idPhoto,
