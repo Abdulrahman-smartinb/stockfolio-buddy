@@ -141,7 +141,7 @@ export const Header = () => {
                 {/* Header */}
                 <div className="flex items-center justify-between px-4 py-3 border-b">
                   <span className="text-sm font-semibold">
-                    {`Notifications (${unreadCount})`}
+                    {`${t("notifications")} (${unreadCount})`}
                   </span>
 
                   {unreadCount > 0 && (
@@ -153,7 +153,7 @@ export const Header = () => {
                       }}
                       className="text-xs text-primary hover:underline"
                     >
-                      Mark all as read
+                      {t("mark_all_read")}
                     </button>
                   )}
                 </div>
@@ -162,11 +162,11 @@ export const Header = () => {
                 <div className="max-h-96 overflow-y-auto">
                   {isLoading ? (
                     <div className="p-4 text-sm text-muted-foreground">
-                      Loading...
+                      {t("loading")}
                     </div>
                   ) : notifications.length === 0 ? (
                     <div className="p-4 text-sm text-muted-foreground text-center">
-                      No new notifications
+                      {t("no_new_notifications")}
                     </div>
                   ) : (
                     notifications.map((n) => (

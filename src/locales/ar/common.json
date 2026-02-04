@@ -138,5 +138,16 @@
   "retake": "إعادة التصوير",
   "already_logged_in": "لقد سجلت الدخول بالفعل!",
   "pls_logout": "لقد قمت بتسجيل الدخول من مكان مختلف، يرجى تسجيل الخروج من هناك والمحاولة مرة أخرى",
-  "buy_shares": "شراء اسهم"
+  "buy_shares": "شراء اسهم",
+  "PROFILE_REJECTED": "فشل التحقق من الملف الشخصي",
+  "PROFILE_REJECT_MSG": "تم رفض طلب التحقق من الملف الشخصي من قِبل المشرفين",
+  "PROFILE_APPROVED": "تم التحقق من الملف الشخصي بنجاح",
+  "PROFILE_APPROVE_MSG": "تمت الموافقة على طلب التحقق من الملف الشخصي من قِبل المشرفين",
+  "SHARES_REQUEST_UPDATED": "تحديث طلب التداول",
+  "SHARES_REQUEST_UPDATE_MSG": "هناك تحديث بخصوص طلب التداول الخاص بك",
+  "SHARES_REQUEST_CONFIRMED": "تم تأكيد طلب التداول",
+  "SHARES_REQUEST_CONFIRM_MSG": "تم تأكيد طلب التداول الخاص بك",
+  "no_new_notifications": "لا يوجد إشعارات جديدة",
+  "notifications": "الإشعارات",
+  "mark_all_read": "تحديد الكل كمقروء"
 }

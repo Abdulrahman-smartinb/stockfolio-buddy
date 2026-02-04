@@ -138,5 +138,16 @@
   "retake": "Retake",
   "already_logged_in": "Already logged in!",
   "pls_logout": "You have logged in from a different place, please log out of there and try again",
-  "buy_shares": "Buy shares"
+  "buy_shares": "Buy shares",
+  "PROFILE_REJECTED": "Profile verification failed",
+  "PROFILE_REJECT_MSG": "Profile verification request was rejected by the admins",
+  "PROFILE_APPROVED": "Profile verification success",
+  "PROFILE_APPROVE_MSG": "Profile verification request was approved by the admins",
+  "SHARES_REQUEST_UPDATED": "Trade request update",
+  "SHARES_REQUEST_UPDATE_MSG": "There's an update about your trade request",
+  "SHARES_REQUEST_CONFIRMED": "Trade request confirmed",
+  "SHARES_REQUEST_CONFIRM_MSG": "Your trade request was confirmed",
+  "no_new_notifications": "No new notifications",
+  "notifications": "Notifications",
+  "mark_all_read": "Mark all as read"
 }
