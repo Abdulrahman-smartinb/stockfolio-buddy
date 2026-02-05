@@ -1,21 +1,24 @@
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { useGetInvestmentEntitiesQuery } from "@/store/api/investmentEntityApi";
 import { Activity, BarChart3, DollarSign, TrendingUp } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isInvestor } from "./helpers";
+import { useResolvedRole } from "./useResolveRole";
+import { useGetInvestorPortfolioQuery } from "@/store/api/investorApi";
 
 const useDashboard = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
-    null,
+    null
   );
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [verfiyModalOpen, setVerfiyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
-  const canTrade = isInvestor();
+
+  const { resolvedRole, loadingRole } = useResolvedRole();
 
   const {
     data: stocks = [],
@@ -26,8 +29,17 @@ const useDashboard = () => {
     keyword: searchQuery,
   });
 
+  const {
+    data,
+
+    error: err,
+  } = useGetInvestorPortfolioQuery({
+    id: resolvedRole?.profileId,
+  });
+  console.log(data);
+  console.log(err);
   const handleStockClick = (stock: InvestmentEntity, type: string) => {
-    if (!canTrade) {
+    if (resolvedRole.isApplicant) {
       setVerfiyModalOpen(true);
       return;
     }

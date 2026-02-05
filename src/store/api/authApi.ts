@@ -1,5 +1,5 @@
 import { baseApi } from "./baseApi";
-import { loginEP, logoutEP, registerEP } from "../../api/GlobalData";
+import { loginEP, logoutEP, profileEP, registerEP } from "../../api/GlobalData";
 import { UserData } from "@/interfaces/UserData";
 
 export interface LoginRequest {
@@ -47,8 +47,18 @@ export const authApi = baseApi.injectEndpoints({
         body: userData,
       }),
     }),
+    resolveRole: builder.query({
+      query: ({ authUserId }) => {
+        console.log("authUserId:", authUserId);
+        return `${profileEP}/check-role/${authUserId}`;
+      },
+    }),
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation, useRegisterMutation } =
-  authApi;
+export const {
+  useLoginMutation,
+  useLogoutMutation,
+  useRegisterMutation,
+  useResolveRoleQuery,
+} = authApi;

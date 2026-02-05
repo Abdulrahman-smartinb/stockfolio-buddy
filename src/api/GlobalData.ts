@@ -1,4 +1,4 @@
-// export const base_url = "http://192.168.1.15";
+// export const base_url = "http://192.168.1.11:80";
 export const base_url = "http://localhost:80";
 // export const base_url = "https://api-invest.smartinb.com";
 export const loginEP = "api/investor/auth/login";
@@ -15,4 +15,5 @@ export const shareTradeRequestEP = "api/shareTradeRequest";
 export const investmentFundsEP = "api/investmentFunds";
 export const investmentEntityEP = "api/investmentEntityShared/entities";
 export const notificationEP = "api/notifications";
+export const profileEP = "api/profile";
 export const companyId = "696787619853de2e8b0a86df";

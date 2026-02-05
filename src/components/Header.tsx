@@ -3,9 +3,11 @@ import { LogOut, User, Home, LogIn, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "../../public/jadwa.png";
+import user from "../../public/user.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
 import { isMobile } from "@/hooks/helpers";
+import { base_url } from "@/api/GlobalData";
 
 export const Header = () => {
   const {
@@ -29,53 +31,244 @@ export const Header = () => {
 
   return (
     <motion.header
-      initial={{ opacity: 0, y: -20 }}
+      initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
-      className="sticky top-0 z-40 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl"
+      className={cn(
+        "sticky top-0 z-40 w-full",
+        "border-b border-border/60",
+        "bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+      )}
     >
-      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-        {/* LEFT — Brand */}
-        <div
-          className="flex items-center gap-3 cursor-pointer"
-          onClick={() => navigate("/")}
-        >
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-            <img src={logo} alt="Jadwa Logo" />
-          </div>
-          <span className="text-lg font-bold gradient-text sm:block">
-            JADWA INVEST
-          </span>
-        </div>
-
-        {/* CENTER — Navigation (icons on mobile, text on desktop) */}
-        <nav className="flex items-center gap-1 hidden md:inline">
-          <Button
-            variant={path === "/" ? "secondary" : "ghost"}
-            size="sm"
+      <div className="container mx-auto px-4">
+        <div className="h-16 flex items-center justify-between">
+          {/* LEFT — Brand */}
+          <div
+            className={cn(
+              "flex items-center gap-3 cursor-pointer select-none",
+              "group"
+            )}
             onClick={() => navigate("/")}
-            className="gap-2"
           >
-            <Home className="w-4 h-4" />
-            <span className="hidden sm:inline">{t("home")}</span>
-          </Button>
+            <div
+              className={cn(
+                "w-10 h-10 rounded-xl overflow-hidden",
+                "ring-1 ring-border/60",
+                "bg-muted/30",
+                "flex items-center justify-center",
+                "transition group-hover:ring-primary/30"
+              )}
+            >
+              <img
+                src={logo}
+                alt="Jadwa Logo"
+                className="w-full h-full object-contain p-1.5"
+              />
+            </div>
 
-          <Button
-            variant={path === "/profile" ? "secondary" : "ghost"}
-            size="sm"
-            onClick={() =>
-              loggedIn ? navigate("/profile") : navigate("/auth")
-            }
-            className="gap-2"
-          >
-            <User className="w-4 h-4" />
-            <span className="hidden sm:inline">{t("profile")}</span>
-          </Button>
-        </nav>
+            {/* Brand text */}
+            <div className="leading-none">
+              <div className="flex items-baseline ">
+                <span className="text-[15px] sm:text-base font-extrabold tracking-tight text-pr mx-1">
+                  JADWA
+                </span>
+                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-muted-pr px-0 mx-0">
+                  INVEST
+                </span>
+              </div>
+              <div className="text-[11px] text-muted-foreground/80 hidden sm:block">
+                {t("share_market") ?? "Share Market"}
+              </div>
+            </div>
+          </div>
 
-        {/* RIGHT — User Actions */}
-        <div className="flex items-center gap-3">
-          {/* Language selector */}
-          <div className="relative">
+          {/* CENTER — Navigation */}
+          <nav className="hidden md:flex items-center gap-1">
+            <Button
+              variant={path === "/" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => navigate("/")}
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("home")}</span>
+            </Button>
+
+            <Button
+              variant={path === "/profile" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() =>
+                loggedIn ? navigate("/profile") : navigate("/auth")
+              }
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <User className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("profile")}</span>
+            </Button>
+          </nav>
+
+          {/* RIGHT — User Actions */}
+          <div className="flex items-center gap-3">
+            {/* Language selector */}
+            {/* ...keep commented... */}
+
+            {/* Logout */}
+
+            {/* {loggedIn ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                className={cn(
+                  "text-muted-foreground hover:text-destructive",
+                  "flex items-center gap-2"
+                )}
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden md:inline">{t("logout")}</span>
+              </Button>
+            ) : (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/auth")}
+                className={cn(
+                  "text-muted-foreground hover:text-white",
+                  "flex items-center gap-2"
+                )}
+              >
+                <LogIn className="w-4 h-4" />
+                <span className="hidden md:inline">{t("login_register")}</span>
+              </Button>
+            )} */}
+
+            {/* ...keep commented... */}
+
+            {/* Notifications + Avatar */}
+            <div className="flex items-center gap-3">
+              {/* Notifications */}
+              <div className="relative">
+                <button
+                  onClick={() => setOpen((prev) => !prev)}
+                  className={cn(
+                    "relative inline-flex items-center justify-center",
+                    "h-9 w-9 rounded-xl",
+                    "ring-1 ring-border/60",
+                    "bg-background/40",
+                    "hover:bg-muted/60 hover:ring-primary/30",
+                    "transition",
+                    "focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  )}
+                  aria-label="Notifications"
+                >
+                  <Bell className="w-5 h-5 text-foreground/90" />
+
+                  {unreadCount > 0 && (
+                    <span
+                      className={cn(
+                        "absolute -top-1 -right-1",
+                        "flex h-4 min-w-4 px-1 items-center justify-center",
+                        "rounded-full bg-destructive text-[10px] font-bold text-white",
+                        "ring-2 ring-background"
+                      )}
+                    >
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {open && (
+                  <div
+                    className={cn(
+                      "absolute mt-3 z-50",
+                      i18n.language === "en" ? "right-0" : "left-0",
+                      "rounded-2xl border border-border bg-background shadow-xl",
+                      "overflow-hidden",
+                      isMobile ? "w-[20rem]" : "w-[24rem]"
+                    )}
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/20">
+                      <span className="text-sm font-semibold">
+                        {`${t("notifications")} (${unreadCount})`}
+                      </span>
+
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={() => {
+                            markAllAsRead({ authUserId: userObj.authUserId })
+                              .unwrap()
+                              .then(() => refetch());
+                          }}
+                          className="text-xs font-semibold text-primary hover:underline"
+                        >
+                          {t("mark_all_read")}
+                        </button>
+                      )}
+                    </div>
+
+                    {/* List */}
+                    <div className="max-h-96 overflow-y-auto">
+                      {isLoading ? (
+                        <div className="p-4 text-sm text-muted-foreground">
+                          {t("loading")}
+                        </div>
+                      ) : notifications.length === 0 ? (
+                        <div className="p-4 text-sm text-muted-foreground text-center">
+                          {t("no_new_notifications")}
+                        </div>
+                      ) : (
+                        notifications.map((n) => (
+                          <NotificationItem
+                            key={n._id}
+                            notification={n}
+                            onRead={() => {
+                              markAsRead({
+                                id: n._id,
+                                authUserId: userObj.authUserId,
+                              }).then(() => refetch());
+                            }}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Avatar */}
+              <button
+                onClick={() => navigate("/profile")}
+                className={cn(
+                  "inline-flex items-center justify-center",
+                  "h-9 w-9 rounded-xl",
+                  "ring-1 ring-border/60",
+                  "bg-background/40",
+                  "hover:ring-primary/30",
+                  "transition",
+                  "focus:outline-none focus:ring-2 focus:ring-primary/30"
+                )}
+                aria-label="Profile"
+              >
+                <img
+                  src={
+                    userObj?.profileImage
+                      ? `${base_url}/Investor/${userObj.profileImage}`
+                      : user
+                  }
+                  alt="User Avatar"
+                  className="h-8 w-8 rounded-lg object-cover"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.header>
+  );
+};
+
+{
+  /* <div className="relative">
             <select
               value={(i18n.language || "").split("-")[0] || "en"}
               onChange={(e) => i18n.changeLanguage(e.target.value)}
@@ -87,17 +280,21 @@ export const Header = () => {
               <option value="en">🇬🇧</option>
               <option value="ar">🇸🇾</option>
             </select>
-          </div>
+          </div> */
+}
 
-          {/* Logout */}
-          {loggedIn ? (
+{
+  /* Logout */
+}
+{
+  /* {loggedIn ? (
             <Button
               variant="ghost"
               size="sm"
               onClick={logout}
               className={cn(
                 "text-muted-foreground hover:text-destructive",
-                "flex items-center gap-2",
+                "flex items-center gap-2"
               )}
             >
               <LogOut className="w-4 h-4" />
@@ -110,84 +307,11 @@ export const Header = () => {
               onClick={() => navigate("/auth")}
               className={cn(
                 "text-muted-foreground hover:text-white",
-                "flex items-center gap-2",
+                "flex items-center gap-2"
               )}
             >
               <LogIn className="w-4 h-4" />
               <span className="hidden md:inline">{t("login_register")}</span>
             </Button>
-          )}
-          <div className="relative">
-            <button
-              onClick={() => setOpen((prev) => !prev)}
-              className="relative"
-            >
-              <Bell className="w-5 h-5" />
-
-              {unreadCount > 0 && (
-                <span
-                  className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center
-        rounded-full bg-destructive text-[10px] text-white"
-                >
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-
-            {open && (
-              <div
-                className={`absolute ${i18n.language == "en" ? "right" : "left"}-1 mt-3 rounded-xl border border-border bg-background shadow-lg z-50 ${isMobile ? "w-[20rem]" : "w-[24rem]"}`}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 border-b">
-                  <span className="text-sm font-semibold">
-                    {`${t("notifications")} (${unreadCount})`}
-                  </span>
-
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={() => {
-                        markAllAsRead({ authUserId: userObj.authUserId })
-                          .unwrap()
-                          .then(() => refetch());
-                      }}
-                      className="text-xs text-primary hover:underline"
-                    >
-                      {t("mark_all_read")}
-                    </button>
-                  )}
-                </div>
-
-                {/* List */}
-                <div className="max-h-96 overflow-y-auto">
-                  {isLoading ? (
-                    <div className="p-4 text-sm text-muted-foreground">
-                      {t("loading")}
-                    </div>
-                  ) : notifications.length === 0 ? (
-                    <div className="p-4 text-sm text-muted-foreground text-center">
-                      {t("no_new_notifications")}
-                    </div>
-                  ) : (
-                    notifications.map((n) => (
-                      <NotificationItem
-                        key={n._id}
-                        notification={n}
-                        onRead={() => {
-                          markAsRead({
-                            id: n._id,
-                            authUserId: userObj.authUserId,
-                          }).then(() => refetch());
-                        }}
-                      />
-                    ))
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </motion.header>
-  );
-};
+          )} */
+}

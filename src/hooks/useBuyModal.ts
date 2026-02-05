@@ -3,18 +3,21 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "./use-toast";
 import { clamp, generateQuickShareOptions, isLoggedIn } from "./helpers";
 import { useCreateShareTradeRequestMutation } from "@/store/api/shares/shareTradeRequestApi";
+import { useResolvedRole } from "./useResolveRole";
 
 const useBuyModal = ({ stock, tradeType, onClose }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
 
   const loggedIn = isLoggedIn();
-  const user = JSON.parse(localStorage.getItem("profile") || "{}");
+
+  const { resolvedRole, loadingRole } = useResolvedRole();
+  const profileId = resolvedRole?.profileId;
 
   const minShares = Math.max(1, Number(stock?.minInvestShare || 1));
   const maxShares = Math.max(
     minShares,
-    Number(stock?.maxInvestShare || minShares),
+    Number(stock?.maxInvestShare || minShares)
   );
 
   const [shares, setShares] = useState(minShares);
@@ -31,7 +34,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   /** Quick-select options (chips) */
   const quickShareOptions = useMemo(
     () => generateQuickShareOptions(minShares, maxShares, 4),
-    [minShares, maxShares],
+    [minShares, maxShares]
   );
 
   /** Quick option select */
@@ -41,7 +44,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   const totalCost = useMemo(
     () => Number(stock?.sharePrice || 0) * shares,
-    [shares, stock],
+    [shares, stock]
   );
 
   /** Quantity controls */
@@ -75,7 +78,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     try {
       await createTradeRequest({
         data: {
-          userId: user?._id,
+          userId: profileId,
           tradeType,
           sourceType: stock?.entityType,
           source: stock?._id,

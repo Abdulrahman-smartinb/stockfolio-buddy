@@ -1,122 +1,114 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import { useToast } from "./use-toast";
 import { useAuth } from "./useAuth";
-import {
-  useGetInvestorPurchaseRequestsQuery,
-  useGetPurchaseHistoryQuery,
-} from "@/store/api/stocksApi";
+import { useResolvedRole } from "./useResolveRole";
+
 import {
   useGetOneInvestorQuery,
   useUpdateInvestorMutation,
 } from "@/store/api/investorApi";
-import { useTranslation } from "react-i18next";
-import { BankTranfer, ShamCash, Usdt, UserData } from "@/interfaces/UserData";
 import {
   useGetOneApplicantQuery,
   useUpdateApplicantProfileMutation,
 } from "@/store/api/applicantApi";
-import { useGetShareHolderStaticsQuery } from "@/store/api/shares/shareHoldersApi";
+import { useGetInvestorPurchaseRequestsQuery } from "@/store/api/stocksApi";
+
 import { compressImage } from "@/lib/utils";
+import { UserData } from "@/interfaces/UserData";
 
 export const useProfile = () => {
+  // =========================
+  // Core
+  // =========================
   const { t } = useTranslation();
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-
-  const profile = JSON.parse(localStorage.getItem("profile") || "{}");
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(5);
+  const { isAuthenticated } = useAuth();
 
   const [user, setUser] = useState<UserData>();
 
+  const [isEditing, setIsEditing] = useState(false);
   const [openVerify, setOpenVerify] = useState(false);
-  const [idPhoto, setIdPhoto] = useState<File | null>();
-  const [livePhoto, setLivePhoto] = useState<File | null>();
-  const [livePhotoPreview, setLivePhotoPreview] = useState<any>();
+
+  // Verification / files
+  const [idPhoto, setIdPhoto] = useState<File | null>(null);
+  const [livePhoto, setLivePhoto] = useState<File | null>(null);
+  const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
+
   const [idNumber, setIdNumber] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
   const [passportExpDate, setPassportExpDate] = useState();
-  const [paymentMethod, setPaymentMethod] = useState("");
-  const [bankData, setBankData] = useState<BankTranfer>();
-  const [shamCashData, setShamCashData] = useState<ShamCash>();
-  const [usdtData, setUsdtData] = useState<Usdt>();
 
+  // =========================
+  // Resolve role (single source of truth)
+  // =========================
+  const { resolvedRole, loadingRole } = useResolvedRole();
+
+  const isInvestor = !!resolvedRole?.isInvestor;
+  const isApplicant = !!resolvedRole?.isApplicant;
+  const role = resolvedRole?.role;
+  const reviewStatus = resolvedRole?.reviewStatus;
+  const profileId = resolvedRole?.profileId;
+
+  // =========================
+  // Queries: fetch profile data
+  // =========================
   const {
     data: applicant,
-    isLoading: isLoadingUser,
+    isLoading: isLoadingApplicant,
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
-    { id: profile?.authUserId },
-    { skip: profile?.role !== "applicant" },
+    { id: profileId },
+    { skip: !isApplicant || !profileId }
   );
+
   const {
     data: investor,
     isLoading: isLoadingInvestor,
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
-    { id: profile?.authUserId },
-    { skip: profile?.role !== "investor" },
+    { id: profileId },
+    { skip: !isInvestor || !profileId }
   );
 
-  // const { data: SharesData, isLoading: LoadingShares } =
-  //   useGetShareHolderStaticsQuery(
-  //     { holderId: profile?.authUserId, holderType: "investors" },
-  //     { skip: role === "applicant" },
-  //   );
-
+  // Pick correct user model
   useEffect(() => {
-    if (profile?.role === "investor" && investor?.data) {
-      setUser(investor?.data);
-    }
-    if (profile?.role === "applicant" && applicant?.data) {
-      setUser(applicant?.data);
-    }
-  }, [investor, applicant]);
+    if (isInvestor && investor?.data) setUser(investor.data);
+    if (isApplicant && applicant?.data) setUser(applicant.data);
+  }, [isInvestor, isApplicant, investor?.data, applicant?.data]);
 
-  // const { data: purchaseHistory, isLoading } = useGetPurchaseHistoryQuery({
-  //   id: user?._id,
-  //   page,
-  //   limit,
-  // });
-
+  // =========================
+  // Queries: requests (only for investor)
+  // =========================
   const {
     data: purchaseRequests,
     isLoading: loadingRequests,
     refetch: refetchRequests,
   } = useGetInvestorPurchaseRequestsQuery(user?._id, {
-    skip: !user?._id,
+    skip: !user?._id || !isInvestor,
   });
 
+  // =========================
+  // Mutations
+  // =========================
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
 
-  const [isEditing, setIsEditing] = useState(false);
+  // =========================
+  // Edit form state (derived from user)
+  // =========================
   const [editData, setEditData] = useState({
-    fullName: user?.fullName || "",
-    birthDate: user?.birthDate || "",
-    phone: user?.phone || "",
-    email: user?.email || "",
+    fullName: "",
+    birthDate: "",
+    phone: "",
+    email: "",
     profileImageFile: null as File | null,
-    profilePreview: user?.profileImage ? `${user.profileImage}` : "",
+    profilePreview: "",
   });
-
-  useEffect(() => {
-    if (!isAuthenticated) navigate("/auth");
-  }, [isAuthenticated, navigate]);
-
-  if (!isAuthenticated) return null;
-
-  const handleProfileImageChange = (file?: File) => {
-    if (!file) return;
-    setEditData((prev) => ({
-      ...prev,
-      profileImageFile: file,
-      profilePreview: URL.createObjectURL(file),
-    }));
-  };
 
   useEffect(() => {
     if (!user) return;
@@ -131,32 +123,47 @@ export const useProfile = () => {
     });
   }, [user]);
 
+  // =========================
+  // Auth redirect
+  // =========================
+  useEffect(() => {
+    if (!isAuthenticated) navigate("/auth");
+  }, [isAuthenticated, navigate]);
+
+  // =========================
+  // Handlers
+  // =========================
+  const handleProfileImageChange = (file?: File) => {
+    if (!file) return;
+    setEditData((prev) => ({
+      ...prev,
+      profileImageFile: file,
+      profilePreview: URL.createObjectURL(file),
+    }));
+  };
+
   const handleSaveProfile = async () => {
+    if (!user) return;
+
     try {
       const formData = new FormData();
-      if (editData.fullName !== user.fullName) {
-        formData.append("fullName", editData.fullName);
-      }
-      if (editData.birthDate) {
-        formData.append("birthDate", editData.birthDate);
-      }
-      if (editData.profileImageFile) {
-        formData.append("profileImage", editData.profileImageFile);
-      }
-      if (editData.phone) {
-        formData.append("phone", editData.phone);
-      }
-      if (editData.email) {
-        formData.append("email", editData.email);
-      }
-      formData.append("role", profile?.role);
 
-      await updateInvestor({
-        id: user.authUserId,
-        data: formData,
-      }).unwrap();
-      if (profile?.role === "applicant") refetchApplicant();
+      if (editData.fullName !== user.fullName)
+        formData.append("fullName", editData.fullName);
+      if (editData.birthDate) formData.append("birthDate", editData.birthDate);
+      if (editData.profileImageFile)
+        formData.append("profileImage", editData.profileImageFile);
+      if (editData.phone) formData.append("phone", editData.phone);
+      if (editData.email) formData.append("email", editData.email);
+
+      // keep your backend behavior
+      if (role) formData.append("role", role);
+
+      await updateInvestor({ id: user.authUserId, data: formData }).unwrap();
+
+      if (isApplicant) refetchApplicant();
       else refetchInvestor();
+
       setIsEditing(false);
       toast({
         title: t("update_success"),
@@ -174,66 +181,9 @@ export const useProfile = () => {
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
-
-  const isBankTransferValid = (data?: BankTranfer) => {
-    if (!data) return false;
-
-    const { beneficiaryFullName, beneficiaryAddress, bankName, accountNumber } =
-      data;
-
-    return (
-      beneficiaryFullName?.trim() &&
-      beneficiaryAddress?.trim() &&
-      bankName?.trim() &&
-      accountNumber?.trim()
-    );
-  };
-
-  const isShamCashValid = (data?: ShamCash) => {
-    if (!data) return false;
-
-    const { accountNumber, beneficiaryName } = data;
-
-    return accountNumber?.trim() && beneficiaryName?.trim();
-  };
-
-  const isUsdtValid = (data?: Usdt) => {
-    if (!data) return false;
-
-    const { transferNetwork, walletAddress } = data;
-
-    return transferNetwork?.trim() && walletAddress?.trim();
-  };
-
-  const isPaymentDataValid = () => {
-    switch (paymentMethod) {
-      case "bank":
-        return isBankTransferValid(bankData);
-
-      case "shamCash":
-        return isShamCashValid(shamCashData);
-
-      case "usdt":
-        return isUsdtValid(usdtData);
-
-      default:
-        return false;
-    }
-  };
-
   const handleSubmit = async () => {
+    if (!user) return;
+
     if (
       !idPhoto ||
       !livePhoto ||
@@ -242,14 +192,7 @@ export const useProfile = () => {
       toast({ title: t("fill_all"), variant: "destructive", duration: 3000 });
       return;
     }
-    // if (!paymentMethod || isPaymentDataValid()) {
-    //   toast({
-    //     title: t("payment_method_required"),
-    //     variant: "destructive",
-    //     duration: 3000,
-    //   });
-    //   return;
-    // }
+
     try {
       const formData = new FormData();
 
@@ -258,38 +201,15 @@ export const useProfile = () => {
 
       formData.append("idPhoto", compressedIdPhoto);
       formData.append("livePhoto", compressedLivePhoto);
+
       formData.append("passportNumber", passportNumber);
       if (passportNumber?.trim()?.length > 0)
         formData.append("passportExpDate", passportExpDate);
+
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
-      // formData.append("paymentMethod", paymentMethod);
 
-      // if (paymentMethod === "bank") {
-      //   formData.append("bankTransfer", JSON.stringify(bankData));
-      // }
-      // if (paymentMethod === "shamcash") {
-      //   const { qrCode, ...rest } = shamCashData!;
-      //   formData.append("shamcash", JSON.stringify(rest));
-
-      //   if (qrCode) {
-      //     formData.append("qrCode", qrCode);
-      //   }
-      // }
-
-      // if (paymentMethod === "usdt") {
-      //   const { walletQr, ...rest } = usdtData!;
-      //   formData.append("usdt", JSON.stringify(rest));
-
-      //   if (walletQr) {
-      //     formData.append("walletQr", walletQr);
-      //   }
-      // }
-
-      await submit({
-        id: user.authUserId,
-        data: formData,
-      }).unwrap();
+      await submit({ id: user.authUserId, data: formData }).unwrap();
 
       handleClose();
       toast({
@@ -314,8 +234,25 @@ export const useProfile = () => {
     setPassportNumber("");
     setIdPhoto(null);
     setLivePhoto(null);
+    setLivePhotoPreview(null);
   };
 
+  // =========================
+  // Animations (kept)
+  // =========================
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
+
+  // =========================
+  // Constants
+  // =========================
   const REVIEW_STATUS_STYLES = {
     draft: "badge badge-outline text-gray-500 border-gray-300",
     pending: "badge badge-outline text-blue-600 border-blue-600",
@@ -323,53 +260,62 @@ export const useProfile = () => {
     approved: "badge badge-outline text-green-600 border-green-600",
   };
 
+  // =========================
+  // Return
+  // =========================
   return {
-    loadingUser: isLoadingUser || isLoadingInvestor,
+    // loading
+    loadingUser: loadingRole || isLoadingApplicant || isLoadingInvestor,
+
+    // data
     user,
-    // purchaseHistory,
-    // isLoading,
     purchaseRequests,
-    loadingRequests,
-    refetchRequests,
+
+    // ui state
     isEditing,
     setIsEditing,
-    containerVariants,
-    itemVariants,
-    editData,
-    setEditData,
-    handleProfileImageChange,
-    handleSaveProfile,
-    isSaving,
-    page,
-    setPage,
-    limit,
-    setLimit,
-    role: profile?.role,
     openVerify,
     setOpenVerify,
+
+    // form state
+    editData,
+    setEditData,
+
+    // handlers
+    handleProfileImageChange,
+    handleSaveProfile,
+    handleSubmit,
+    handleClose,
+
+    // statuses
+    isSaving,
+    isSubmitting,
+    loadingRequests,
+    refetchRequests,
+
+    // verify inputs
     idPhoto,
     setIdPhoto,
     livePhoto,
     setLivePhoto,
+    livePhotoPreview,
+    setLivePhotoPreview,
     idNumber,
     setIdNumber,
     passportNumber,
     setPassportNumber,
     passportExpDate,
     setPassportExpDate,
-    handleSubmit,
-    isSubmitting,
-    handleClose,
-    livePhotoPreview,
-    setLivePhotoPreview,
+
+    // role (single source of truth)
+    role,
+    isInvestor,
+    isApplicant,
+    reviewStatus,
+
+    // styles / motion
     REVIEW_STATUS_STYLES,
-    paymentMethod,
-    setPaymentMethod,
-    bankData,
-    setBankData,
-    shamCashData,
-    setShamCashData,
-    usdtData,
-    setUsdtData,
+    containerVariants,
+    itemVariants,
   };
 };

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraCapture } from "./CameraCapture";
 import { Field } from "./ui/Field";
+import { isMobile } from "@/hooks/helpers";
 
 export const VerifyAccountModal = ({
   isOpen,
@@ -12,7 +13,6 @@ export const VerifyAccountModal = ({
   onSubmit,
   isSubmitting,
   t,
-  isMobile,
 
   idNumber,
   setIdNumber,

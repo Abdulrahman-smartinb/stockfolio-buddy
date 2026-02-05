@@ -6,6 +6,9 @@ export const investorApi = baseApi.injectEndpoints({
     getOneInvestor: builder.query({
       query: ({ id }) => `${investorEP}/${id}`,
     }),
+    getInvestorPortfolio: builder.query({
+      query: ({ id }) => `${investorEP}/portfolio/${id}`,
+    }),
     updateInvestor: builder.mutation({
       query: ({ id, data }) => ({
         url: `${investorEP}/${id}`,
@@ -16,5 +19,8 @@ export const investorApi = baseApi.injectEndpoints({
   }),
 });
 
-export const { useUpdateInvestorMutation, useGetOneInvestorQuery } =
-  investorApi;
+export const {
+  useUpdateInvestorMutation,
+  useGetOneInvestorQuery,
+  useGetInvestorPortfolioQuery,
+} = investorApi;

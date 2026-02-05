@@ -187,3 +187,21 @@
 .text-info-foreground {
   color: #fff;
 }
+
+.text-pr {
+  color: #0d3632;
+}
+
+.background-pr {
+  background-color: #0d3632;
+}
+.text-sc {
+  color: #b9a778;
+}
+
+.scrollbar-hidden {
+  scrollbar-width: none;
+}
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
