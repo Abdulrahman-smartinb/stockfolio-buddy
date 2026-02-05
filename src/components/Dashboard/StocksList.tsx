@@ -1,4 +1,3 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { Search } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -12,7 +11,7 @@ const StockListSkeleton = () => {
           key={i}
           className={cn(
             "rounded-2xl border border-border/60 bg-background/60 backdrop-blur-xl",
-            "shadow-sm px-4 py-4 animate-pulse"
+            "shadow-sm px-4 py-4 animate-pulse",
           )}
         >
           <div className="flex items-center justify-between gap-4">
@@ -50,16 +49,17 @@ const EmptyState = ({ t }) => (
   </motion.div>
 );
 
-const StocksList = ({ stocks = [], isLoading, t, onAction }) => {
+const StocksList = ({ stocks = [], isLoading, t, lang, onAction }) => {
   if (isLoading) return <StockListSkeleton />;
   if (!isLoading && (!stocks || stocks.length === 0))
     return <EmptyState t={t} />;
-  console.log(stocks);
+
   return (
     <div className="space-y-3">
       {stocks.map((stock, index) => (
         <StockListItem
           t={t}
+          lang={lang}
           key={stock._id}
           stock={stock}
           index={index}

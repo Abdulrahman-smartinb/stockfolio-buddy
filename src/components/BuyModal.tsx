@@ -1,8 +1,7 @@
-import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input"; // <-- use your correct path
+import { Input } from "@/components/ui/input";
 import useBuyModal from "@/hooks/useBuyModal";
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 

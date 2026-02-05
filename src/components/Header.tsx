@@ -38,7 +38,7 @@ export const Header = () => {
       className={cn(
         "sticky top-0 z-40 w-full",
         "border-b border-border/60",
-        "bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
+        "bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60",
       )}
     >
       <div className="container mx-auto px-4">
@@ -47,7 +47,7 @@ export const Header = () => {
           <div
             className={cn(
               "flex items-center gap-3 cursor-pointer select-none",
-              "group"
+              "group",
             )}
             onClick={() => navigate("/")}
           >
@@ -57,7 +57,7 @@ export const Header = () => {
                 "ring-1 ring-border/60",
                 "bg-muted/30",
                 "flex items-center justify-center",
-                "transition group-hover:ring-primary/30"
+                "transition group-hover:ring-primary/30",
               )}
             >
               <img
@@ -78,7 +78,7 @@ export const Header = () => {
                 </span>
               </div>
               <div className="text-[11px] text-muted-foreground/80 hidden sm:block">
-                {t("share_market") ?? "Share Market"}
+                {t("share_market")}
               </div>
             </div>
           </div>
@@ -123,7 +123,7 @@ export const Header = () => {
                     "bg-background/40",
                     "hover:bg-muted/60 hover:ring-primary/30",
                     "transition",
-                    "focus:outline-none focus:ring-2 focus:ring-primary/30"
+                    "focus:outline-none focus:ring-2 focus:ring-primary/30",
                   )}
                   aria-label="Notifications"
                 >
@@ -135,7 +135,7 @@ export const Header = () => {
                         "absolute -top-1 -right-1",
                         "flex h-4 min-w-4 px-1 items-center justify-center",
                         "rounded-full bg-destructive text-[10px] font-bold text-white",
-                        "ring-2 ring-background"
+                        "ring-2 ring-background",
                       )}
                     >
                       {unreadCount > 99 ? "99+" : unreadCount}
@@ -150,7 +150,7 @@ export const Header = () => {
                       i18n.language === "en" ? "right-0" : "left-0",
                       "rounded-2xl border border-border bg-background shadow-xl",
                       "overflow-hidden",
-                      isMobile ? "w-[20rem]" : "w-[24rem]"
+                      isMobile ? "w-[20rem]" : "w-[24rem]",
                     )}
                   >
                     {/* Header */}
@@ -225,7 +225,7 @@ export const Header = () => {
                   "bg-background/40",
                   "hover:ring-primary/30",
                   "transition",
-                  "focus:outline-none focus:ring-2 focus:ring-primary/30"
+                  "focus:outline-none focus:ring-2 focus:ring-primary/30",
                 )}
                 aria-label="Profile"
               >

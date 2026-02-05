@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { Header } from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import PendingRequests from "@/components/PendingRequests";
 import { Footer } from "@/components/Footer";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 
@@ -14,9 +13,7 @@ import {
   PenBox,
   CheckCircle2,
   Verified,
-  ShieldCheck,
   Sparkles,
-  LogIn,
   LogOut,
   RefreshCcw,
 } from "lucide-react";
@@ -555,10 +552,8 @@ const Profile = () => {
                       <Sparkles className="w-4 h-4 text-pr" />
                       <span>
                         {role === "investor"
-                          ? (t("profile_investor_hint") ??
-                            "Keep your info updated for smoother transactions.")
-                          : (t("profile_applicant_hint") ??
-                            "Complete verification to unlock investing features.")}
+                          ? t("profile_investor_hint")
+                          : t("profile_applicant_hint")}
                       </span>
                     </div>
                   </CardContent>

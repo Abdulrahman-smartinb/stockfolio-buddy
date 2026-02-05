@@ -2,13 +2,10 @@ import { motion } from "framer-motion";
 import { Search, RefreshCw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
-import { StockCard } from "@/components/StockCard";
 import { BuyModal } from "@/components/BuyModal";
 import { Button } from "@/components/ui/button";
 import { Footer } from "@/components/Footer";
 import useDashboard from "@/hooks/useDashboard";
-
-import { useNavigate } from "react-router-dom";
 import { CheckVerificationModal } from "@/components/CheckVerificationModal";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { useProfile } from "@/hooks/useProfile";
@@ -18,6 +15,7 @@ import StocksList from "@/components/Dashboard/StocksList";
 const Dashboard = () => {
   const {
     t,
+    lang,
     isRtl,
     searchQuery,
     setSearchQuery,
@@ -124,6 +122,7 @@ const Dashboard = () => {
           stocks={stocks}
           isLoading={isLoading}
           t={t}
+          lang={lang}
           onAction={(stock, type) => handleStockClick(stock, type)}
         />
       </main>

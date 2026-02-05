@@ -160,5 +160,14 @@
   "unsupported_file": "صيغة الملف غير مدعومة",
   "supported_files_pdf_img": "الملفات المدعومة هي PDF والصور",
   "check_payment": "يتم التحقق من الدفعة",
-  "pin_code": "رمز الأمان"
+  "pin_code": "رمز الأمان",
+  "share_market": "سوق الأسهم",
+  "min": "الأدنى",
+  "max": "الأقصى",
+  "quick_select": "تحديد سريع",
+  "profile_investor_hint": "حافظ على معلوماتك محدثة لتسهيل المعاملات.",
+  "profile_applicant_hint": "أكمل عملية التحقق لفتح ميزات الاستثمار",
+  "investor": "مستثمر",
+  "verification_failed": "فشل التحقق",
+  "code_failed": "فشل تأكيد كود الأمان"
 }
