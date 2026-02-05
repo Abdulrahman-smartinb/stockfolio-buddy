@@ -26,6 +26,8 @@ export const VerifyAccountModal = ({
   setLivePhoto,
   livePhotoPreview,
   setLivePhotoPreview,
+  email,
+  setEmail,
 }) => {
   if (!isOpen) return null;
   const [openCamera, setOpenCamera] = useState(false);
@@ -85,6 +87,15 @@ export const VerifyAccountModal = ({
                 <div className="text-sm font-semibold">
                   {t("identity_section")}
                 </div>
+
+                <Field label={t("email")} required>
+                  <Input
+                    type="email"
+                    className="h-10 text-sm"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                </Field>
 
                 <Field
                   label={t("id_number")}

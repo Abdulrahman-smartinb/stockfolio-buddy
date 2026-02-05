@@ -5,6 +5,7 @@ import {
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
+  useVerifyPinMutation,
 } from "@/store/api/authApi";
 import { useTranslation } from "react-i18next";
 import COUNTRIES from "@/data/countries.json";
@@ -19,6 +20,11 @@ const buildE164Phone = (dialCode: string, localPhone: string) => {
   return `${d}${p}`;
 };
 
+type LoginChallenge = {
+  userId: string;
+  challengeId: string;
+};
+
 export const useAuth = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -28,8 +34,16 @@ export const useAuth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showWarn, setShowWarn] = useState(false);
   const [showLengthError, setShowLengthError] = useState(false);
+  const [isPinRequired, setIsPinRequired] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [pinCode, setPinCode] = useState("");
 
-  const defaultCountry = COUNTRIES[0]; // Syria default
+  // Login challenge state for investor
+  const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
+    null,
+  );
+
+  const defaultCountry = COUNTRIES[0];
   const [formData, setFormData] = useState({
     fullName: "",
     phone: "",
@@ -52,9 +66,10 @@ export const useAuth = () => {
 
   const [loginApi, { isLoading: loginLoading }] = useLoginMutation();
   const [registerApi, { isLoading: registerLoading }] = useRegisterMutation();
+  const [verifyApi, { isLoading: verifyPinLoading }] = useVerifyPinMutation();
   const [logoutApi] = useLogoutMutation();
 
-  const isLoading = loginLoading || registerLoading;
+  const isLoading = loginLoading || registerLoading || verifyPinLoading;
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
@@ -84,80 +99,55 @@ export const useAuth = () => {
     setShowWarn(rawValue !== numericValue);
 
     const length = numericValue.length;
-    const MIN_LENGTH = 6;
-    const MAX_LENGTH = 14;
-
-    setShowLengthError(
-      length > 0 && (length < MIN_LENGTH || length > MAX_LENGTH),
-    );
+    setShowLengthError(length > 0 && (length < 6 || length > 14));
   };
 
   const validate = () => {
     let valid = true;
 
-    const localPhone = normalizeDigits(formData.phone);
-    if (localPhone.length < 6) {
+    if (formData.phone.length < 6) {
       toast({
         title: t("enter_valid_phone"),
         variant: "destructive",
         description: t("valid_phone"),
-        duration: 3000,
       });
       valid = false;
     }
 
-    if (formData.password?.length < 6) {
+    if (formData.password.length < 6) {
       toast({
         title: t("enter_valid_pass"),
         variant: "destructive",
         description: t("valid_pass"),
-        duration: 3000,
       });
       valid = false;
     }
 
-    if (showLengthError) {
+    if (showWarn || showLengthError) valid = false;
+
+    if (mode === "register" && formData.fullName.trim().length < 2) {
       toast({
-        title: t("enter_valid_phone"),
+        title: t("enter_valid_name"),
         variant: "destructive",
-        description: t("valid_phone"),
-        duration: 3000,
+        description: t("valid_name"),
       });
       valid = false;
-    }
-
-    if (showWarn) {
-      toast({
-        title: t("enter_valid_phone"),
-        variant: "destructive",
-        description: t("only_numbers"),
-        duration: 3000,
-      });
-      valid = false;
-    }
-
-    if (mode === "register") {
-      if (formData.fullName?.trim().length < 2) {
-        toast({
-          title: t("enter_valid_name"),
-          variant: "destructive",
-          description: t("valid_name"),
-          duration: 3000,
-        });
-        valid = false;
-      }
-      if (!formData.country) {
-        toast({
-          title: t("auth_failed"),
-          variant: "destructive",
-          description: t("pls_select"),
-          duration: 3000,
-        });
-        valid = false;
-      }
     }
 
     return valid;
+  };
+
+  const finalizeLogin = (response) => {
+    localStorage.setItem("authToken", response.token);
+    localStorage.setItem("profile", JSON.stringify(response.profile));
+    setIsAuthenticated(true);
+
+    toast({
+      title: t("welcome"),
+      description: t("signed_in"),
+    });
+
+    navigate("/");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -180,34 +170,50 @@ export const useAuth = () => {
               password: formData.password,
             }).unwrap();
 
-      localStorage.setItem("authToken", response.token);
-      localStorage.setItem("profile", JSON.stringify(response.profile));
-
-      setIsAuthenticated(true);
-
-      toast({
-        title: mode === "login" ? t("welcome") : t("account_created"),
-        description: t("signed_in"),
-      });
-
-      navigate("/");
-    } catch (error: any) {
-      const message = error?.data?.message;
-      if (message === "Already logged in") {
-        toast({
-          variant: "destructive",
-          title: t("already_logged_in"),
-          description: t("pls_logout"),
-          duration: 10000,
+      // Investor wait for PIN
+      if (response.requiresPin) {
+        setLoginChallenge({
+          userId: response.userId,
+          challengeId: response.challengeId,
         });
-      } else {
-        toast({
-          variant: "destructive",
-          title: t("auth_failed"),
-          description: error?.data?.message || t("check_credits"),
-          duration: 3000,
-        });
+        setIsPinRequired(true);
+        return;
       }
+
+      // Applicant
+      finalizeLogin(response);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: t("auth_failed"),
+        description: error?.data?.message || t("check_credits"),
+      });
+    }
+  };
+
+  // PIN verification
+  const verifyPin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loginChallenge) return;
+
+    try {
+      const response = await verifyApi({
+        userId: loginChallenge.userId,
+        challengeId: loginChallenge.challengeId,
+        pin: pinCode,
+      }).unwrap();
+
+      setIsPinRequired(false);
+      setLoginChallenge(null);
+      setPinCode("");
+
+      finalizeLogin(response);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: t("verification_failed"),
+        description: error?.data?.message || t("code_failed"),
+      });
     }
   };
 
@@ -222,28 +228,34 @@ export const useAuth = () => {
   };
 
   return {
-    // ui state
+    // ui
     mode,
     setMode,
     showPassword,
     setShowPassword,
     showWarn,
     showLengthError,
+    isPinRequired,
+    showPin,
+    setShowPin,
 
     // data
     formData,
     setFormData,
-    isLoading,
+    pinCode,
+    setPinCode,
     isAuthenticated,
+    isLoading,
 
-    // country support
+    // country
     COUNTRIES,
     selectedCountry,
     handleCountryChange,
+    handlePhoneNumberChange,
 
     // actions
     handleSubmit,
+    verifyPin,
     logout,
-    handlePhoneNumberChange,
   };
 };

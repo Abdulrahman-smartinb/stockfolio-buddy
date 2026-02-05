@@ -159,5 +159,6 @@
   "click_upload_receipt": "Click to upload the payment receipt",
   "unsupported_file": "Unsupported file type",
   "supported_files_pdf_img": "Supported file types are PDF and Images",
-  "check_payment": "Checking payment"
+  "check_payment": "Checking payment",
+  "pin_code": "PIN Code"
 }

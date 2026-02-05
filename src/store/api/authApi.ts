@@ -1,5 +1,11 @@
 import { baseApi } from "./baseApi";
-import { loginEP, logoutEP, profileEP, registerEP } from "../../api/GlobalData";
+import {
+  loginEP,
+  logoutEP,
+  profileEP,
+  registerEP,
+  verifyPinEP,
+} from "../../api/GlobalData";
 import { UserData } from "@/interfaces/UserData";
 
 export interface LoginRequest {
@@ -53,6 +59,13 @@ export const authApi = baseApi.injectEndpoints({
         return `${profileEP}/check-role/${authUserId}`;
       },
     }),
+    verifyPin: builder.mutation({
+      query: (data) => ({
+        url: verifyPinEP,
+        method: "POST",
+        body: data,
+      }),
+    }),
   }),
 });
 
@@ -61,4 +74,5 @@ export const {
   useLogoutMutation,
   useRegisterMutation,
   useResolveRoleQuery,
+  useVerifyPinMutation,
 } = authApi;

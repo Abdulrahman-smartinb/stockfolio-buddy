@@ -17,13 +17,19 @@ const Auth = () => {
     setMode,
     showPassword,
     setShowPassword,
+    isPinRequired,
+    showPin,
+    setShowPin,
     formData,
     setFormData,
     isLoading,
+    pinCode,
+    setPinCode,
     handleSubmit,
     showWarn,
     showLengthError,
     COUNTRIES,
+    verifyPin,
   } = useAuth();
 
   return (
@@ -105,7 +111,7 @@ const Auth = () => {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.2 }}
                 className="space-y-4"
-                onSubmit={handleSubmit}
+                onSubmit={isPinRequired ? verifyPin : handleSubmit}
               >
                 {/* FULL NAME */}
                 {mode === "register" && (
@@ -199,6 +205,40 @@ const Auth = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* PIN CODE */}
+                {isPinRequired && (
+                  <div>
+                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                      {t("pin_code")}
+                    </label>
+                    <div className="relative">
+                      <Lock
+                        className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
+                      />
+                      <Input
+                        type={showPin ? "text" : "password"}
+                        className="ps-10 pr-10 h-11"
+                        value={pinCode}
+                        onChange={(e) => setPinCode(e.target.value)}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPin((v) => !v)}
+                        className={`absolute ${
+                          isRtl ? "left" : "right"
+                        }-3 top-1/2 -translate-y-1/2 text-muted-foreground`}
+                      >
+                        {showPin ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                )}
 
                 {/* SUBMIT */}
                 <Button

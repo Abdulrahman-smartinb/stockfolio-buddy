@@ -4,6 +4,7 @@ export const base_url = "http://localhost:80";
 export const loginEP = "api/investor/auth/login";
 export const logoutEP = "api/investor/auth/logout";
 export const registerEP = "api/investor/auth/register";
+export const verifyPinEP = "api/investor/auth/verify";
 export const stocksEP = "api/clientCompany";
 export const sharePurchaseRequestEP = "api/sharePurchaseRequest";
 export const investorSharesEP = "api/investorShares";

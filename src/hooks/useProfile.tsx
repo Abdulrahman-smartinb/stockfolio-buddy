@@ -38,6 +38,7 @@ export const useProfile = () => {
   const [livePhoto, setLivePhoto] = useState<File | null>(null);
   const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
 
+  const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
   const [passportExpDate, setPassportExpDate] = useState();
@@ -62,7 +63,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId }
+    { skip: !isApplicant || !profileId },
   );
 
   const {
@@ -71,7 +72,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId }
+    { skip: !isInvestor || !profileId },
   );
 
   // Pick correct user model
@@ -206,6 +207,7 @@ export const useProfile = () => {
       if (passportNumber?.trim()?.length > 0)
         formData.append("passportExpDate", passportExpDate);
 
+      formData.append("email", email);
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
 
@@ -296,6 +298,8 @@ export const useProfile = () => {
     setPassportNumber,
     passportExpDate,
     setPassportExpDate,
+    email,
+    setEmail,
 
     // role (single source of truth)
     role,

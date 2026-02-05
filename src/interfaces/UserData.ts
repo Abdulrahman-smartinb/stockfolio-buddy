@@ -11,6 +11,7 @@ export interface UserData {
   reviewStatus?: string;
   rejectionMessage?: string;
   createdAt?: string;
+  role?: string;
 }
 
 export interface AuthUser {

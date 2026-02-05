@@ -58,6 +58,8 @@ const Dashboard = () => {
     setPassportNumber,
     passportExpDate,
     setPassportExpDate,
+    email,
+    setEmail,
   } = useProfile();
 
   return (
@@ -163,6 +165,8 @@ const Dashboard = () => {
         setLivePhotoPreview={setLivePhotoPreview}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
+        email={email}
+        setEmail={setEmail}
       />
       <Footer />
     </div>

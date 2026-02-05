@@ -159,5 +159,6 @@
   "click_upload_receipt": "انقر لتحميل ملف الدفع",
   "unsupported_file": "صيغة الملف غير مدعومة",
   "supported_files_pdf_img": "الملفات المدعومة هي PDF والصور",
-  "check_payment": "يتم التحقق من الدفعة"
+  "check_payment": "يتم التحقق من الدفعة",
+  "pin_code": "رمز الأمان"
 }
