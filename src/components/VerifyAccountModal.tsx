@@ -147,7 +147,6 @@ export const VerifyAccountModal = ({
                       <Input
                         type="file"
                         accept="image/*"
-                        capture="user"
                         onChange={(e) =>
                           setLivePhoto(e.target.files?.[0] ?? null)
                         }
