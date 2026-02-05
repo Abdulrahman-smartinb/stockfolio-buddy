@@ -1,0 +1,38 @@
+/* ================================
+   Profile – custom visual styles
+   (NO layout, NO spacing)
+================================ */
+
+/* Brand glow behind avatar */
+.profile-glow {
+  position: absolute;
+  inset: -4px;
+  z-index: -1;
+  border-radius: 1.5rem;
+  filter: blur(18px);
+  opacity: 0.5;
+  background: radial-gradient(
+    60px 60px at 30% 30%,
+    rgba(7, 37, 34, 0.35),
+    transparent 60%
+  );
+}
+
+/* Glass surface enhancement */
+.profile-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(14px);
+}
+
+/* Primary brand button override */
+.profile-btn-brand {
+  background-color: #072522;
+  color: #fff;
+}
+
+/* Small badge accent */
+.profile-badge {
+  background-color: rgba(7, 37, 34, 0.1);
+  color: #072522;
+  border: 1px solid rgba(7, 37, 34, 0.25);
+}

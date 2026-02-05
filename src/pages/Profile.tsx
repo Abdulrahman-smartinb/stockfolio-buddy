@@ -18,6 +18,7 @@ import {
   Sparkles,
   LogIn,
   LogOut,
+  RefreshCcw,
 } from "lucide-react";
 
 import { format } from "date-fns";
@@ -29,6 +30,14 @@ import { CSSProperties, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { isMobile } from "@/hooks/helpers";
 import { useAuth } from "@/hooks/useAuth";
+
+function LtrValue({ children, className = "" }) {
+  return (
+    <span dir="ltr" className={`inline-block ${className}`}>
+      {children}
+    </span>
+  );
+}
 
 const override: CSSProperties = {
   display: "block",
@@ -43,9 +52,6 @@ const Profile = () => {
   const {
     loadingUser,
     user,
-    purchaseRequests,
-    loadingRequests,
-    refetchRequests,
 
     isEditing,
     setIsEditing,
@@ -59,6 +65,11 @@ const Profile = () => {
     isSaving,
 
     role,
+    refetchRole,
+    isInvestor,
+    isApplicant,
+    reviewStatus,
+
     openVerify,
     setOpenVerify,
 
@@ -77,7 +88,6 @@ const Profile = () => {
     handleClose,
     livePhotoPreview,
     setLivePhotoPreview,
-    REVIEW_STATUS_STYLES,
   } = useProfile();
 
   const avatarSrc = useMemo(() => {
@@ -88,12 +98,6 @@ const Profile = () => {
     // otherwise it’s server filename/path
     return `${base_url}/Investor/${p}`;
   }, [editData?.profilePreview]);
-
-  const canVerify =
-    role !== "investor" &&
-    !isEditing &&
-    user?.reviewStatus !== "approved" &&
-    user?.reviewStatus !== "pending";
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -106,45 +110,6 @@ const Profile = () => {
           animate="visible"
           className="space-y-6 sm:space-y-8"
         >
-          {/* PAGE TITLE */}
-          <motion.div variants={itemVariants} className="relative">
-            <div
-              className={cn(
-                "absolute -top-6 left-0 right-0 h-40 -z-10",
-                "rounded-3xl blur-2xl opacity-60"
-              )}
-              style={{
-                background:
-                  "radial-gradient(900px 200px at 10% 10%, rgba(7,37,34,0.24), transparent 60%), radial-gradient(700px 220px at 70% 30%, rgba(7,37,34,0.14), transparent 55%)",
-              }}
-            />
-            <div className="flex items-end justify-between gap-4">
-              {/* Small badge */}
-              {user?.reviewStatus && role !== "investor" && (
-                <div
-                  className={cn(
-                    "hidden sm:inline-flex items-center gap-2",
-                    "rounded-2xl px-3 py-2",
-                    "border border-border/60 bg-background/60 backdrop-blur-xl shadow-sm"
-                  )}
-                >
-                  <ShieldCheck className="w-4 h-4 text-pr" />
-                  <span className="text-xs text-muted-foreground">
-                    {t("status")}:
-                  </span>
-                  <span
-                    className={cn(
-                      "text-xs font-semibold",
-                      REVIEW_STATUS_STYLES[user.reviewStatus]
-                    )}
-                  >
-                    {t(user.reviewStatus)}
-                  </span>
-                </div>
-              )}
-            </div>
-          </motion.div>
-
           {loadingUser ? (
             <div className="py-10">
               <RingLoader
@@ -162,29 +127,66 @@ const Profile = () => {
               <motion.div variants={itemVariants}>
                 <div
                   className={cn(
+                    "relative",
                     "rounded-3xl border border-border/60",
-                    "bg-background/60 backdrop-blur-xl shadow-sm overflow-hidden"
+                    "bg-background/70 backdrop-blur-xl shadow-sm"
                   )}
                 >
-                  {/* top accent */}
+                  {/* ===== TOP ACTIONS ===== */}
                   <div
-                    className="h-1.5 w-full"
-                    style={{
-                      background:
-                        "linear-gradient(90deg, #072522, rgba(7,37,34,0.35), transparent)",
-                    }}
-                  />
+                    className={cn(
+                      "absolute top-4 sm:top-5 z-10 flex items-center gap-2",
+                      "right-4 sm:right-5",
+                      "rtl:right-auto rtl:left-4 sm:rtl:left-5"
+                    )}
+                  >
+                    {/* Refresh */}
+                    <button
+                      onClick={refetchRole}
+                      className={cn(
+                        "h-8 px-3 rounded-xl text-sm font-medium",
+                        "inline-flex items-center gap-2",
+                        "ring-1 ring-border/60",
+                        "bg-background/60 hover:bg-muted/40 transition"
+                      )}
+                    >
+                      <RefreshCcw className="w-4 h-4" />
+                      <span className="hidden sm:inline">{t("refresh")}</span>
+                    </button>
 
+                    {/* Logout */}
+                    <button
+                      onClick={logout}
+                      className={cn(
+                        "h-8 px-3 rounded-xl text-sm font-medium",
+                        "inline-flex items-center gap-2",
+                        "ring-1 ring-rose-500/30",
+                        "text-rose-600 bg-rose-500/10",
+                        "hover:bg-rose-500/15 hover:ring-rose-500/40 transition"
+                      )}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span className="hidden sm:inline">{t("logout")}</span>
+                    </button>
+                  </div>
+
+                  {/* ===== CONTENT ===== */}
                   <div className="p-5 sm:p-6">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                      {/* Left: Avatar + name */}
-                      <div className="flex items-center gap-4">
+                    <div
+                      className={cn(
+                        "grid gap-4",
+                        "grid-cols-1 sm:grid-cols-[auto_1fr_auto]",
+                        "items-center"
+                      )}
+                    >
+                      {/* ===== AVATAR COLUMN (FIXED) ===== */}
+                      <div className="flex items-center gap-4 min-w-[96px]">
                         <div className="relative">
                           <div
                             className={cn(
-                              "h-[74px] w-[74px] sm:h-[86px] sm:w-[86px]",
-                              "rounded-2xl overflow-hidden ring-1 ring-border/60",
-                              "bg-muted/30"
+                              "h-[86px] w-[86px]",
+                              "rounded-2xl overflow-hidden",
+                              "ring-1 ring-border/60 bg-muted/30"
                             )}
                           >
                             {avatarSrc ? (
@@ -195,7 +197,10 @@ const Profile = () => {
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <span className="text-2xl font-extrabold text-pr">
+                                <span
+                                  className="text-2xl font-extrabold"
+                                  style={{ color: "#042623" }}
+                                >
                                   {user?.fullName?.charAt(0)?.toUpperCase() ||
                                     "?"}
                                 </span>
@@ -207,7 +212,7 @@ const Profile = () => {
                                 {t("change")}
                                 <input
                                   type="file"
-                                  className="hidden"
+                                  hidden
                                   accept="image/*"
                                   onChange={(e) =>
                                     handleProfileImageChange(
@@ -219,107 +224,106 @@ const Profile = () => {
                             )}
                           </div>
 
-                          {/* tiny glow */}
+                          {/* soft brand glow */}
                           <div
-                            className="absolute -inset-1 -z-10 rounded-3xl blur-xl opacity-50"
+                            className="absolute -inset-1 -z-10 rounded-3xl blur-xl opacity-40"
                             style={{
                               background:
-                                "radial-gradient(60px 60px at 30% 30%, rgba(7,37,34,0.35), transparent 60%)",
+                                "radial-gradient(60px 60px at 30% 30%, rgba(4,38,35,0.35), transparent 60%)",
                             }}
                           />
                         </div>
-
-                        <div className="min-w-0">
-                          {!isEditing ? (
-                            <>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <p className="text-lg sm:text-2xl font-extrabold tracking-tight text-foreground truncate">
-                                  {user?.fullName}
-                                </p>
-
-                                {role === "investor" && (
-                                  <span
-                                    className={cn(
-                                      "inline-flex items-center gap-1",
-                                      "px-2.5 py-1 rounded-full text-[11px] font-semibold",
-                                      "bg-pr/10 text-pr ring-1 ring-pr/25"
-                                    )}
-                                  >
-                                    <Sparkles className="w-3.5 h-3.5" />
-                                    {t("investor") ?? "Investor"}
-                                  </span>
-                                )}
-                              </div>
-
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {t("member_since")}{" "}
-                                {format(
-                                  user?.createdAt || Date.now(),
-                                  "MMM yyyy"
-                                )}
-                              </p>
-
-                              <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-                                <span className="truncate">
-                                  {user?.email || user?.phone || "—"}
-                                </span>
-                                <span className="opacity-40">•</span>
-                                <span className="truncate">
-                                  {role === "investor"
-                                    ? t("verified_member") ?? "Verified member"
-                                    : t("application_profile") ??
-                                      "Application profile"}
-                                </span>
-                              </div>
-                            </>
-                          ) : (
-                            <div className="space-y-2">
-                              <p className="text-xs text-muted-foreground">
-                                {t("full_name")}
-                              </p>
-                              <Input
-                                className={cn(
-                                  "h-10 text-sm rounded-2xl",
-                                  "bg-background/60 border-border/60"
-                                )}
-                                value={editData.fullName}
-                                onChange={(e) =>
-                                  setEditData((p) => ({
-                                    ...p,
-                                    fullName: e.target.value,
-                                  }))
-                                }
-                              />
-                            </div>
-                          )}
-                        </div>
                       </div>
 
-                      {/* Right: actions */}
+                      {/* ===== NAME + META (FLUID) ===== */}
+                      <div className="min-w-0">
+                        {!isEditing ? (
+                          <>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <p className="text-lg sm:text-2xl font-extrabold tracking-tight truncate">
+                                {user?.fullName}
+                              </p>
+
+                              {isInvestor && (
+                                <span
+                                  className={cn(
+                                    "inline-flex items-center gap-1",
+                                    "px-2.5 py-1 rounded-full text-[11px] font-semibold",
+                                    "ring-1"
+                                  )}
+                                  style={{
+                                    backgroundColor: "rgba(4,38,35,0.08)",
+                                    color: "#042623",
+                                    borderColor: "rgba(4,38,35,0.25)",
+                                  }}
+                                >
+                                  <Sparkles className="w-3.5 h-3.5" />
+                                  {t("investor")}
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {t("member_since")}{" "}
+                              {format(
+                                user?.createdAt || Date.now(),
+                                "MMM yyyy"
+                              )}
+                            </p>
+
+                            <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
+                              <span className="truncate">{user?.email}</span>
+                              <LtrValue className="text-xs text-muted-foreground">
+                                {user?.phone}
+                              </LtrValue>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="space-y-2 max-w-sm">
+                            <p className="text-xs text-muted-foreground">
+                              {t("full_name")}
+                            </p>
+                            <Input
+                              className="h-10 rounded-2xl bg-background/60 border-border/60"
+                              value={editData.fullName}
+                              onChange={(e) =>
+                                setEditData((p) => ({
+                                  ...p,
+                                  fullName: e.target.value,
+                                }))
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* ===== ACTIONS (FIXED WIDTH) ===== */}
                       <div
                         className={cn(
-                          "flex items-center gap-3",
-                          "justify-end",
+                          "flex items-center gap-2 justify-end",
+                          "min-w-[220px]",
                           isMobile && "flex-col items-stretch"
                         )}
                       >
-                        {/* Verify */}
-                        {canVerify && (
+                        {isApplicant && reviewStatus === "draft" && (
                           <button
                             onClick={() => setOpenVerify(true)}
                             className={cn(
-                              "inline-flex items-center justify-center gap-2",
                               "h-10 px-4 rounded-xl text-sm font-semibold",
-                              "ring-1 ring-pr/30 bg-pr/10 text-pr",
-                              "hover:bg-pr/15 transition"
+                              "inline-flex items-center gap-2",
+                              "ring-1 transition"
                             )}
+                            style={{
+                              backgroundColor: "rgba(4,38,35,0.08)",
+                              color: "#042623",
+                              borderColor: "rgba(4,38,35,0.3)",
+                            }}
                           >
                             <Verified className="w-4 h-4" />
                             {t("verify")}
                           </button>
                         )}
 
-                        {/* Edit / Save */}
                         <button
                           onClick={
                             isEditing
@@ -328,18 +332,23 @@ const Profile = () => {
                           }
                           disabled={isSaving}
                           className={cn(
-                            "inline-flex items-center justify-center gap-2",
                             "h-10 px-5 rounded-xl text-sm font-semibold",
+                            "inline-flex items-center justify-center gap-2",
                             "ring-1 transition",
-                            isEditing
-                              ? "bg-pr text-white ring-pr/40 hover:opacity-95"
-                              : "bg-background/60 ring-border/60 text-pr hover:bg-muted/40",
                             isSaving && "opacity-60 cursor-not-allowed"
                           )}
                           style={
                             isEditing
-                              ? { backgroundColor: "#072522" }
-                              : undefined
+                              ? {
+                                  backgroundColor: "#042623",
+                                  color: "#fff",
+                                  borderColor: "rgba(4,38,35,0.4)",
+                                }
+                              : {
+                                  backgroundColor: "rgba(4,38,35,0.05)",
+                                  color: "#042623",
+                                  borderColor: "rgba(4,38,35,0.25)",
+                                }
                           }
                         >
                           {isEditing ? (
@@ -354,26 +363,9 @@ const Profile = () => {
                             </>
                           )}
                         </button>
-
-                        {/* Logout — SAME SIZE, RED */}
-                        <button
-                          onClick={logout}
-                          className={cn(
-                            "inline-flex items-center justify-center gap-2",
-                            "h-10 px-5 rounded-xl text-sm font-semibold",
-                            "ring-1 ring-red-500/30 text-red-600 bg-red-500/5",
-                            "hover:bg-red-500/10 hover:ring-red-500/40 transition"
-                          )}
-                        >
-                          <LogOut className="w-4 h-4" />
-                          {t("logout")}
-                        </button>
                       </div>
                     </div>
                   </div>
-
-                  {/* subtle bottom fade */}
-                  <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
                 </div>
               </motion.div>
 
@@ -393,17 +385,14 @@ const Profile = () => {
                         {t("personal_info")}
                       </CardTitle>
 
-                      {/* small status on mobile */}
-                      {user?.reviewStatus && role !== "investor" && (
-                        <span
-                          className={cn(
-                            "sm:hidden text-[11px] px-2.5 py-1 rounded-full",
-                            "ring-1 ring-border/60 bg-muted/20 text-muted-foreground"
-                          )}
-                        >
-                          {t(user.reviewStatus)}
-                        </span>
-                      )}
+                      <span
+                        className={cn(
+                          "sm:hidden text-[11px] px-2.5 py-1 rounded-full",
+                          "ring-1 ring-border/60 bg-muted/20 text-muted-foreground"
+                        )}
+                      >
+                        {t(reviewStatus)}
+                      </span>
                     </div>
                   </CardHeader>
 
@@ -481,7 +470,9 @@ const Profile = () => {
                             </p>
                             {!isEditing ? (
                               <p className="text-sm font-semibold text-foreground truncate">
-                                {user?.phone || "—"}
+                                <LtrValue className="text-xs text-muted-foreground">
+                                  {user?.phone}
+                                </LtrValue>
                               </p>
                             ) : (
                               <Input
@@ -571,17 +562,6 @@ const Profile = () => {
                   </CardContent>
                 </Card>
               </motion.div>
-
-              {/* PENDING REQUESTS */}
-              {role === "investor" && (
-                <motion.div variants={itemVariants}>
-                  <PendingRequests
-                    isLoading={loadingRequests}
-                    data={purchaseRequests}
-                    refetch={refetchRequests}
-                  />
-                </motion.div>
-              )}
             </>
           )}
         </motion.div>

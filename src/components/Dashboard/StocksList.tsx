@@ -59,6 +59,7 @@ const StocksList = ({ stocks = [], isLoading, t, onAction }) => {
     <div className="space-y-3">
       {stocks.map((stock, index) => (
         <StockListItem
+          t={t}
           key={stock._id}
           stock={stock}
           index={index}

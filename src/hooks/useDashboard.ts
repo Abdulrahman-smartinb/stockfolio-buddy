@@ -30,14 +30,14 @@ const useDashboard = () => {
   });
 
   const {
-    data,
-
-    error: err,
+    data: portfolio,
+    isLoading: portfolioLoading,
+    error: portfolioError,
   } = useGetInvestorPortfolioQuery({
     id: resolvedRole?.profileId,
   });
-  console.log(data);
-  console.log(err);
+  console.log(portfolio);
+
   const handleStockClick = (stock: InvestmentEntity, type: string) => {
     if (resolvedRole.isApplicant) {
       setVerfiyModalOpen(true);
@@ -47,38 +47,6 @@ const useDashboard = () => {
     setTradeType(type);
     setIsBuyModalOpen(true);
   };
-
-  const stats = [
-    {
-      label: "market_status",
-      value: t("open"),
-      icon: Activity,
-      color: "text-success",
-      bgColor: "bg-success/10",
-    },
-    {
-      label: "top_gainer",
-      value: "+2.58%",
-      subValue: "NVDA",
-      icon: TrendingUp,
-      color: "text-success",
-      bgColor: "bg-success/10",
-    },
-    {
-      label: "total_volume",
-      value: "324.5M",
-      icon: BarChart3,
-      color: "text-accent",
-      bgColor: "bg-accent/10",
-    },
-    {
-      label: "portfolio_value",
-      value: "$12,450",
-      icon: DollarSign,
-      color: "text-primary",
-      bgColor: "bg-primary/10",
-    },
-  ];
 
   return {
     t,
@@ -96,7 +64,8 @@ const useDashboard = () => {
     isLoading,
     refetch,
     handleStockClick,
-    stats,
+    portfolio,
+    portfolioLoading,
   };
 };
 export default useDashboard;

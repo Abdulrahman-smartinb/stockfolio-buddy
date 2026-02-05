@@ -32,6 +32,8 @@ const Dashboard = () => {
     isLoading,
     refetch,
     handleStockClick,
+    portfolio,
+    portfolioLoading,
   } = useDashboard();
 
   const {
@@ -63,7 +65,11 @@ const Dashboard = () => {
       <Header />
 
       <main className="container mx-auto p-4 ">
-        <InvestmentsSlider t={t} />
+        <InvestmentsSlider
+          t={t}
+          portfolio={portfolio}
+          loading={portfolioLoading}
+        />
         {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

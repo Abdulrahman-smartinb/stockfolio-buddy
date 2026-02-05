@@ -12,7 +12,7 @@ export const useResolvedRole = () => {
   }, []);
 
   const authUserId = profile?.authUserId;
-  const { data, isLoading, error } = useResolveRoleQuery(
+  const { data, isLoading, error, refetch } = useResolveRoleQuery(
     { authUserId },
     { skip: !authUserId }
   );
@@ -33,5 +33,6 @@ export const useResolvedRole = () => {
     resolvedRole: resolved,
     loadingRole: isLoading,
     roleError: error,
+    refetchRole: refetch,
   };
 };

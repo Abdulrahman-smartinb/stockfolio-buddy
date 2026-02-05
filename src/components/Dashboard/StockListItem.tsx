@@ -15,7 +15,7 @@ const formatMoney = (n) => {
   }).format(x);
 };
 
-const StockListItem = ({ stock, index = 0, onAction }) => {
+const StockListItem = ({ t, stock, index = 0, onAction }) => {
   const name = stock?.name || stock?.fullLegalName || "—";
   const symbol = stock?.symbol || stock?.code || "";
   const price = stock?.price ?? stock?.currentPrice ?? stock?.sharePrice;
@@ -115,7 +115,7 @@ const StockListItem = ({ stock, index = 0, onAction }) => {
               style={{ color: "#072522" }}
             >
               <ArrowUpRight className="w-4 h-4" />
-              <span>Buy</span>
+              <span>{t("buy")}</span>
             </button>
 
             {/* SELL — disabled for now */}

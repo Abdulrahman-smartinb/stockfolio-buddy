@@ -45,7 +45,7 @@ export const useProfile = () => {
   // =========================
   // Resolve role (single source of truth)
   // =========================
-  const { resolvedRole, loadingRole } = useResolvedRole();
+  const { resolvedRole, loadingRole, refetchRole } = useResolvedRole();
 
   const isInvestor = !!resolvedRole?.isInvestor;
   const isApplicant = !!resolvedRole?.isApplicant;
@@ -183,7 +183,7 @@ export const useProfile = () => {
 
   const handleSubmit = async () => {
     if (!user) return;
-
+    console.log("here");
     if (
       !idPhoto ||
       !livePhoto ||
@@ -251,16 +251,6 @@ export const useProfile = () => {
   };
 
   // =========================
-  // Constants
-  // =========================
-  const REVIEW_STATUS_STYLES = {
-    draft: "badge badge-outline text-gray-500 border-gray-300",
-    pending: "badge badge-outline text-blue-600 border-blue-600",
-    rejected: "badge badge-outline text-red-600 border-red-600",
-    approved: "badge badge-outline text-green-600 border-green-600",
-  };
-
-  // =========================
   // Return
   // =========================
   return {
@@ -309,12 +299,11 @@ export const useProfile = () => {
 
     // role (single source of truth)
     role,
+    refetchRole,
     isInvestor,
     isApplicant,
     reviewStatus,
 
-    // styles / motion
-    REVIEW_STATUS_STYLES,
     containerVariants,
     itemVariants,
   };

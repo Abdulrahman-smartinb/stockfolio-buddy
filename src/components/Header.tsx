@@ -3,15 +3,15 @@ import { LogOut, User, Home, LogIn, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "../../public/jadwa.png";
-import user from "../../public/user.png";
+import avatar from "../../public/user.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
 import { isMobile } from "@/hooks/helpers";
 import { base_url } from "@/api/GlobalData";
+import { useProfile } from "@/hooks/useProfile";
 
 export const Header = () => {
   const {
-    logout,
     navigate,
     t,
     i18n,
@@ -28,6 +28,8 @@ export const Header = () => {
     userObj,
     refetch,
   } = useHeader();
+
+  const { user } = useProfile();
 
   return (
     <motion.header
@@ -68,11 +70,11 @@ export const Header = () => {
             {/* Brand text */}
             <div className="leading-none">
               <div className="flex items-baseline ">
-                <span className="text-[15px] sm:text-base font-extrabold tracking-tight text-pr mx-1">
-                  JADWA
+                <span className="text-[15px] sm:text-base font-extrabold tracking-tight text-pr mx-1 uppercase">
+                  {t("jadwa")}
                 </span>
-                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-muted-pr px-0 mx-0">
-                  INVEST
+                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-muted-pr px-0 mx-0 uppercase">
+                  {t("invest")}
                 </span>
               </div>
               <div className="text-[11px] text-muted-foreground/80 hidden sm:block">
@@ -108,41 +110,6 @@ export const Header = () => {
 
           {/* RIGHT — User Actions */}
           <div className="flex items-center gap-3">
-            {/* Language selector */}
-            {/* ...keep commented... */}
-
-            {/* Logout */}
-
-            {/* {loggedIn ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={logout}
-                className={cn(
-                  "text-muted-foreground hover:text-destructive",
-                  "flex items-center gap-2"
-                )}
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden md:inline">{t("logout")}</span>
-              </Button>
-            ) : (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate("/auth")}
-                className={cn(
-                  "text-muted-foreground hover:text-white",
-                  "flex items-center gap-2"
-                )}
-              >
-                <LogIn className="w-4 h-4" />
-                <span className="hidden md:inline">{t("login_register")}</span>
-              </Button>
-            )} */}
-
-            {/* ...keep commented... */}
-
             {/* Notifications + Avatar */}
             <div className="flex items-center gap-3">
               {/* Notifications */}
@@ -234,6 +201,19 @@ export const Header = () => {
                   </div>
                 )}
               </div>
+              <div className="relative">
+                <select
+                  value={(i18n.language || "").split("-")[0] || "en"}
+                  onChange={(e) => i18n.changeLanguage(e.target.value)}
+                  aria-label="Language"
+                  className="appearance-none rounded-lg border border-border/60 bg-background/60
+      px-3 py-1.5 text-sm font-medium backdrop-blur-md shadow-sm transition
+      hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                >
+                  <option value="en">🇬🇧</option>
+                  <option value="ar">🇸🇾</option>
+                </select>
+              </div>
 
               {/* Avatar */}
               <button
@@ -251,9 +231,9 @@ export const Header = () => {
               >
                 <img
                   src={
-                    userObj?.profileImage
-                      ? `${base_url}/Investor/${userObj.profileImage}`
-                      : user
+                    user?.profileImage
+                      ? `${base_url}/Investor/${user.profileImage}`
+                      : avatar
                   }
                   alt="User Avatar"
                   className="h-8 w-8 rounded-lg object-cover"
@@ -268,50 +248,4 @@ export const Header = () => {
 };
 
 {
-  /* <div className="relative">
-            <select
-              value={(i18n.language || "").split("-")[0] || "en"}
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
-              aria-label="Language"
-              className="appearance-none rounded-lg border border-border/60 bg-background/60
-      px-3 py-1.5 text-sm font-medium backdrop-blur-md shadow-sm transition
-      hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/40"
-            >
-              <option value="en">🇬🇧</option>
-              <option value="ar">🇸🇾</option>
-            </select>
-          </div> */
-}
-
-{
-  /* Logout */
-}
-{
-  /* {loggedIn ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={logout}
-              className={cn(
-                "text-muted-foreground hover:text-destructive",
-                "flex items-center gap-2"
-              )}
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline">{t("logout")}</span>
-            </Button>
-          ) : (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate("/auth")}
-              className={cn(
-                "text-muted-foreground hover:text-white",
-                "flex items-center gap-2"
-              )}
-            >
-              <LogIn className="w-4 h-4" />
-              <span className="hidden md:inline">{t("login_register")}</span>
-            </Button>
-          )} */
 }
