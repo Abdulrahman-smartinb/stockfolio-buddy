@@ -63,7 +63,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId },
+    { skip: !isApplicant || !profileId }
   );
 
   const {
@@ -72,7 +72,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId },
+    { skip: !isInvestor || !profileId }
   );
 
   // Pick correct user model
@@ -184,7 +184,7 @@ export const useProfile = () => {
 
   const handleSubmit = async () => {
     if (!user) return;
-    console.log("here");
+
     if (
       !idPhoto ||
       !livePhoto ||

@@ -9,6 +9,7 @@ import {
 } from "@/store/api/authApi";
 import { useTranslation } from "react-i18next";
 import COUNTRIES from "@/data/countries.json";
+import Cookies from "js-cookie";
 
 type AuthMode = "login" | "register";
 
@@ -40,7 +41,7 @@ export const useAuth = () => {
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null,
+    null
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -53,12 +54,12 @@ export const useAuth = () => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(localStorage.getItem("authToken")),
+    Boolean(Cookies.get("authToken"))
   );
 
   const profile = useMemo(() => {
     try {
-      return JSON.parse(localStorage.getItem("profile") || "{}");
+      return JSON.parse(Cookies.get("profile") || "{}");
     } catch {
       return {};
     }
@@ -73,7 +74,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country],
+    [formData.country]
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -138,8 +139,8 @@ export const useAuth = () => {
   };
 
   const finalizeLogin = (response) => {
-    localStorage.setItem("authToken", response.token);
-    localStorage.setItem("profile", JSON.stringify(response.profile));
+    Cookies.set("authToken", response.token);
+    Cookies.set("profile", JSON.stringify(response.profile));
     setIsAuthenticated(true);
 
     toast({
@@ -187,6 +188,7 @@ export const useAuth = () => {
         variant: "destructive",
         title: t("auth_failed"),
         description: error?.data?.message || t("check_credits"),
+        duration: 5000,
       });
     }
   };
@@ -213,6 +215,7 @@ export const useAuth = () => {
         variant: "destructive",
         title: t("verification_failed"),
         description: error?.data?.message || t("code_failed"),
+        duration: 5000,
       });
     }
   };
@@ -221,7 +224,8 @@ export const useAuth = () => {
     try {
       await logoutApi(profile?.authUserId).unwrap();
     } finally {
-      localStorage.clear();
+      Cookies.remove("authToken", { path: "/" });
+      Cookies.remove("profile", { path: "/" });
       setIsAuthenticated(false);
       navigate("/auth");
     }

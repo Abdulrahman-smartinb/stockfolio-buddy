@@ -14,33 +14,42 @@ export function PhoneInput({
   const selectedCountry = countries.find((c) => c.code === country)!;
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const raw = e.target.value;
-    const numeric = raw.replace(/\D/g, "");
+    const numeric = e.target.value.replace(/\D/g, "");
     onPhoneChange(numeric);
   };
 
   return (
-    <div className={`${isMobile ? "space-y-2" : "flex"} gap-2`}>
+    <div className={isMobile ? "space-y-2" : "flex gap-2"}>
+      {/* Country */}
       <CountrySelect
-        classes={isMobile ? "w-[100%]" : "w-[50%]"}
+        classes={isMobile ? "w-full" : "w-1/2"}
         countries={countries}
         value={country}
         onChange={onCountryChange}
       />
 
-      <div className={`relative flex-1 ${isMobile ? "w-[100%]" : "w-[50%]"}`}>
-        <Phone className="absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      {/* Phone */}
+      <div className={isMobile ? "relative w-full" : "relative w-1/2"}>
+        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 
-        <div className="absolute top-1/2 -translate-y-1/2 ms-9 text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
+        {/* Dial code */}
+        <div className="absolute left-9 top-1/2 -translate-y-1/2 text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
           {selectedCountry.dialCode}
         </div>
 
         <Input
           type="tel"
+          dir="ltr" // 🔑 إجبار الاتجاه
+          inputMode="numeric"
           value={phone}
           onChange={handlePhoneNumberChange}
           placeholder="5XXXXXXXX"
-          className={`h-11 ${isRtl ? "pr-20" : "pl-20"}`}
+          className="
+            h-11
+            pl-20
+            text-left
+            tabular-nums
+          "
           required
         />
       </div>

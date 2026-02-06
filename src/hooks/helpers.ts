@@ -1,15 +1,8 @@
-export const isLoggedIn = (): boolean => {
-  const token = localStorage.getItem("authToken");
-  return Boolean(token);
-};
+import Cookies from "js-cookie";
 
-export const isInvestor = () => {
-  try {
-    const role = JSON.parse(localStorage.getItem("profile")).role || null;
-    return role === "investor";
-  } catch {
-    return false;
-  }
+export const isLoggedIn = (): boolean => {
+  const token = Cookies.get("authToken");
+  return Boolean(token);
 };
 
 export const clamp = (value: number, min: number, max: number) =>
@@ -31,7 +24,7 @@ const niceRound = (value: number) => {
 export const generateQuickShareOptions = (
   minShares: number,
   maxShares: number,
-  totalOptions = 4,
+  totalOptions = 4
 ): number[] => {
   const min = Math.max(1, minShares);
   const max = Math.max(min, maxShares);
@@ -57,3 +50,39 @@ export const generateQuickShareOptions = (
 };
 
 export const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+/* ================= Numbers ================= */
+
+export const formatNumber = (
+  value?: number | string,
+  options?: Intl.NumberFormatOptions
+) => {
+  if (value === null || value === undefined || value === "") return "—";
+
+  const num = Number(value);
+  if (Number.isNaN(num)) return "—";
+
+  return new Intl.NumberFormat(undefined, {
+    maximumFractionDigits: 2,
+    ...options,
+  }).format(num);
+};
+
+export const formatCurrency = (
+  value?: number | string,
+  currency: string = "USD"
+) => {
+  if (value === null || value === undefined || value === "") return "—";
+
+  const num = Number(value);
+  if (Number.isNaN(num)) return "—";
+
+  return new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 2,
+  }).format(num);
+};
+
+export const formatShares = (value?: number | string) =>
+  formatNumber(value, { maximumFractionDigits: 0 });

@@ -1,5 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, User, ArrowRight, Eye, EyeOff } from "lucide-react";
+import {
+  Lock,
+  User,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Redo2,
+  Undo2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -7,6 +15,9 @@ import { useTranslation } from "react-i18next";
 import { PhoneInput } from "@/components/PhoneInput";
 import logo from "../../public/jadwa.webp";
 import { isMobile } from "@/hooks/helpers";
+import { cn } from "@/lib/utils";
+
+const PRIMARY = "#072522";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
@@ -34,71 +45,79 @@ const Auth = () => {
 
   return (
     <div
-      className="min-h-screen bg-background flex"
+      className="min-h-screen flex bg-background"
       dir={isRtl ? "rtl" : "ltr"}
     >
-      {/* LEFT – DESKTOP ONLY */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-accent/10">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,hsl(var(--primary)/0.15),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,hsl(var(--accent)/0.15),transparent_50%)]" />
+      <div className="absolute top-4 end-4 z-50">
+        <LanguageSwitch />
+      </div>
+      {/* ===== LEFT / BRAND (Desktop) ===== */}
+      <div
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, rgba(7,37,34,0.08), rgba(7,37,34,0.02))",
+        }}
+      >
         <div className="relative z-10 flex flex-col justify-center px-16">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-8"
+            transition={{ duration: 0.5 }}
+            className="space-y-6"
           >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center">
-                <img src={logo} alt="Jadwa Logo" />
-              </div>
-              <h1 className="text-4xl font-bold gradient-text">Jadwa Invest</h1>
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="Jadwa" className="w-14 h-14" />
+              <h1
+                className="text-4xl font-extrabold tracking-tight"
+                style={{ color: PRIMARY }}
+              >
+                Jadwa Invest
+              </h1>
             </div>
 
-            <h2 className="text-4xl font-bold mb-4">
-              {t("trade_smarter")}
+            <h2 className="text-4xl font-bold leading-tight">
+              {t("home.headline_1")}
               <br />
-              <span className="gradient-text">{t("grow_faster")}</span>
+              <span style={{ color: PRIMARY }}>{t("home.headline_2")}</span>
             </h2>
 
             <p className="text-lg text-muted-foreground max-w-md">
-              {t("login_letter")}
+              {t("home.subtitle")}
             </p>
           </motion.div>
         </div>
       </div>
 
-      {/* RIGHT – AUTH FORM */}
+      {/* ===== RIGHT / FORM ===== */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6">
         <motion.div
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           className="w-full max-w-lg"
         >
-          {/* MOBILE LOGO */}
-          <div className="lg:hidden flex items-center justify-center gap-2 mb-6">
-            <div className="w-10 h-10 rounded-xl flex items-center justify-center">
-              <img src={logo} alt="Jadwa Logo" />
-            </div>
-            <span className="text-xl font-bold gradient-text">
+          {/* Mobile Logo */}
+          <div className="lg:hidden flex justify-center items-center gap-2 mb-6">
+            <img src={logo} alt="Jadwa" className="w-10 h-10" />
+            <span className="text-xl font-bold" style={{ color: PRIMARY }}>
               Jadwa Invest
             </span>
           </div>
 
-          <div className="glass-card rounded-2xl p-5 sm:p-8">
-            {/* MODE SWITCH */}
+          <div className="rounded-2xl border border-border/60 bg-white p-6 sm:p-8 shadow-sm">
+            {/* Mode Switch */}
             <div className="flex bg-muted rounded-xl p-1 mb-6">
               {(["login", "register"] as const).map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setMode(tab)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-medium transition ${
+                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
                     mode === tab
-                      ? "bg-background shadow text-foreground"
+                      ? "bg-white shadow text-foreground"
                       : "text-muted-foreground"
                   }`}
                 >
-                  {tab === "login" ? t("sign_in") : t("register")}
+                  {tab === "login" ? t("auth.sign_in") : t("auth.register")}
                 </button>
               ))}
             </div>
@@ -106,42 +125,28 @@ const Auth = () => {
             <AnimatePresence mode="wait">
               <motion.form
                 key={mode}
+                onSubmit={isPinRequired ? verifyPin : handleSubmit}
+                className="space-y-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
-                onSubmit={isPinRequired ? verifyPin : handleSubmit}
               >
-                {/* FULL NAME */}
+                {/* Full Name */}
                 {mode === "register" && (
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                      {t("full_name")}
-                    </label>
-                    <div className="relative">
-                      <User
-                        className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
-                      />
-                      <Input
-                        className="ps-10 h-11"
-                        value={formData.fullName}
-                        onChange={(e) =>
-                          setFormData((p) => ({
-                            ...p,
-                            fullName: e.target.value,
-                          }))
-                        }
-                        required
-                      />
-                    </div>
-                  </div>
+                  <Field
+                    label={t("auth.full_name")}
+                    icon={<User />}
+                    value={formData.fullName}
+                    onChange={(v) =>
+                      setFormData((p) => ({ ...p, fullName: v }))
+                    }
+                  />
                 )}
 
-                {/* PHONE */}
+                {/* Phone */}
                 <div>
                   <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                    {t("phone_number")}
+                    {t("auth.phone_number")}
                   </label>
 
                   <PhoneInput
@@ -150,113 +155,68 @@ const Auth = () => {
                     phone={formData.phone}
                     isRtl={isRtl}
                     isMobile={isMobile}
-                    onCountryChange={(country) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        country: country.code,
-                        dialCode: country.dialCode,
+                    onCountryChange={(c) =>
+                      setFormData((p) => ({
+                        ...p,
+                        country: c.code,
+                        dialCode: c.dialCode,
                       }))
                     }
                     onPhoneChange={(phone) =>
-                      setFormData((prev) => ({ ...prev, phone }))
+                      setFormData((p) => ({ ...p, phone }))
                     }
                   />
 
                   {(showWarn || showLengthError) && (
-                    <p className="text-xs text-red-500 mt-1 leading-tight">
-                      {showWarn ? t("only_numbers") : t("phone_length")}
+                    <p className="text-xs text-destructive mt-1">
+                      {showWarn
+                        ? t("auth.errors.only_numbers")
+                        : t("auth.errors.phone_length")}
                     </p>
                   )}
                 </div>
 
-                {/* PASSWORD */}
-                <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                    {t("password")}
-                  </label>
-                  <div className="relative">
-                    <Lock
-                      className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
-                    />
-                    <Input
-                      type={showPassword ? "text" : "password"}
-                      className="ps-10 pr-10 h-11"
-                      value={formData.password}
-                      onChange={(e) =>
-                        setFormData((p) => ({
-                          ...p,
-                          password: e.target.value,
-                        }))
-                      }
-                      required
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword((v) => !v)}
-                      className={`absolute ${
-                        isRtl ? "left" : "right"
-                      }-3 top-1/2 -translate-y-1/2 text-muted-foreground`}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-4 h-4" />
-                      ) : (
-                        <Eye className="w-4 h-4" />
-                      )}
-                    </button>
-                  </div>
-                </div>
+                {/* Password */}
+                <PasswordField
+                  label={t("auth.password")}
+                  value={formData.password}
+                  show={showPassword}
+                  toggle={() => setShowPassword((v) => !v)}
+                  onChange={(v) => setFormData((p) => ({ ...p, password: v }))}
+                  isRtl={isRtl}
+                />
 
-                {/* PIN CODE */}
+                {/* PIN */}
                 {isPinRequired && (
-                  <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-                      {t("pin_code")}
-                    </label>
-                    <div className="relative">
-                      <Lock
-                        className={`absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground`}
-                      />
-                      <Input
-                        type={showPin ? "text" : "password"}
-                        className="ps-10 pr-10 h-11"
-                        value={pinCode}
-                        onChange={(e) => setPinCode(e.target.value)}
-                        required
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowPin((v) => !v)}
-                        className={`absolute ${
-                          isRtl ? "left" : "right"
-                        }-3 top-1/2 -translate-y-1/2 text-muted-foreground`}
-                      >
-                        {showPin ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
+                  <PasswordField
+                    label={t("auth.pin_code")}
+                    value={pinCode}
+                    show={showPin}
+                    toggle={() => setShowPin((v) => !v)}
+                    onChange={setPinCode}
+                    isRtl={isRtl}
+                  />
                 )}
 
-                {/* SUBMIT */}
+                {/* Submit */}
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full mt-2"
+                  className="w-full"
                   disabled={isLoading}
+                  style={{ backgroundColor: PRIMARY }}
                 >
                   {isLoading ? (
                     <motion.div
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 1 }}
-                      className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full"
+                      className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full"
                     />
                   ) : (
                     <>
-                      {mode === "login" ? t("sign_in") : t("register")}
-                      <ArrowRight className="w-4 h-4 ml-2" />
+                      {mode === "login"
+                        ? t("auth.sign_in")
+                        : t("auth.register")}
                     </>
                   )}
                 </Button>
@@ -265,7 +225,7 @@ const Auth = () => {
           </div>
 
           <p className="text-[11px] text-muted-foreground text-center mt-4">
-            {t("terms_policy_agree")}
+            {t("auth.terms")}
           </p>
         </motion.div>
       </div>
@@ -274,3 +234,84 @@ const Auth = () => {
 };
 
 export default Auth;
+
+/* ================= Small Helpers ================= */
+
+const Field = ({ label, icon, value, onChange }: any) => (
+  <div>
+    <label className="text-xs font-medium text-muted-foreground mb-1 block">
+      {label}
+    </label>
+    <div className="relative">
+      <span className="absolute ms-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+        {icon}
+      </span>
+      <Input
+        className="ps-10 h-11"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    </div>
+  </div>
+);
+
+const PasswordField = ({
+  label,
+  value,
+  show,
+  toggle,
+  onChange,
+  isRtl,
+}: any) => (
+  <div>
+    <label className="text-xs font-medium text-muted-foreground mb-1 block">
+      {label}
+    </label>
+    <div className="relative">
+      <Lock className="absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+      <Input
+        type={show ? "text" : "password"}
+        className="ps-10 pr-10 h-11"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
+
+      <button
+        type="button"
+        onClick={toggle}
+        className={cn(
+          "absolute top-1/2 -translate-y-1/2 text-muted-foreground",
+          isRtl ? "left-3" : "right-3"
+        )}
+      >
+        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+      </button>
+    </div>
+  </div>
+);
+
+const LanguageSwitch = () => {
+  const { i18n } = useTranslation();
+  const isAr = i18n.language === "ar";
+
+  return (
+    <button
+      onClick={() => i18n.changeLanguage(isAr ? "en" : "ar")}
+      className="
+        flex items-center gap-2
+        text-xs font-semibold
+        px-3 py-1.5 rounded-full
+        border border-border/60
+        bg-background/70 backdrop-blur
+        hover:bg-muted/40
+        transition
+      "
+      aria-label="Change language"
+    >
+      <span>{isAr ? "العربية" : "English"}</span>
+      {isAr ? <Undo2 /> : <Redo2 />}
+
+      <span className="opacity-80">{isAr ? "English" : "العربية"}</span>
+    </button>
+  );
+};

@@ -4,19 +4,24 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import useBuyModal from "@/hooks/useBuyModal";
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
+import { formatCurrency, formatNumber } from "@/hooks/helpers";
 
 interface BuyModalProps {
   stock: InvestmentEntity | null;
   isOpen: boolean;
+  isRtl: boolean;
   tradType: string;
   onClose: () => void;
 }
+
+const PRIMARY = "#042623";
 
 export const BuyModal = ({
   stock,
   isOpen,
   onClose,
   tradType,
+  isRtl,
 }: BuyModalProps) => {
   const {
     t,
@@ -48,7 +53,7 @@ export const BuyModal = ({
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -56,77 +61,102 @@ export const BuyModal = ({
       >
         <motion.div
           onClick={(e) => e.stopPropagation()}
-          className="relative w-full max-w-md bg-card rounded-2xl shadow-2xl border border-border p-5 max-h-[90vh] overflow-y-auto"
-          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          className="
+            relative w-full max-w-md
+            rounded-2xl bg-white
+            shadow-2xl border border-border/60
+            p-5 max-h-[90vh] overflow-y-auto
+          "
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 16, scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          exit={{ opacity: 0, y: 20, scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 260, damping: 26 }}
         >
-          {/* Header */}
-          <div className="flex items-start justify-between gap-3 mb-5">
+          {/* ================= Header ================= */}
+          <div className="flex items-start justify-between mb-5">
             <div>
-              <h2 className="text-lg font-bold">{stock.fullLegalName}</h2>
-              <p className="text-xs text-muted-foreground">
-                {t("min")}:{" "}
-                <span className="font-mono tabular-nums">{minShares}</span> •{" "}
-                {t("max")}:{" "}
-                <span className="font-mono tabular-nums">{maxShares}</span>
+              <h2 className="text-lg font-extrabold text-[#042623]">
+                {isRtl ? stock?.nameAr : stock.fullLegalName}
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {t("shares.min")}:{" "}
+                <span className="tabular-nums font-medium">
+                  {formatNumber(minShares)}
+                </span>{" "}
+                • {t("shares.max")}:{" "}
+                <span className="tabular-nums font-medium">
+                  {formatNumber(maxShares)}
+                </span>
               </p>
             </div>
 
-            <Button
-              variant="ghost"
-              size="icon"
+            <button
               onClick={onClose}
               disabled={isLoading}
+              className="
+                h-8 w-8 rounded-lg
+                flex items-center justify-center
+                hover:bg-muted/40 transition
+              "
             >
-              <X className="w-5 h-5" />
-            </Button>
+              <X className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Price */}
-          <div className="bg-muted/50 rounded-xl p-3 mb-4 flex justify-between items-center">
+          {/* ================= Share Price ================= */}
+          <div
+            className="rounded-xl px-4 py-3 mb-4 flex justify-between items-center"
+            style={{ backgroundColor: "rgba(4,38,35,0.06)" }}
+          >
             <span className="text-sm text-muted-foreground">
-              {t("share_price")}
+              {t("shares.share_price")}
             </span>
-            <span className="font-bold">
-              <span className="font-mono tabular-nums">
-                $ {Number(stock.sharePrice || 0)}
-              </span>
+            <span className="font-bold tabular-nums text-[#042623]">
+              {formatCurrency(stock.sharePrice)}
             </span>
           </div>
 
-          {/* Quick options */}
+          {/* ================= Quick Options ================= */}
           {!!quickShareOptions?.length && (
-            <div className="mb-4">
-              <div className="text-xs text-muted-foreground mb-2">
-                {t("quick_select") || "Quick select"}
-              </div>
+            <div className="mb-5">
+              <p className="text-xs text-muted-foreground mb-2">
+                {t("shares.quick_select")}
+              </p>
               <div className="flex flex-wrap gap-2">
-                {quickShareOptions.map((opt) => (
-                  <Button
-                    key={opt}
-                    type="button"
-                    variant={opt === shares ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => selectQuickOption(opt)}
-                    disabled={isLoading}
-                    className="font-mono tabular-nums"
-                  >
-                    {opt}
-                  </Button>
-                ))}
+                {quickShareOptions.map((opt) => {
+                  const active = opt === shares;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => selectQuickOption(opt)}
+                      disabled={isLoading}
+                      className="
+                        h-9 px-3 rounded-lg text-sm font-medium tabular-nums
+                        ring-1 transition
+                      "
+                      style={{
+                        backgroundColor: active
+                          ? PRIMARY
+                          : "rgba(4,38,35,0.05)",
+                        color: active ? "#fff" : PRIMARY,
+                        borderColor: "rgba(4,38,35,0.25)",
+                      }}
+                    >
+                      {formatNumber(opt)}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}
 
-          {/* Quantity */}
+          {/* ================= Quantity ================= */}
           <div className="mb-5">
-            <div className="text-xs text-muted-foreground mb-2">
-              {t("shares") || "Shares"}
-            </div>
+            <p className="text-xs text-muted-foreground mb-2">
+              {t("shares.shares")}
+            </p>
 
-            <div className="flex gap-3 items-center justify-center">
+            <div className="flex items-center justify-center gap-3">
               <Button
                 size="icon"
                 variant="outline"
@@ -140,7 +170,7 @@ export const BuyModal = ({
                 type="number"
                 value={shares}
                 onChange={(e) => setSharesFromInput(e.target.value)}
-                className="w-28 text-center font-mono tabular-nums"
+                className="w-28 h-10 text-center font-semibold tabular-nums"
                 min={minShares}
                 max={maxShares}
               />
@@ -154,42 +184,41 @@ export const BuyModal = ({
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
+
             {(shares < minShares || shares > maxShares) && (
-              <div
-                className="mt-3 flex items-center justify-center gap-2 rounded-lg
-                  border border-destructive/30 bg-destructive/10 px-3 py-2"
-              >
-                <span className="text-sm text-destructive font-medium">
-                  {t("shares_out_of_range")}
-                </span>
+              <div className="mt-3 rounded-lg bg-red-50 text-red-600 px-3 py-2 text-sm text-center">
+                {t("shares.shares_out_of_range")}
               </div>
             )}
           </div>
 
-          {/* Note */}
+          {/* ================= Note ================= */}
           <div className="mb-5">
-            <div className="text-xs text-muted-foreground mb-2">
-              {t("description")}
-            </div>
+            <p className="text-xs text-muted-foreground mb-2">
+              {t("shares.description")}
+            </p>
             <Input
-              placeholder={t("description")}
+              placeholder={t("shares.description_optional")}
               value={note}
               onChange={(e) => setNote(e.target.value)}
               disabled={isLoading}
             />
           </div>
 
-          {/* Total */}
-          <div className="rounded-xl border p-4 mb-6 flex justify-between items-center">
+          {/* ================= Total ================= */}
+          <div
+            className="rounded-xl px-4 py-3 mb-6 flex justify-between items-center"
+            style={{ backgroundColor: "rgba(4,38,35,0.1)" }}
+          >
             <span className="text-sm text-muted-foreground">
-              {t("estimated_total")}
+              {t("shares.estimated_total")}
             </span>
-            <span className="font-bold font-mono tabular-nums">
-              $ {Number(totalCost || 0).toFixed(2)}
+            <span className="text-lg font-extrabold tabular-nums text-[#042623]">
+              {formatCurrency(totalCost)}
             </span>
           </div>
 
-          {/* Actions */}
+          {/* ================= Actions ================= */}
           <div className="flex gap-3">
             <Button
               variant="outline"
@@ -197,17 +226,24 @@ export const BuyModal = ({
               onClick={onClose}
               disabled={isLoading}
             >
-              {t("cancel")}
+              {t("app.cancel")}
             </Button>
 
-            <Button
-              className="flex-1"
-              variant={tradType === "sell" ? "destructive" : "success"}
+            <button
               onClick={submitTradeRequest}
               disabled={isLoading || shares < minShares || shares > maxShares}
+              className="
+                flex-1 h-10 rounded-xl
+                text-sm font-semibold text-white
+                transition
+                disabled:opacity-60 disabled:cursor-not-allowed
+              "
+              style={{
+                backgroundColor: tradType === "sell" ? "#b91c1c" : PRIMARY,
+              }}
             >
-              {isLoading ? t("processing") : t("send_request")}
-            </Button>
+              {isLoading ? t("app.processing") : t("shares.send_request")}
+            </button>
           </div>
         </motion.div>
       </motion.div>

@@ -1,11 +1,12 @@
 // src/hooks/useResolvedRole.ts
 import { useMemo } from "react";
 import { useResolveRoleQuery } from "@/store/api/authApi";
+import Cookies from "js-cookie";
 
 export const useResolvedRole = () => {
   const profile = useMemo(() => {
     try {
-      return JSON.parse(localStorage.getItem("profile") || "{}");
+      return JSON.parse(Cookies.get("profile") || "{}");
     } catch {
       return {};
     }

@@ -55,7 +55,6 @@ export const authApi = baseApi.injectEndpoints({
     }),
     resolveRole: builder.query({
       query: ({ authUserId }) => {
-        console.log("authUserId:", authUserId);
         return `${profileEP}/check-role/${authUserId}`;
       },
     }),

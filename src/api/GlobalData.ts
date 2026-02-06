@@ -7,6 +7,7 @@ export const registerEP = "api/investor/auth/register";
 export const verifyPinEP = "api/investor/auth/verify";
 export const stocksEP = "api/clientCompany";
 export const sharePurchaseRequestEP = "api/sharePurchaseRequest";
+export const ShareTransactionEP = "/api/shares/transactions";
 export const investorSharesEP = "api/investorShares";
 export const investorEP = "api/investor";
 export const sharesholdingEP = "api/sharesholding";

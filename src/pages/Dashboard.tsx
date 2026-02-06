@@ -67,6 +67,7 @@ const Dashboard = () => {
       <main className="container mx-auto p-4 ">
         <InvestmentsSlider
           t={t}
+          isRtl={isRtl}
           portfolio={portfolio}
           loading={portfolioLoading}
         />
@@ -82,7 +83,7 @@ const Dashboard = () => {
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground " />
               <Input
                 type="text"
-                placeholder={t("search")}
+                placeholder={t("home.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-12 h-12 bg-card text-xs rounded-[999px]"
@@ -131,6 +132,7 @@ const Dashboard = () => {
         stock={selectedStock}
         isOpen={isBuyModalOpen}
         tradType={tradeType}
+        isRtl={isRtl}
         onClose={() => {
           setIsBuyModalOpen(false);
           setSelectedStock(null);

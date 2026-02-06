@@ -88,6 +88,7 @@ const Profile = () => {
     email,
     setEmail,
   } = useProfile();
+  const statusKey = reviewStatus?.toLowerCase() ?? "draft";
 
   const avatarSrc = useMemo(() => {
     const p = editData?.profilePreview;
@@ -128,7 +129,7 @@ const Profile = () => {
                   className={cn(
                     "relative",
                     "rounded-3xl border border-border/60",
-                    "bg-background/70 backdrop-blur-xl shadow-sm",
+                    "bg-background/70 backdrop-blur-xl shadow-sm"
                   )}
                 >
                   {/* ===== TOP ACTIONS ===== */}
@@ -136,7 +137,7 @@ const Profile = () => {
                     className={cn(
                       "absolute top-4 sm:top-5 z-10 flex items-center gap-2",
                       "right-4 sm:right-5",
-                      "rtl:right-auto rtl:left-4 sm:rtl:left-5",
+                      "rtl:right-auto rtl:left-4 sm:rtl:left-5"
                     )}
                   >
                     {/* Refresh */}
@@ -146,11 +147,13 @@ const Profile = () => {
                         "h-8 px-3 rounded-xl text-sm font-medium",
                         "inline-flex items-center gap-2",
                         "ring-1 ring-border/60",
-                        "bg-background/60 hover:bg-muted/40 transition",
+                        "bg-background/60 hover:bg-muted/40 transition"
                       )}
                     >
                       <RefreshCcw className="w-4 h-4" />
-                      <span className="hidden sm:inline">{t("refresh")}</span>
+                      <span className="hidden sm:inline">
+                        {t("app.refresh")}
+                      </span>
                     </button>
 
                     {/* Logout */}
@@ -161,11 +164,13 @@ const Profile = () => {
                         "inline-flex items-center gap-2",
                         "ring-1 ring-rose-500/30",
                         "text-rose-600 bg-rose-500/10",
-                        "hover:bg-rose-500/15 hover:ring-rose-500/40 transition",
+                        "hover:bg-rose-500/15 hover:ring-rose-500/40 transition"
                       )}
                     >
                       <LogOut className="w-4 h-4" />
-                      <span className="hidden sm:inline">{t("logout")}</span>
+                      <span className="hidden sm:inline">
+                        {t("nav.logout")}
+                      </span>
                     </button>
                   </div>
 
@@ -175,7 +180,7 @@ const Profile = () => {
                       className={cn(
                         "grid gap-4",
                         "grid-cols-1 sm:grid-cols-[auto_1fr_auto]",
-                        "items-center",
+                        "items-center"
                       )}
                     >
                       {/* ===== AVATAR COLUMN (FIXED) ===== */}
@@ -185,7 +190,7 @@ const Profile = () => {
                             className={cn(
                               "h-[86px] w-[86px]",
                               "rounded-2xl overflow-hidden",
-                              "ring-1 ring-border/60 bg-muted/30",
+                              "ring-1 ring-border/60 bg-muted/30"
                             )}
                           >
                             {avatarSrc ? (
@@ -208,14 +213,14 @@ const Profile = () => {
 
                             {isEditing && (
                               <label className="absolute inset-0 bg-black/45 flex items-center justify-center text-[11px] text-white cursor-pointer">
-                                {t("change")}
+                                {t("profile.change")}
                                 <input
                                   type="file"
                                   hidden
                                   accept="image/*"
                                   onChange={(e) =>
                                     handleProfileImageChange(
-                                      e.target.files?.[0],
+                                      e.target.files?.[0]
                                     )
                                   }
                                 />
@@ -248,7 +253,7 @@ const Profile = () => {
                                   className={cn(
                                     "inline-flex items-center gap-1",
                                     "px-2.5 py-1 rounded-full text-[11px] font-semibold",
-                                    "ring-1",
+                                    "ring-1"
                                   )}
                                   style={{
                                     backgroundColor: "rgba(4,38,35,0.08)",
@@ -257,16 +262,16 @@ const Profile = () => {
                                   }}
                                 >
                                   <Sparkles className="w-3.5 h-3.5" />
-                                  {t("investor")}
+                                  {t("profile.investor")}
                                 </span>
                               )}
                             </div>
 
                             <p className="text-xs text-muted-foreground mt-1">
-                              {t("member_since")}{" "}
+                              {t("profile.member_since")}{" "}
                               {format(
                                 user?.createdAt || Date.now(),
-                                "MMM yyyy",
+                                "MMM yyyy"
                               )}
                             </p>
 
@@ -280,7 +285,7 @@ const Profile = () => {
                         ) : (
                           <div className="space-y-2 max-w-sm">
                             <p className="text-xs text-muted-foreground">
-                              {t("full_name")}
+                              {t("profile.full_name")}
                             </p>
                             <Input
                               className="h-10 rounded-2xl bg-background/60 border-border/60"
@@ -301,7 +306,7 @@ const Profile = () => {
                         className={cn(
                           "flex items-center gap-2 justify-end",
                           "min-w-[220px]",
-                          isMobile && "flex-col items-stretch",
+                          isMobile && "flex-col items-stretch"
                         )}
                       >
                         {isApplicant && reviewStatus === "draft" && (
@@ -310,7 +315,7 @@ const Profile = () => {
                             className={cn(
                               "h-10 px-4 rounded-xl text-sm font-semibold",
                               "inline-flex items-center gap-2",
-                              "ring-1 transition",
+                              "ring-1 transition"
                             )}
                             style={{
                               backgroundColor: "rgba(4,38,35,0.08)",
@@ -319,7 +324,7 @@ const Profile = () => {
                             }}
                           >
                             <Verified className="w-4 h-4" />
-                            {t("verify")}
+                            {t("verification.verify")}
                           </button>
                         )}
 
@@ -334,7 +339,7 @@ const Profile = () => {
                             "h-10 px-5 rounded-xl text-sm font-semibold",
                             "inline-flex items-center justify-center gap-2",
                             "ring-1 transition",
-                            isSaving && "opacity-60 cursor-not-allowed",
+                            isSaving && "opacity-60 cursor-not-allowed"
                           )}
                           style={
                             isEditing
@@ -353,12 +358,12 @@ const Profile = () => {
                           {isEditing ? (
                             <>
                               <CheckCircle2 className="w-4 h-4" />
-                              {t("save")}
+                              {t("profile.save")}
                             </>
                           ) : (
                             <>
                               <PenBox className="w-4 h-4" />
-                              {t("edit")}
+                              {t("profile.edit")}
                             </>
                           )}
                         </button>
@@ -374,23 +379,23 @@ const Profile = () => {
                   className={cn(
                     "border-border/60",
                     "bg-background/60 backdrop-blur-xl",
-                    "rounded-3xl shadow-sm",
+                    "rounded-3xl shadow-sm"
                   )}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
                         <User className="w-4 h-4 text-pr" />
-                        {t("personal_info")}
+                        {t("profile.personal_info")}
                       </CardTitle>
 
                       <span
                         className={cn(
                           "sm:hidden text-[11px] px-2.5 py-1 rounded-full",
-                          "ring-1 ring-border/60 bg-muted/20 text-muted-foreground",
+                          "ring-1 ring-border/60 bg-muted/20 text-muted-foreground"
                         )}
                       >
-                        {t(reviewStatus)}
+                        {t(`profile.${statusKey}`)}
                       </span>
                     </div>
                   </CardHeader>
@@ -403,7 +408,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition",
+                          "hover:bg-muted/25 transition"
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -411,7 +416,7 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center",
+                              "flex items-center justify-center"
                             )}
                           >
                             <Mail className="w-4 h-4 text-pr" />
@@ -419,7 +424,7 @@ const Profile = () => {
 
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] text-muted-foreground">
-                              {t("email")}
+                              {t("profile.email")}
                             </p>
                             {!isEditing ? (
                               <p className="text-sm font-semibold text-foreground truncate">
@@ -429,7 +434,7 @@ const Profile = () => {
                               <Input
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60",
+                                  "bg-background/60 border-border/60"
                                 )}
                                 value={editData.email}
                                 onChange={(e) =>
@@ -449,7 +454,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition",
+                          "hover:bg-muted/25 transition"
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -457,7 +462,7 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center",
+                              "flex items-center justify-center"
                             )}
                           >
                             <Phone className="w-4 h-4 text-pr" />
@@ -465,7 +470,7 @@ const Profile = () => {
 
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] text-muted-foreground">
-                              {t("phone")}
+                              {t("profile.phone")}
                             </p>
                             {!isEditing ? (
                               <p className="text-sm font-semibold text-foreground truncate">
@@ -477,7 +482,7 @@ const Profile = () => {
                               <Input
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60",
+                                  "bg-background/60 border-border/60"
                                 )}
                                 value={editData.phone}
                                 onChange={(e) =>
@@ -497,7 +502,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition",
+                          "hover:bg-muted/25 transition"
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -505,7 +510,7 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center",
+                              "flex items-center justify-center"
                             )}
                           >
                             <Calendar className="w-4 h-4 text-pr" />
@@ -513,7 +518,7 @@ const Profile = () => {
 
                           <div className="flex-1 min-w-0">
                             <p className="text-[11px] text-muted-foreground">
-                              {t("birth_date")}
+                              {t("profile.birth_date")}
                             </p>
                             {!isEditing ? (
                               <p className="text-sm font-semibold text-foreground truncate">
@@ -526,7 +531,7 @@ const Profile = () => {
                                 type="date"
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60",
+                                  "bg-background/60 border-border/60"
                                 )}
                                 value={editData.birthDate}
                                 onChange={(e) =>
@@ -546,14 +551,14 @@ const Profile = () => {
                     <div
                       className={cn(
                         "flex items-center gap-2 text-[11px] text-muted-foreground",
-                        "rounded-2xl border border-border/50 bg-background/40 p-3",
+                        "rounded-2xl border border-border/50 bg-background/40 p-3"
                       )}
                     >
                       <Sparkles className="w-4 h-4 text-pr" />
                       <span>
                         {role === "investor"
-                          ? t("profile_investor_hint")
-                          : t("profile_applicant_hint")}
+                          ? t("profile.investor_hint")
+                          : t("profile.applicant_hint")}
                       </span>
                     </div>
                   </CardContent>

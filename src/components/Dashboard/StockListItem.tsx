@@ -19,7 +19,6 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
   const name = stock?.name || stock?.fullLegalName || "—";
   const symbol = stock?.symbol || stock?.code || "";
   const price = stock?.price ?? stock?.currentPrice ?? stock?.sharePrice;
-  console.log(stock);
 
   return (
     <motion.div
@@ -30,7 +29,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
         "group rounded-2xl border border-border/60",
         "bg-background/60 backdrop-blur-xl",
         "shadow-sm hover:shadow-md transition-shadow",
-        "px-4 py-4",
+        "px-4 py-4"
       )}
     >
       <div className="flex items-center justify-between gap-4">
@@ -40,7 +39,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           <div
             className={cn(
               "h-11 w-11 rounded-2xl ring-1 ring-border/60 overflow-hidden",
-              "bg-muted/30 flex items-center justify-center shrink-0",
+              "bg-muted/30 flex items-center justify-center shrink-0"
             )}
             style={{ boxShadow: "0 0 0 1px rgba(7,37,34,0.10)" }}
           >
@@ -115,12 +114,12 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
                 "border border-border/60",
                 "bg-white/70 hover:bg-muted/50",
                 "text-sm font-medium",
-                "transition-colors",
+                "transition-colors"
               )}
               style={{ color: "#072522" }}
             >
               <ArrowUpRight className="w-4 h-4" />
-              <span>{t("buy")}</span>
+              <span>{t("shares.buy")}</span>
             </button>
 
             {/* SELL — disabled for now */}
@@ -150,7 +149,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
       <div
         className={cn(
           "mt-3 h-1 w-full rounded-full overflow-hidden",
-          "bg-muted/25 opacity-0 group-hover:opacity-100 transition",
+          "bg-muted/25 opacity-0 group-hover:opacity-100 transition"
         )}
       >
         <div

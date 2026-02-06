@@ -1,6 +1,7 @@
 export interface InvestmentEntity {
   _id: string;
   fullLegalName: string;
+  nameAr: string;
   sharePrice: number;
   initialShares: number;
   minInvestShare: number;

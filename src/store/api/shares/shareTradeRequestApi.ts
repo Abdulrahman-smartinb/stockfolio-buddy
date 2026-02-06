@@ -7,7 +7,8 @@ export const shareTradeRequestApi = baseApi.injectEndpoints({
       query: ({ id }) => `${shareTradeRequestEP}/${id}`,
     }),
     getInvestorShareTradeRequests: builder.query({
-      query: ({ id }) => `${shareTradeRequestEP}/investor/${id}`,
+      query: ({ id, status = "" }) =>
+        `${shareTradeRequestEP}/investor/${id}?status=${status}`,
     }),
     createShareTradeRequest: builder.mutation({
       query: ({ data }) => ({

@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
-import { User, Home } from "lucide-react";
+import {
+  User,
+  Home,
+  ChartBar,
+  ChartArea,
+  ArrowLeftRight,
+  Settings,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -21,7 +28,18 @@ export const Footer = () => {
       <nav className="flex items-center justify-around h-14">
         <Button
           variant="ghost"
-          size="sm"
+          size="icon"
+          onClick={() => navigate("/investorActivity")}
+          className={`gap-2 w-[48%] ${
+            path === "/investorActivity" ? "" : "text-muted-foreground"
+          }`}
+        >
+          <ArrowLeftRight style={{ height: "25px", width: "25px" }} />
+          <span className="hidden sm:inline">{t("profile")}</span>
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
           onClick={() => navigate("/")}
           className={`gap-2 w-[48%] ${
             path === "/" ? "" : "text-muted-foreground"
@@ -33,14 +51,14 @@ export const Footer = () => {
 
         <Button
           variant="ghost"
-          size="sm"
-          onClick={() => navigate("/profile")}
+          size="icon"
+          onClick={() => navigate("/Settings")}
           className={`gap-2 w-[48%] ${
-            path === "/profile" ? "" : "text-muted-foreground"
+            path === "/Settings" ? "" : "text-muted-foreground"
           }`}
         >
-          <User style={{ height: "25px", width: "25px" }} />
-          <span className="hidden sm:inline">{t("profile")}</span>
+          <Settings style={{ height: "25px", width: "25px" }} />
+          <span className="hidden sm:inline">{t("settings")}</span>
         </Button>
       </nav>
     </motion.header>
