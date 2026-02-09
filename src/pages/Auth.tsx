@@ -1,13 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Lock,
-  User,
-  ArrowRight,
-  Eye,
-  EyeOff,
-  Redo2,
-  Undo2,
-} from "lucide-react";
+import { Lock, User, Eye, EyeOff, Redo2, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -125,7 +117,7 @@ const Auth = () => {
             <AnimatePresence mode="wait">
               <motion.form
                 key={mode}
-                onSubmit={isPinRequired ? verifyPin : handleSubmit}
+                onSubmit={/*isPinRequired ? verifyPin :*/ handleSubmit}
                 className="space-y-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -177,17 +169,29 @@ const Auth = () => {
                 </div>
 
                 {/* Password */}
+                {mode === "register" && (
+                  <PasswordField
+                    label={t("auth.password")}
+                    value={formData.password}
+                    show={showPassword}
+                    toggle={() => setShowPassword((v) => !v)}
+                    onChange={(v) =>
+                      setFormData((p) => ({ ...p, password: v }))
+                    }
+                    isRtl={isRtl}
+                  />
+                )}
                 <PasswordField
-                  label={t("auth.password")}
-                  value={formData.password}
-                  show={showPassword}
-                  toggle={() => setShowPassword((v) => !v)}
-                  onChange={(v) => setFormData((p) => ({ ...p, password: v }))}
+                  label={t("auth.pin_code")}
+                  value={formData.pinCode}
+                  show={showPin}
+                  toggle={() => setShowPin((v) => !v)}
+                  onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
                   isRtl={isRtl}
                 />
 
                 {/* PIN */}
-                {isPinRequired && (
+                {/*isPinRequired && (
                   <PasswordField
                     label={t("auth.pin_code")}
                     value={pinCode}
@@ -196,7 +200,7 @@ const Auth = () => {
                     onChange={setPinCode}
                     isRtl={isRtl}
                   />
-                )}
+                )*/}
 
                 {/* Submit */}
                 <Button
@@ -281,7 +285,7 @@ const PasswordField = ({
         onClick={toggle}
         className={cn(
           "absolute top-1/2 -translate-y-1/2 text-muted-foreground",
-          isRtl ? "left-3" : "right-3"
+          isRtl ? "left-3" : "right-3",
         )}
       >
         {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

@@ -41,7 +41,7 @@ export const useAuth = () => {
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null
+    null,
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -51,10 +51,11 @@ export const useAuth = () => {
     country: defaultCountry.code,
     dialCode: defaultCountry.dialCode,
     password: "",
+    pinCode: "",
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(Cookies.get("authToken"))
+    Boolean(Cookies.get("authToken")),
   );
 
   const profile = useMemo(() => {
@@ -74,7 +75,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country]
+    [formData.country],
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -115,13 +116,32 @@ export const useAuth = () => {
       valid = false;
     }
 
-    if (formData.password.length < 6) {
+    if (mode === "login" && formData.pinCode.length < 6) {
       toast({
         title: t("enter_valid_pass"),
         variant: "destructive",
         description: t("valid_pass"),
       });
       valid = false;
+    }
+
+    if (mode === "register") {
+      if (formData.pinCode.length < 6) {
+        toast({
+          title: t("enter_valid_pass"),
+          variant: "destructive",
+          description: t("valid_pass"),
+        });
+        valid = false;
+      }
+      if (formData.password.length < 6) {
+        toast({
+          title: t("enter_valid_pass"),
+          variant: "destructive",
+          description: t("valid_pass"),
+        });
+        valid = false;
+      }
     }
 
     if (showWarn || showLengthError) valid = false;
@@ -162,24 +182,25 @@ export const useAuth = () => {
         mode === "login"
           ? await loginApi({
               phone: fullPhone,
-              password: formData.password,
+              pinCode: formData.pinCode,
             }).unwrap()
           : await registerApi({
               fullName: formData.fullName,
               phone: fullPhone,
               country: formData.country,
+              pinCode: formData.pinCode,
               password: formData.password,
             }).unwrap();
 
       // Investor wait for PIN
-      if (response.requiresPin) {
-        setLoginChallenge({
-          userId: response.userId,
-          challengeId: response.challengeId,
-        });
-        setIsPinRequired(true);
-        return;
-      }
+      // if (response.requiresPin) {
+      //   setLoginChallenge({
+      //     userId: response.userId,
+      //     challengeId: response.challengeId,
+      //   });
+      //   setIsPinRequired(true);
+      //   return;
+      // }
 
       // Applicant
       finalizeLogin(response);

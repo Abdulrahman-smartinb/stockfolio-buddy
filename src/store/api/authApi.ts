@@ -10,12 +10,13 @@ import { UserData } from "@/interfaces/UserData";
 
 export interface LoginRequest {
   phone: string;
-  password: string;
+  pinCode: string;
 }
 
 export interface RegisterRequest {
   fullName: string;
   phone: string;
+  pinCode: string;
   password: string;
   country: string;
 }
