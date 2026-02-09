@@ -314,7 +314,7 @@ const Profile = () => {
                             onClick={() => setOpenVerify(true)}
                             className={cn(
                               "h-10 px-4 rounded-xl text-sm font-semibold",
-                              "inline-flex items-center gap-2",
+                              "inline-flex items-center  justify-center gap-2",
                               "ring-1 transition"
                             )}
                             style={{

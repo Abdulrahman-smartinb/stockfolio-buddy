@@ -139,8 +139,8 @@ export const useAuth = () => {
   };
 
   const finalizeLogin = (response) => {
-    Cookies.set("authToken", response.token);
-    Cookies.set("profile", JSON.stringify(response.profile));
+    Cookies.set("authToken", response.token, { expires: 1 });
+    Cookies.set("profile", JSON.stringify(response.profile), { expires: 1 });
     setIsAuthenticated(true);
 
     toast({

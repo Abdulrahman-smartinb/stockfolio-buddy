@@ -1,7 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { isLoggedIn } from "@/hooks/helpers";
 import {
   useGetMyNotificationsQuery,
   useMarkAllAsReadMutation,
@@ -14,7 +13,6 @@ const useHeader = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { t, i18n } = useTranslation();
-  const loggedIn = isLoggedIn();
   const path = location.pathname;
   const userObj = JSON.parse(localStorage.getItem("profile"));
 
@@ -38,7 +36,6 @@ const useHeader = () => {
     navigate,
     t,
     i18n,
-    loggedIn,
     path,
     notifications,
     isLoading,

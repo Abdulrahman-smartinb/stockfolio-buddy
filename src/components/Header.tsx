@@ -16,7 +16,6 @@ export const Header = () => {
     navigate,
     t,
     i18n,
-    loggedIn,
     path,
     notifications,
     isLoading,
@@ -122,9 +121,7 @@ export const Header = () => {
             <Button
               variant={path === "/profile" ? "secondary" : "ghost"}
               size="sm"
-              onClick={() =>
-                loggedIn ? navigate("/profile") : navigate("/auth")
-              }
+              onClick={() => navigate("/profile")}
               className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
             >
               <User className="w-4 h-4" />

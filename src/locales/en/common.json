@@ -55,6 +55,7 @@
     "investor": "Investor",
     "draft": "Unverified",
     "approved": "Verified",
+    "pending": "Pending",
     "investor_hint": "Keep your info updated for smoother transactions",
     "applicant_hint": "Complete verification to unlock investing features"
   },
@@ -173,8 +174,10 @@
     "passport_exp_date": "Passport expiry date",
     "live_photo": "Live photo",
     "id_photo": "ID or passport photo",
+    "photo_preview": "Photo preview",
     "permission_denied": "Camera access denied!",
-    "permission_denied_desc": "Please allow the use of the camera to take the photo"
+    "permission_denied_desc": "Please allow the use of the camera to take the photo",
+    "indicates_required_fields": "Indicates required fields"
   },
 
   "notifications": {

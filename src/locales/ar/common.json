@@ -54,6 +54,7 @@
     "change": "تغيير",
     "investor": "مستثمر",
     "draft": "غير موثق",
+    "pending": "قيد المعالجة",
     "approved": "تم التوثيق",
     "investor_hint": "حافظ على معلوماتك محدثة لتسهيل المعاملات.",
     "applicant_hint": "أكمل عملية التحقق لفتح ميزات الاستثمار"
@@ -128,7 +129,7 @@
     "history": "سجل المعاملات",
     "rows_per_page": "عدد الصفوف في الصفحة",
     "pending_requests": "الطلبات المعلقة",
-    "pending": "قيد الانتظار",
+    "pending": "قيد المعالجة",
     "confirmed": "تمت الموافقة",
     "rejected": "مرفوض",
     "rejection_reason": "سبب الرفض"
@@ -172,8 +173,10 @@
     "passport_exp_date": "تاريخ انتهاء صلاحية جواز السفر",
     "live_photo": "الصورة الحية",
     "id_photo": "صورة الهوية أو جواز السفر",
+    "photo_preview": "معاينة الصورة",
     "permission_denied": "تم رفض الوصول للكاميرا!",
-    "permission_denied_desc": "يرجى السماح باستخدام الكاميرا لالتقاط الصورة"
+    "permission_denied_desc": "يرجى السماح باستخدام الكاميرا لالتقاط الصورة",
+    "indicates_required_fields": "تشير إلى الحقول المطلوبة"
   },
 
   "notifications": {

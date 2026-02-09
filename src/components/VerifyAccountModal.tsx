@@ -30,6 +30,7 @@ export const VerifyAccountModal = ({
   setEmail,
 }) => {
   if (!isOpen) return null;
+
   const [openCamera, setOpenCamera] = useState(false);
 
   const disableSubmit =
@@ -52,16 +53,18 @@ export const VerifyAccountModal = ({
           exit={{ opacity: 0, y: 16, scale: 0.98 }}
           transition={{ type: "spring", stiffness: 260, damping: 24 }}
         >
-          {/* Header */}
+          {/* ================= Header ================= */}
           <div className="px-6 py-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <ShieldCheck className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold">{t("verify")}</h3>
+                <h3 className="text-lg font-semibold">
+                  {t("verification.verify")}
+                </h3>
                 <p className="text-xs text-muted-foreground">
-                  {t("verify_subtitle")}
+                  {t("verification.subtitle")}
                 </p>
               </div>
             </div>
@@ -71,24 +74,24 @@ export const VerifyAccountModal = ({
             </Button>
           </div>
 
-          {/* Body */}
+          {/* ================= Body ================= */}
           <div className="px-6 py-5">
             <div className="max-h-[70vh] overflow-y-auto pr-1 space-y-4">
               <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4 text-warning" />
                 <span className="text-muted-foreground">
                   <span className="text-destructive font-semibold">*</span>{" "}
-                  {t("indicates_required_fields")}
+                  {t("verification.indicates_required_fields")}
                 </span>
               </div>
 
-              {/* Identity Section */}
+              {/* ================= Identity Section ================= */}
               <div className="rounded-xl border p-4 space-y-4">
                 <div className="text-sm font-semibold">
-                  {t("identity_section")}
+                  {t("verification.identity_section")}
                 </div>
 
-                <Field label={t("email")} required>
+                <Field label={t("profile.email")} required>
                   <Input
                     type="email"
                     className="h-10 text-sm"
@@ -98,8 +101,8 @@ export const VerifyAccountModal = ({
                 </Field>
 
                 <Field
-                  label={t("id_number")}
-                  required={passportNumber?.length < 1}
+                  label={t("verification.id_number")}
+                  required={!passportNumber}
                 >
                   <Input
                     type="number"
@@ -110,8 +113,8 @@ export const VerifyAccountModal = ({
                 </Field>
 
                 <Field
-                  label={t("passport_number")}
-                  required={idNumber?.length < 1}
+                  label={t("verification.passport_number")}
+                  required={!idNumber}
                 >
                   <Input
                     type="text"
@@ -121,8 +124,8 @@ export const VerifyAccountModal = ({
                   />
                 </Field>
 
-                {passportNumber?.length > 0 && (
-                  <Field label={t("passport_exp_date")} required>
+                {passportNumber && (
+                  <Field label={t("verification.passport_exp_date")} required>
                     <Input
                       type="date"
                       className="h-10 text-sm"
@@ -132,7 +135,7 @@ export const VerifyAccountModal = ({
                   </Field>
                 )}
 
-                <Field label={t("id_photo")} required>
+                <Field label={t("verification.id_photo")} required>
                   <Input
                     type="file"
                     accept="image/*,.pdf"
@@ -141,7 +144,7 @@ export const VerifyAccountModal = ({
                   />
                 </Field>
 
-                <Field label={t("live_photo")} required>
+                <Field label={t("verification.live_photo")} required>
                   <div className="space-y-2">
                     {isMobile && (
                       <Input
@@ -162,7 +165,7 @@ export const VerifyAccountModal = ({
                         onClick={() => setOpenCamera(true)}
                       >
                         <Camera className="w-4 h-4" />
-                        {t("open_camera")}
+                        {t("verification.open_camera")}
                       </Button>
                     )}
 
@@ -179,14 +182,16 @@ export const VerifyAccountModal = ({
                     {livePhoto && !openCamera && (
                       <div className="rounded-lg border p-3 bg-muted/30">
                         <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm">{t("photo_preview")}</p>
+                          <p className="text-sm">
+                            {t("verification.photo_preview")}
+                          </p>
                           {!isMobile && (
                             <button
                               type="button"
                               className="text-xs text-primary hover:underline"
                               onClick={() => setOpenCamera(true)}
                             >
-                              {t("retake")}
+                              {t("verification.retake")}
                             </button>
                           )}
                         </div>
@@ -203,14 +208,14 @@ export const VerifyAccountModal = ({
             </div>
           </div>
 
-          {/* Footer */}
+          {/* ================= Footer ================= */}
           <div className="px-6 py-4 border-t flex items-center justify-end gap-2">
             <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
-              {t("cancel")}
+              {t("app.cancel")}
             </Button>
 
             <Button onClick={onSubmit} disabled={disableSubmit}>
-              {isSubmitting ? t("loading") : t("verify_now")}
+              {isSubmitting ? t("app.loading") : t("verification.verify_now")}
             </Button>
           </div>
         </motion.div>

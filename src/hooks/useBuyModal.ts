@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useToast } from "./use-toast";
-import { clamp, generateQuickShareOptions, isLoggedIn } from "./helpers";
+import { clamp, generateQuickShareOptions } from "./helpers";
 import { useCreateShareTradeRequestMutation } from "@/store/api/shares/shareTradeRequestApi";
 import { useResolvedRole } from "./useResolveRole";
 
 const useBuyModal = ({ stock, tradeType, onClose }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
-
-  const loggedIn = isLoggedIn();
 
   const { resolvedRole, loadingRole } = useResolvedRole();
   const profileId = resolvedRole?.profileId;
@@ -66,15 +64,6 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   /** Submit */
   const submitTradeRequest = async () => {
-    if (!loggedIn) {
-      toast({
-        variant: "destructive",
-        title: t("login_required"),
-        description: t("login_msg"),
-      });
-      return;
-    }
-
     try {
       await createTradeRequest({
         data: {

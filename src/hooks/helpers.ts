@@ -1,10 +1,3 @@
-import Cookies from "js-cookie";
-
-export const isLoggedIn = (): boolean => {
-  const token = Cookies.get("authToken");
-  return Boolean(token);
-};
-
 export const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
