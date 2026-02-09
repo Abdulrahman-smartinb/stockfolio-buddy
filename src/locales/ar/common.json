@@ -176,7 +176,13 @@
     "photo_preview": "معاينة الصورة",
     "permission_denied": "تم رفض الوصول للكاميرا!",
     "permission_denied_desc": "يرجى السماح باستخدام الكاميرا لالتقاط الصورة",
-    "indicates_required_fields": "تشير إلى الحقول المطلوبة"
+    "indicates_required_fields": "تشير إلى الحقول المطلوبة",
+    "acc_verification_req": "يجب تأكيد الحساب",
+    "acc_verification_req_desc": "أنت غير مسجل كمستثمر حتى الآن. لشراء أو بيع الأسهم، يجب عليك التحقق من حسابك أولاً.",
+    "access_invest_opp": "الوصول إلى فرص الاستثمار",
+    "buy_sell_securely": "بيع وشراء الأسهم بشكل آمن",
+    "open_camera": "فتح الكاميرا",
+    "retake": "إعادة التصوير"
   },
 
   "notifications": {
@@ -185,8 +191,10 @@
     "mark_all_read": "تحديد الكل كمقروء",
 
     "types": {
-      "profile_rejected": "فشل التحقق من الملف الشخصي",
-      "profile_approved": "تم التحقق من الملف الشخصي بنجاح",
+      "profile_rejected": "تم رفض الملف الشخصي",
+      "profile_approved": "تمت الموافقة على الملف الشخصي",
+      "profile_rejecte_msg": "فشل التحقق من الملف الشخصي",
+      "profile_approve_msg": "تم التحقق من الملف الشخصي بنجاح",
       "trade_updated": "تحديث طلب التداول",
       "trade_confirmed": "تم تأكيد طلب التداول"
     }

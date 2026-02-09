@@ -31,33 +31,33 @@ export const CheckVerificationModal = ({ isOpen, onClose, onVerify }) => {
 
           {/* Title */}
           <h2 className="text-lg font-semibold text-center mb-2">
-            {t("acc_verification_req")}
+            {t("verification.acc_verification_req")}
           </h2>
 
           {/* Description */}
           <p className="text-sm text-muted-foreground text-center mb-6">
-            {t("acc_verification_req_desc")}
+            {t("verification.acc_verification_req_desc")}
           </p>
 
           {/* Benefits */}
           <div className="bg-muted/40 rounded-lg p-3 mb-6 text-sm">
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>{t("access_invest_opp")}</span>
+              <span>{t("verification.access_invest_opp")}</span>
             </div>
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>{t("buy_sell_securely")}</span>
+              <span>{t("verification.buy_sell_securely")}</span>
             </div>
           </div>
 
           {/* Actions */}
           <div className="flex gap-3">
             <Button variant="outline" className="flex-1" onClick={onClose}>
-              {t("cancel")}
+              {t("app.cancel")}
             </Button>
             <Button className="flex-1" onClick={onVerify}>
-              {t("verify_now")}
+              {t("verification.verify_now")}
             </Button>
           </div>
         </motion.div>

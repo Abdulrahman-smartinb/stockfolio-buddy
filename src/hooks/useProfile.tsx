@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
@@ -63,7 +63,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId }
+    { skip: !isApplicant || !profileId },
   );
 
   const {
@@ -72,7 +72,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId }
+    { skip: !isInvestor || !profileId },
   );
 
   // Pick correct user model

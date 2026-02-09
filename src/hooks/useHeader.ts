@@ -7,6 +7,7 @@ import {
   useMarkAsReadMutation,
 } from "@/store/api/utils/notificationApi";
 import { useState } from "react";
+import Cookies from "js-cookie";
 
 const useHeader = () => {
   const { logout } = useAuth();
@@ -14,7 +15,7 @@ const useHeader = () => {
   const location = useLocation();
   const { t, i18n } = useTranslation();
   const path = location.pathname;
-  const userObj = JSON.parse(localStorage.getItem("profile"));
+  const userObj = JSON.parse(Cookies.get("profile"));
 
   const {
     data: notifications = [],

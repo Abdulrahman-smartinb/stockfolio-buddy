@@ -16,11 +16,13 @@ export function NotificationItem({ notification, onRead }: Props) {
       <div className="mt-1 h-2 w-2 rounded-full bg-primary" />
 
       <div className="flex-1">
-        <p className="text-sm font-medium">{t(notification?.title)}</p>
+        <p className="text-sm font-medium">
+          {t(`notifications.types.${notification?.title.toLowerCase()}`)}
+        </p>
 
         {notification?.message && (
           <p className="text-xs text-muted-foreground mt-0.5">
-            {t(notification?.message)}
+            {t(`notifications.types.${notification?.message.toLowerCase()}`)}
           </p>
         )}
 

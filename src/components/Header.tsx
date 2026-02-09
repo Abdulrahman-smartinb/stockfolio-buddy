@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { LogOut, User, Home, LogIn, Bell } from "lucide-react";
+import { User, Home, Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "../../public/jadwa.png";
@@ -178,7 +178,7 @@ export const Header = () => {
                     {/* Header */}
                     <div className="flex items-center justify-between px-4 py-3 border-b bg-muted/20">
                       <span className="text-sm font-semibold">
-                        {`${t("notifications")} (${unreadCount})`}
+                        {`${t("notifications.title")} (${unreadCount})`}
                       </span>
 
                       {unreadCount > 0 && (
@@ -190,7 +190,7 @@ export const Header = () => {
                           }}
                           className="text-xs font-semibold text-primary hover:underline"
                         >
-                          {t("mark_all_read")}
+                          {t("notifications.mark_all_read")}
                         </button>
                       )}
                     </div>
@@ -203,7 +203,7 @@ export const Header = () => {
                         </div>
                       ) : notifications.length === 0 ? (
                         <div className="p-4 text-sm text-muted-foreground text-center">
-                          {t("no_new_notifications")}
+                          {t("notifications.none")}
                         </div>
                       ) : (
                         notifications.map((n) => (

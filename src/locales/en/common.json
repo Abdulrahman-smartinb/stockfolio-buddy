@@ -177,7 +177,13 @@
     "photo_preview": "Photo preview",
     "permission_denied": "Camera access denied!",
     "permission_denied_desc": "Please allow the use of the camera to take the photo",
-    "indicates_required_fields": "Indicates required fields"
+    "indicates_required_fields": "Indicates required fields",
+    "acc_verification_req": "Account verification required",
+    "acc_verification_req_desc": "You are not registered as an investor yet. To buy or sell shares, you must verify your account first.",
+    "access_invest_opp": "Access investment opportunities",
+    "buy_sell_securely": "Buy & sell shares securely",
+    "open_camera": "Open camera",
+    "retake": "Retake"
   },
 
   "notifications": {
@@ -186,8 +192,10 @@
     "mark_all_read": "Mark all as read",
 
     "types": {
-      "profile_rejected": "Profile verification failed",
-      "profile_approved": "Profile verification success",
+      "profile_rejected": "Profile rejected",
+      "profile_approved": "Profile approved",
+      "profile_rejecte_msg": "Profile verification failed",
+      "profile_approve_msg": "Profile verification success",
       "trade_updated": "Trade request update",
       "trade_confirmed": "Trade request confirmed"
     }
