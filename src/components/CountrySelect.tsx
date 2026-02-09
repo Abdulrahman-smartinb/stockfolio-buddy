@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Check, ChevronDown } from "lucide-react";
+import { Check, ChevronDown, ChevronUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
 import { isMobile } from "@/hooks/helpers";
@@ -57,24 +57,33 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
         className={cn(
           "h-11 w-full flex items-center justify-between",
           "rounded-lg border border-input bg-background px-3",
-          "text-sm text-start",
+          "text-sm text-start py-0",
           "hover:bg-muted/30 transition",
         )}
       >
-        <span className="truncate">
+        <span className={isMobile ? "truncate pt-1" : "truncate"}>
           {selected
-            ? `${selected.flag} ${getCountryName(selected)}`
+            ? `${selected.flag} ${selected.dialCode}`
             : isRtl
               ? "اختر الدولة"
               : "Select country"}
         </span>
 
-        <ChevronDown
-          className={cn(
-            "h-4 w-4 text-muted-foreground transition",
-            isRtl && "rotate-180",
-          )}
-        />
+        {open ? (
+          <ChevronUp
+            className={cn(
+              "h-4 w-4 text-muted-foreground transition",
+              isRtl && "rotate-180",
+            )}
+          />
+        ) : (
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 text-muted-foreground transition",
+              isRtl && "rotate-180",
+            )}
+          />
+        )}
       </button>
 
       {/* ===== Dropdown ===== */}

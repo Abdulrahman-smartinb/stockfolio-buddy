@@ -102,7 +102,7 @@ const Auth = () => {
             <img
               src={isRtl ? logoAR : logoEN}
               alt="Jadwa Logo"
-              className="w-[90%]"
+              className="w-[73%]"
             />
           </div>
 

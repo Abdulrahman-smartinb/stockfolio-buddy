@@ -32,23 +32,17 @@ export function PhoneInput({
       <div className={isMobile ? "relative w-2/3" : "relative w-1/2"}>
         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 
-        {/* Dial code */}
-        <div className="absolute left-9 top-1/2 -translate-y-1/2 text-xs px-2 py-1 rounded-md bg-muted text-muted-foreground">
-          {selectedCountry.dialCode}
-        </div>
-
         <Input
           type="tel"
           inputMode="numeric"
           value={phone}
           onChange={handlePhoneNumberChange}
           placeholder="5XXXXXXXX"
-          className="
-            h-11
-            pl-20
-            text-left
-            tabular-nums
-          "
+          className={
+            isMobile
+              ? "h-11 items-center pl-9 pb-1 text-left"
+              : "h-11 pl-9 text-left tabular-nums"
+          }
           required
         />
       </div>
