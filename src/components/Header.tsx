@@ -115,7 +115,7 @@ export const Header = () => {
               className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
             >
               <Home className="w-4 h-4" />
-              <span className="hidden lg:inline">{t("home")}</span>
+              <span className="hidden lg:inline">{t("nav.home")}</span>
             </Button>
 
             <Button
@@ -125,7 +125,27 @@ export const Header = () => {
               className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
             >
               <User className="w-4 h-4" />
-              <span className="hidden lg:inline">{t("profile")}</span>
+              <span className="hidden lg:inline">{t("nav.profile")}</span>
+            </Button>
+
+            <Button
+              variant={path === "/profile" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => navigate("/profile")}
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <User className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("nav.profile")}</span>
+            </Button>
+
+            <Button
+              variant={path === "/profile" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => navigate("/profile")}
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <User className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("nav.profile")}</span>
             </Button>
           </nav>
 

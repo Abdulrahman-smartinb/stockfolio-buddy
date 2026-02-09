@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -112,7 +113,9 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    font-family: "Google Sans", sans-serif;
+    font-family: "Tajawal";
+    font-weight: 400 !important;
+    font-style: normal;
   }
 }
 
