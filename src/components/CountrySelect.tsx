@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Check, ChevronDown } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
+import { isMobile } from "@/hooks/helpers";
 
 /* ================= Types ================= */
 
@@ -43,12 +44,12 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.nameAr?.toLowerCase().includes(q) ||
-        c.dialCode.includes(search)
+        c.dialCode.includes(search),
     );
   }, [countries, search]);
 
   return (
-    <div dir={isRtl ? "rtl" : "ltr"} className={cn("relative", classes)}>
+    <div dir="ltr" className={cn("relative", classes)}>
       {/* ===== Trigger ===== */}
       <button
         type="button"
@@ -57,21 +58,21 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
           "h-11 w-full flex items-center justify-between",
           "rounded-lg border border-input bg-background px-3",
           "text-sm text-start",
-          "hover:bg-muted/30 transition"
+          "hover:bg-muted/30 transition",
         )}
       >
         <span className="truncate">
           {selected
             ? `${selected.flag} ${getCountryName(selected)}`
             : isRtl
-            ? "اختر الدولة"
-            : "Select country"}
+              ? "اختر الدولة"
+              : "Select country"}
         </span>
 
         <ChevronDown
           className={cn(
             "h-4 w-4 text-muted-foreground transition",
-            isRtl && "rotate-180"
+            isRtl && "rotate-180",
           )}
         />
       </button>
@@ -80,8 +81,8 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
       {open && (
         <div
           className={cn(
-            "absolute z-50 mt-1 w-full",
-            "rounded-lg border bg-background shadow-lg overflow-hidden"
+            isMobile ? "w-[80vw]" : "w-full",
+            "absolute z-50 mt-1 rounded-lg border bg-background shadow-lg overflow-hidden",
           )}
         >
           {/* Search */}
@@ -94,7 +95,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
               "h-10 w-full border-b px-3 text-sm",
-              "focus:outline-none text-start"
+              "focus:outline-none text-start",
             )}
           />
 
@@ -118,7 +119,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
                 className={cn(
                   "flex w-full items-center gap-2 px-3 py-2",
                   "text-sm text-start hover:bg-muted/40 transition",
-                  value === c.code && "bg-muted/30"
+                  value === c.code && "bg-muted/30",
                 )}
               >
                 <span>{c.flag}</span>

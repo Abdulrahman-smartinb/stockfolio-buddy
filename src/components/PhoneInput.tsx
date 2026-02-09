@@ -19,17 +19,17 @@ export function PhoneInput({
   };
 
   return (
-    <div className={isMobile ? "space-y-2" : "flex gap-2"}>
+    <div className={/*isMobile ? "space-y-2" :*/ "flex gap-2"} dir="ltr">
       {/* Country */}
       <CountrySelect
-        classes={isMobile ? "w-full" : "w-1/2"}
+        classes={isMobile ? "w-1/3" : "w-1/2"}
         countries={countries}
         value={country}
         onChange={onCountryChange}
       />
 
       {/* Phone */}
-      <div className={isMobile ? "relative w-full" : "relative w-1/2"}>
+      <div className={isMobile ? "relative w-2/3" : "relative w-1/2"}>
         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 
         {/* Dial code */}
@@ -39,7 +39,6 @@ export function PhoneInput({
 
         <Input
           type="tel"
-          dir="ltr" // 🔑 إجبار الاتجاه
           inputMode="numeric"
           value={phone}
           onChange={handlePhoneNumberChange}
