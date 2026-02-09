@@ -5,9 +5,10 @@ import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { PhoneInput } from "@/components/PhoneInput";
-import logo from "../../public/jadwa.webp";
 import { isMobile } from "@/hooks/helpers";
 import { cn } from "@/lib/utils";
+import logoAR from "../assets/images/JadwaAR.png";
+import logoEN from "../assets/images/JadwaEN.png";
 
 const PRIMARY = "#072522";
 
@@ -43,7 +44,7 @@ const Auth = () => {
       <div className="absolute top-4 end-4 z-50">
         <LanguageSwitch />
       </div>
-      {/* ===== LEFT / BRAND (Desktop) ===== */}
+      {/* LEFT / BRAND (Desktop) */}
       <div
         className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
         style={{
@@ -51,7 +52,7 @@ const Auth = () => {
             "linear-gradient(135deg, rgba(7,37,34,0.08), rgba(7,37,34,0.02))",
         }}
       >
-        <div className="relative z-10 flex flex-col justify-center px-16">
+        <div className="w-[50%] relative z-10 flex flex-col justify-center ps-16">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -59,13 +60,17 @@ const Auth = () => {
             className="space-y-6"
           >
             <div className="flex items-center gap-3">
-              <img src={logo} alt="Jadwa" className="w-14 h-14" />
-              <h1
+              <img
+                src={isRtl ? logoAR : logoEN}
+                alt="Jadwa"
+                className="w-full"
+              />
+              {/* <h1
                 className="text-4xl font-extrabold tracking-tight"
                 style={{ color: PRIMARY }}
               >
                 Jadwa Invest
-              </h1>
+              </h1> */}
             </div>
 
             <h2 className="text-4xl font-bold leading-tight">
@@ -81,7 +86,7 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* ===== RIGHT / FORM ===== */}
+      {/* RIGHT / FORM */}
       <div className="w-full lg:w-1/2 flex items-center justify-center px-4 py-6">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -90,10 +95,15 @@ const Auth = () => {
         >
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center items-center gap-2 mb-6">
-            <img src={logo} alt="Jadwa" className="w-10 h-10" />
+            {/* <img src={logo} alt="Jadwa" className="w-10 h-10" />
             <span className="text-xl font-bold" style={{ color: PRIMARY }}>
               Jadwa Invest
-            </span>
+            </span> */}
+            <img
+              src={isRtl ? logoAR : logoEN}
+              alt="Jadwa Logo"
+              className="w-[90%]"
+            />
           </div>
 
           <div className="rounded-2xl border border-border/60 bg-white p-6 sm:p-8 shadow-sm">

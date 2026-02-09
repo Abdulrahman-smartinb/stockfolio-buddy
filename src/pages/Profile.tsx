@@ -129,7 +129,7 @@ const Profile = () => {
                   className={cn(
                     "relative",
                     "rounded-3xl border border-border/60",
-                    "bg-background/70 backdrop-blur-xl shadow-sm"
+                    "bg-background/70 backdrop-blur-xl shadow-sm",
                   )}
                 >
                   {/* ===== TOP ACTIONS ===== */}
@@ -137,7 +137,7 @@ const Profile = () => {
                     className={cn(
                       "absolute top-4 sm:top-5 z-10 flex items-center gap-2",
                       "right-4 sm:right-5",
-                      "rtl:right-auto rtl:left-4 sm:rtl:left-5"
+                      "rtl:right-auto rtl:left-4 sm:rtl:left-5",
                     )}
                   >
                     {/* Refresh */}
@@ -147,7 +147,7 @@ const Profile = () => {
                         "h-8 px-3 rounded-xl text-sm font-medium",
                         "inline-flex items-center gap-2",
                         "ring-1 ring-border/60",
-                        "bg-background/60 hover:bg-muted/40 transition"
+                        "bg-background/60 hover:bg-muted/40 transition",
                       )}
                     >
                       <RefreshCcw className="w-4 h-4" />
@@ -164,7 +164,7 @@ const Profile = () => {
                         "inline-flex items-center gap-2",
                         "ring-1 ring-rose-500/30",
                         "text-rose-600 bg-rose-500/10",
-                        "hover:bg-rose-500/15 hover:ring-rose-500/40 transition"
+                        "hover:bg-rose-500/15 hover:ring-rose-500/40 transition",
                       )}
                     >
                       <LogOut className="w-4 h-4" />
@@ -180,7 +180,7 @@ const Profile = () => {
                       className={cn(
                         "grid gap-4",
                         "grid-cols-1 sm:grid-cols-[auto_1fr_auto]",
-                        "items-center"
+                        "items-center",
                       )}
                     >
                       {/* ===== AVATAR COLUMN (FIXED) ===== */}
@@ -190,7 +190,7 @@ const Profile = () => {
                             className={cn(
                               "h-[86px] w-[86px]",
                               "rounded-2xl overflow-hidden",
-                              "ring-1 ring-border/60 bg-muted/30"
+                              "ring-1 ring-border/60 bg-muted/30",
                             )}
                           >
                             {avatarSrc ? (
@@ -220,7 +220,7 @@ const Profile = () => {
                                   accept="image/*"
                                   onChange={(e) =>
                                     handleProfileImageChange(
-                                      e.target.files?.[0]
+                                      e.target.files?.[0],
                                     )
                                   }
                                 />
@@ -253,7 +253,7 @@ const Profile = () => {
                                   className={cn(
                                     "inline-flex items-center gap-1",
                                     "px-2.5 py-1 rounded-full text-[11px] font-semibold",
-                                    "ring-1"
+                                    "ring-1",
                                   )}
                                   style={{
                                     backgroundColor: "rgba(4,38,35,0.08)",
@@ -271,7 +271,7 @@ const Profile = () => {
                               {t("profile.member_since")}{" "}
                               {format(
                                 user?.createdAt || Date.now(),
-                                "MMM yyyy"
+                                "MMM yyyy",
                               )}
                             </p>
 
@@ -306,7 +306,8 @@ const Profile = () => {
                         className={cn(
                           "flex items-center gap-2 justify-end",
                           "min-w-[220px]",
-                          isMobile && "flex-col items-stretch"
+                          isMobile && "flex-col items-stretch",
+                          !isMobile && "mt-5",
                         )}
                       >
                         {isApplicant && reviewStatus === "draft" && (
@@ -315,7 +316,7 @@ const Profile = () => {
                             className={cn(
                               "h-10 px-4 rounded-xl text-sm font-semibold",
                               "inline-flex items-center  justify-center gap-2",
-                              "ring-1 transition"
+                              "ring-1 transition",
                             )}
                             style={{
                               backgroundColor: "rgba(4,38,35,0.08)",
@@ -339,7 +340,7 @@ const Profile = () => {
                             "h-10 px-5 rounded-xl text-sm font-semibold",
                             "inline-flex items-center justify-center gap-2",
                             "ring-1 transition",
-                            isSaving && "opacity-60 cursor-not-allowed"
+                            isSaving && "opacity-60 cursor-not-allowed",
                           )}
                           style={
                             isEditing
@@ -379,12 +380,12 @@ const Profile = () => {
                   className={cn(
                     "border-border/60",
                     "bg-background/60 backdrop-blur-xl",
-                    "rounded-3xl shadow-sm"
+                    "rounded-3xl shadow-sm",
                   )}
                 >
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                      <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
+                      <CardTitle className="flex items-center gap-2 text-lg">
                         <User className="w-4 h-4 text-pr" />
                         {t("profile.personal_info")}
                       </CardTitle>
@@ -392,7 +393,7 @@ const Profile = () => {
                       <span
                         className={cn(
                           "sm:hidden text-[11px] px-2.5 py-1 rounded-full",
-                          "ring-1 ring-border/60 bg-muted/20 text-muted-foreground"
+                          "ring-1 ring-border/60 bg-muted/20 text-muted-foreground",
                         )}
                       >
                         {t(`profile.${statusKey}`)}
@@ -408,7 +409,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition"
+                          "hover:bg-muted/25 transition",
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -416,25 +417,25 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center"
+                              "flex items-center justify-center",
                             )}
                           >
                             <Mail className="w-4 h-4 text-pr" />
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <p className="text-[11px] text-muted-foreground">
+                            <p className="text-[15px] text-muted-foreground">
                               {t("profile.email")}
                             </p>
                             {!isEditing ? (
-                              <p className="text-sm font-semibold text-foreground truncate">
+                              <p className="text-md font-semibold text-foreground truncate">
                                 {user?.email || "—"}
                               </p>
                             ) : (
                               <Input
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60"
+                                  "bg-background/60 border-border/60",
                                 )}
                                 value={editData.email}
                                 onChange={(e) =>
@@ -454,7 +455,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition"
+                          "hover:bg-muted/25 transition",
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -462,19 +463,19 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center"
+                              "flex items-center justify-center",
                             )}
                           >
                             <Phone className="w-4 h-4 text-pr" />
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <p className="text-[11px] text-muted-foreground">
+                            <p className="text-[15px] text-muted-foreground">
                               {t("profile.phone")}
                             </p>
                             {!isEditing ? (
                               <p className="text-sm font-semibold text-foreground truncate">
-                                <LtrValue className="text-xs text-muted-foreground">
+                                <LtrValue className="text-md text-muted-foreground">
                                   {user?.phone}
                                 </LtrValue>
                               </p>
@@ -482,7 +483,7 @@ const Profile = () => {
                               <Input
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60"
+                                  "bg-background/60 border-border/60",
                                 )}
                                 value={editData.phone}
                                 onChange={(e) =>
@@ -502,7 +503,7 @@ const Profile = () => {
                         className={cn(
                           "rounded-2xl p-3",
                           "ring-1 ring-border/50 bg-muted/15",
-                          "hover:bg-muted/25 transition"
+                          "hover:bg-muted/25 transition",
                         )}
                       >
                         <div className="flex items-center gap-3">
@@ -510,18 +511,18 @@ const Profile = () => {
                             className={cn(
                               "h-10 w-10 rounded-2xl",
                               "ring-1 ring-border/60 bg-background/40",
-                              "flex items-center justify-center"
+                              "flex items-center justify-center",
                             )}
                           >
                             <Calendar className="w-4 h-4 text-pr" />
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <p className="text-[11px] text-muted-foreground">
+                            <p className="text-[15px] text-muted-foreground">
                               {t("profile.birth_date")}
                             </p>
                             {!isEditing ? (
-                              <p className="text-sm font-semibold text-foreground truncate">
+                              <p className="text-md font-semibold text-foreground truncate">
                                 {user?.birthDate
                                   ? format(user?.birthDate, "MMM yyyy")
                                   : "—"}
@@ -531,7 +532,7 @@ const Profile = () => {
                                 type="date"
                                 className={cn(
                                   "h-9 text-sm rounded-2xl mt-1",
-                                  "bg-background/60 border-border/60"
+                                  "bg-background/60 border-border/60",
                                 )}
                                 value={editData.birthDate}
                                 onChange={(e) =>
@@ -550,8 +551,8 @@ const Profile = () => {
                     {/* subtle hint */}
                     <div
                       className={cn(
-                        "flex items-center gap-2 text-[11px] text-muted-foreground",
-                        "rounded-2xl border border-border/50 bg-background/40 p-3"
+                        "flex items-center gap-2 text-[15px] text-muted-foreground",
+                        "rounded-2xl border border-border/50 bg-background/40 p-3",
                       )}
                     >
                       <Sparkles className="w-4 h-4 text-pr" />

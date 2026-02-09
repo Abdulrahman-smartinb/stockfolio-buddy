@@ -92,7 +92,7 @@ const Dashboard = () => {
 
             <Button
               disabled={isLoading}
-              className="h-12 w-12 md:w-32 ms-2 rounded-[999px] background-pr"
+              className="h-12 w-12 md:w-32 ms-2 rounded-full background-pr"
               onClick={refetch}
             >
               {/* Mobile: Icon */}
