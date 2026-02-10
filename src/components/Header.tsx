@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { User, Home, Bell } from "lucide-react";
+import { User, Home, Bell, Settings, ArrowLeftRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import logo from "../../public/jadwa.png";
@@ -126,6 +126,24 @@ export const Header = () => {
             >
               <User className="w-4 h-4" />
               <span className="hidden lg:inline">{t("nav.profile")}</span>
+            </Button>
+            <Button
+              variant={path === "/settings" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => navigate("/settings")}
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <Settings className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("nav.settings")}</span>
+            </Button>
+            <Button
+              variant={path === "/transactions" ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => navigate("/investorActivity")}
+              className={cn("gap-2 rounded-xl", "hover:bg-muted/60")}
+            >
+              <ArrowLeftRight className="w-4 h-4" />
+              <span className="hidden lg:inline">{t("nav.transactions")}</span>
             </Button>
           </nav>
 

@@ -28,6 +28,7 @@ export const BuyModal = ({
     minShares,
     maxShares,
     totalInput,
+    totalCost,
     note,
     isLoading,
 
@@ -38,6 +39,7 @@ export const BuyModal = ({
     setSharesFromTotal,
     selectQuickOption,
     submitTradeRequest,
+    setTotalInput,
 
     quickShareOptions,
   } = useBuyModal({
@@ -204,17 +206,13 @@ export const BuyModal = ({
             </p>
 
             <Input
-              value={totalInput}
+              value={totalInput === "" ? totalCost.toFixed(2) : totalInput}
               onChange={(e) => setSharesFromTotal(e.target.value)}
+              onBlur={() => setTotalInput("")}
               disabled={isLoading}
               inputMode="decimal"
               placeholder="0.00"
-              className="
-                text-center
-                text-lg font-extrabold
-                tabular-nums
-                bg-background
-              "
+              className="text-center text-lg font-extrabold tabular-nums bg-background"
             />
 
             <p className="mt-1 text-[11px] text-muted-foreground text-center">

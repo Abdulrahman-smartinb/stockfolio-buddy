@@ -212,7 +212,8 @@
       "profile_approved": "تمت الموافقة على الملف الشخصي",
       "profile_rejecte_msg": "فشل التحقق من الملف الشخصي",
       "profile_approve_msg": "تم التحقق من الملف الشخصي بنجاح",
-      "trade_updated": "تحديث طلب التداول",
+      "shares_request_updated": "تحديث طلب التداول",
+      "shares_request_update_msg": "هناك تحديث بخصوص طلب التداول الخاص بك",
       "trade_confirmed": "تم تأكيد طلب التداول"
     }
   },

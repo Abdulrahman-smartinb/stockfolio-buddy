@@ -17,7 +17,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   const minShares = Math.max(1, Number(stock?.minInvestShare || 1));
   const maxShares = Math.max(
     minShares,
-    Number(stock?.maxInvestShare || minShares)
+    Number(stock?.maxInvestShare || minShares),
   );
 
   const [shares, setShares] = useState(minShares);
@@ -34,24 +34,17 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     setNote("");
   }, [minShares]);
 
-  /** Sync total when shares change */
-  useEffect(() => {
-    if (!pricePerShare) return;
-    const total = shares * pricePerShare;
-    setTotalInput(total.toFixed(2));
-  }, [shares, pricePerShare]);
-
   /** Quick-select options */
   const quickShareOptions = useMemo(
     () => generateQuickShareOptions(minShares, maxShares, 5),
-    [minShares, maxShares]
+    [minShares, maxShares],
   );
-  console.log(quickShareOptions);
+
   /** Total cost (derived, numeric) */
-  const totalCost = useMemo(
-    () => shares * pricePerShare,
-    [shares, pricePerShare]
-  );
+  const totalCost = useMemo(() => {
+    if (!pricePerShare) return 0;
+    return shares * pricePerShare;
+  }, [shares, pricePerShare]);
 
   /** Quantity controls */
   const increaseShares = () =>
@@ -71,11 +64,11 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   /** Manual total input → derive shares (NO fractions) */
   const setSharesFromTotal = (value: string) => {
+    // allow typing freely
+    if (!/^\d*\.?\d*$/.test(value)) return;
     setTotalInput(value);
 
-    if (value === "") return;
-    if (!/^\d*\.?\d*$/.test(value)) return;
-    if (!pricePerShare) return;
+    if (!pricePerShare || value === "") return;
 
     const total = Number(value);
     if (!Number.isFinite(total)) return;
@@ -144,6 +137,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     setSharesFromTotal,
     selectQuickOption,
     submitTradeRequest,
+    setTotalInput,
 
     // ui helpers
     quickShareOptions,
