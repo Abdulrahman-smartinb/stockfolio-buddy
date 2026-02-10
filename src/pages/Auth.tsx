@@ -9,6 +9,7 @@ import { isMobile } from "@/hooks/helpers";
 import { cn } from "@/lib/utils";
 import logoAR from "../assets/images/JadwaAR.png";
 import logoEN from "../assets/images/JadwaEN.png";
+import { PlatformTermsModal } from "@/components/PlatformTermsModal";
 
 const PRIMARY = "#072522";
 
@@ -21,19 +22,19 @@ const Auth = () => {
     setMode,
     showPassword,
     setShowPassword,
-    isPinRequired,
     showPin,
     setShowPin,
     formData,
     setFormData,
     isLoading,
-    pinCode,
-    setPinCode,
     handleSubmit,
     showWarn,
     showLengthError,
     COUNTRIES,
-    verifyPin,
+    openTerms,
+    setOpenTerms,
+    approveTerms,
+    setApproveTerms,
   } = useAuth();
 
   return (
@@ -189,6 +190,7 @@ const Auth = () => {
                       setFormData((p) => ({ ...p, password: v }))
                     }
                     isRtl={isRtl}
+                    hint={t("auth.password_hint")}
                   />
                 )}
                 <PasswordField
@@ -198,6 +200,9 @@ const Auth = () => {
                   toggle={() => setShowPin((v) => !v)}
                   onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
                   isRtl={isRtl}
+                  numericOnly
+                  maxLength={6}
+                  hint={t("auth.pin_hint")}
                 />
 
                 {/* PIN */}
@@ -217,7 +222,7 @@ const Auth = () => {
                   type="submit"
                   size="lg"
                   className="w-full"
-                  disabled={isLoading}
+                  disabled={isLoading || (mode === "register" && !approveTerms)}
                   style={{ backgroundColor: PRIMARY }}
                 >
                   {isLoading ? (
@@ -238,10 +243,47 @@ const Auth = () => {
             </AnimatePresence>
           </div>
 
-          <p className="text-[11px] text-muted-foreground text-center mt-4">
-            {t("auth.terms")}
-          </p>
+          {mode === "register" && (
+            <div className="mt-4">
+              <div className="flex items-start gap-2">
+                {/* Checkbox */}
+                <input
+                  type="checkbox"
+                  id="approveTerms"
+                  checked={approveTerms}
+                  onChange={(e) => setApproveTerms(e.target.checked)}
+                  className="mt-[3px] h-4 w-4 accent-primary"
+                />
+
+                {/* Text */}
+                <label
+                  htmlFor="approveTerms"
+                  className="text-[12px] text-muted-foreground leading-5"
+                >
+                  <span>{t("auth.accept_terms")}</span>{" "}
+                  <button
+                    type="button"
+                    onClick={() => setOpenTerms(true)}
+                    className="underline font-medium hover:text-foreground transition"
+                  >
+                    {t("auth.terms_link")}
+                  </button>
+                </label>
+              </div>
+
+              {/* Helper text */}
+              {!approveTerms && (
+                <p className="mt-1 ms-6 text-[11px] text-muted-foreground">
+                  {t("auth.terms_required")}
+                </p>
+              )}
+            </div>
+          )}
         </motion.div>
+        <PlatformTermsModal
+          isOpen={openTerms}
+          onClose={() => setOpenTerms(false)}
+        />
       </div>
     </div>
   );
@@ -276,18 +318,30 @@ const PasswordField = ({
   toggle,
   onChange,
   isRtl,
+  hint,
+  numericOnly = false,
+  maxLength,
 }: any) => (
   <div>
     <label className="text-xs font-medium text-muted-foreground mb-1 block">
       {label}
     </label>
+
     <div className="relative">
       <Lock className="absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
       <Input
         type={show ? "text" : "password"}
+        inputMode={numericOnly ? "numeric" : "text"}
+        pattern={numericOnly ? "[0-9]*" : undefined}
+        maxLength={maxLength}
         className="ps-10 pr-10 h-11"
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const val = numericOnly
+            ? e.target.value.replace(/\D/g, "")
+            : e.target.value;
+          onChange(val);
+        }}
       />
 
       <button
@@ -295,12 +349,14 @@ const PasswordField = ({
         onClick={toggle}
         className={cn(
           "absolute top-1/2 -translate-y-1/2 text-muted-foreground",
-          isRtl ? "left-3" : "right-3",
+          isRtl ? "left-3" : "right-3"
         )}
       >
         {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
       </button>
     </div>
+
+    {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
   </div>
 );
 

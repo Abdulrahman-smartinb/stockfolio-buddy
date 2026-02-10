@@ -11,6 +11,7 @@ import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { useProfile } from "@/hooks/useProfile";
 import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
+import { PlatformTermsModal } from "@/components/PlatformTermsModal";
 
 const Dashboard = () => {
   const {
@@ -170,6 +171,7 @@ const Dashboard = () => {
         setEmail={setEmail}
       />
       <Footer />
+      {/* <PlatformTermsModal isOpen={true} /> */}
     </div>
   );
 };

@@ -44,7 +44,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.nameAr?.toLowerCase().includes(q) ||
-        c.dialCode.includes(search),
+        c.dialCode.includes(search)
     );
   }, [countries, search]);
 
@@ -58,30 +58,34 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
           "h-11 w-full flex items-center justify-between",
           "rounded-lg border border-input bg-background px-3",
           "text-sm text-start py-0",
-          "hover:bg-muted/30 transition",
+          "hover:bg-muted/30 transition"
         )}
       >
-        <span className={isMobile ? "truncate pt-1" : "truncate"}>
-          {selected
-            ? `${selected.flag} ${selected.dialCode}`
-            : isRtl
-              ? "اختر الدولة"
-              : "Select country"}
+        <span
+          className={cn(
+            "truncate flex items-center",
+            isMobile ? "pt-1 gap-2" : "gap-1"
+          )}
+        >
+          {selected ? (
+            <>
+              <span>{selected.flag}</span>
+              <span>{selected.dialCode}</span>
+            </>
+          ) : isRtl ? (
+            "اختر الدولة"
+          ) : (
+            "Select country"
+          )}
         </span>
 
         {open ? (
           <ChevronUp
-            className={cn(
-              "h-4 w-4 text-muted-foreground transition",
-              isRtl && "rotate-180",
-            )}
+            className={cn("h-4 w-4 text-muted-foreground transition")}
           />
         ) : (
           <ChevronDown
-            className={cn(
-              "h-4 w-4 text-muted-foreground transition",
-              isRtl && "rotate-180",
-            )}
+            className={cn("h-4 w-4 text-muted-foreground transition")}
           />
         )}
       </button>
@@ -91,7 +95,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
         <div
           className={cn(
             isMobile ? "w-[80vw]" : "w-full",
-            "absolute z-50 mt-1 rounded-lg border bg-background shadow-lg overflow-hidden",
+            "absolute z-50 mt-1 rounded-lg border bg-background shadow-lg overflow-hidden"
           )}
         >
           {/* Search */}
@@ -104,7 +108,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
               "h-10 w-full border-b px-3 text-sm",
-              "focus:outline-none text-start",
+              "focus:outline-none text-start"
             )}
           />
 
@@ -128,7 +132,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
                 className={cn(
                   "flex w-full items-center gap-2 px-3 py-2",
                   "text-sm text-start hover:bg-muted/40 transition",
-                  value === c.code && "bg-muted/30",
+                  value === c.code && "bg-muted/30"
                 )}
               >
                 <span>{c.flag}</span>

@@ -37,11 +37,13 @@ export const useAuth = () => {
   const [showLengthError, setShowLengthError] = useState(false);
   const [isPinRequired, setIsPinRequired] = useState(false);
   const [showPin, setShowPin] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
+  const [approveTerms, setApproveTerms] = useState(false);
   const [pinCode, setPinCode] = useState("");
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null,
+    null
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -55,7 +57,7 @@ export const useAuth = () => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(Cookies.get("authToken")),
+    Boolean(Cookies.get("authToken"))
   );
 
   const profile = useMemo(() => {
@@ -75,7 +77,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country],
+    [formData.country]
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -109,48 +111,38 @@ export const useAuth = () => {
 
     if (formData.phone.length < 6) {
       toast({
-        title: t("enter_valid_phone"),
+        title: t("auth.errors.enter_valid_phone"),
         variant: "destructive",
-        description: t("valid_phone"),
+        description: t("auth.errors.valid_phone"),
       });
       valid = false;
     }
 
-    if (mode === "login" && formData.pinCode.length < 6) {
+    if (formData.pinCode.length < 6) {
       toast({
-        title: t("enter_valid_pass"),
+        title: t("auth.errors.enter_valid_pin"),
         variant: "destructive",
-        description: t("valid_pass"),
+        description: t("auth.errors.valid_pin"),
       });
       valid = false;
     }
 
-    if (mode === "register") {
-      if (formData.pinCode.length < 6) {
-        toast({
-          title: t("enter_valid_pass"),
-          variant: "destructive",
-          description: t("valid_pass"),
-        });
-        valid = false;
-      }
-      if (formData.password.length < 6) {
-        toast({
-          title: t("enter_valid_pass"),
-          variant: "destructive",
-          description: t("valid_pass"),
-        });
-        valid = false;
-      }
+    if (mode === "register" && formData.password.trim().length < 8) {
+      toast({
+        title: t("auth.errors.enter_valid_pass"),
+        variant: "destructive",
+        description: t("auth.errors.valid_pass"),
+      });
+      valid = false;
     }
 
     if (showWarn || showLengthError) valid = false;
 
     if (mode === "register" && formData.fullName.trim().length < 2) {
       toast({
-        title: t("enter_valid_name"),
+        title: t("auth.errors.enter_valid_name"),
         variant: "destructive",
-        description: t("valid_name"),
+        description: t("auth.errors.valid_name"),
       });
       valid = false;
     }
@@ -164,8 +156,8 @@ export const useAuth = () => {
     setIsAuthenticated(true);
 
     toast({
-      title: t("welcome"),
-      description: t("signed_in"),
+      title: t("auth.welcome_back"),
+      description: t("auth.signed_in"),
     });
 
     navigate("/");
@@ -207,8 +199,8 @@ export const useAuth = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: t("auth_failed"),
-        description: error?.data?.message || t("check_credits"),
+        title: t("auth.errors.auth_failed"),
+        description: t("auth.errors.check_credits") || error?.data?.message,
         duration: 5000,
       });
     }
@@ -282,5 +274,11 @@ export const useAuth = () => {
     handleSubmit,
     verifyPin,
     logout,
+
+    // terms
+    openTerms,
+    setOpenTerms,
+    approveTerms,
+    setApproveTerms,
   };
 };

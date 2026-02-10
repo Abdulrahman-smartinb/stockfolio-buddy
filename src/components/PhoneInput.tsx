@@ -40,7 +40,7 @@ export function PhoneInput({
           placeholder="5XXXXXXXX"
           className={
             isMobile
-              ? "h-11 items-center pl-9 pb-1 text-left"
+              ? "h-11 items-center pl-9  text-left"
               : "h-11 pl-9 text-left tabular-nums"
           }
           required

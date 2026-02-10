@@ -68,6 +68,12 @@
     "password": "Password",
     "pin_code": "Pin Code",
     "terms": "By continuing, you agree to our Terms & Privacy Policy",
+    "accept_terms": "I agree to the Terms & Conditions",
+    "accept_terms_desc": "and confirm that I have read and understood them.",
+    "terms_link": "View Terms & Conditions",
+    "terms_required": "You must accept the terms before creating an account.",
+    "password_hint": "Must be at least 8 characters.",
+    "pin_hint": "6-digit numeric PIN.",
 
     "success": {
       "signed_in": "Signed in",
@@ -79,10 +85,13 @@
     "errors": {
       "auth_failed": "Authentication failed",
       "check_credits": "Please check your credentials and try again",
+      "enter_valid_name": "Please enter a valid full name.",
       "enter_valid_phone": "Please enter a valid phone number",
       "enter_valid_pass": "Please enter a valid password",
+      "enter_valid_pin": "Enter a valid PIN.",
       "valid_phone": "A valid phone number must be between 10 and 14 digits, including country code",
-      "valid_pass": "A valid password must be longer than 6 characters",
+      "valid_pass": "A valid password must be longer than 8 characters",
+      "valid_pin": "PIN must be exactly 6 digits.",
       "valid_name": "A valid name must be longer than 2 characters"
     }
   },
@@ -230,5 +239,43 @@
     "system": "System",
 
     "logout": "Logout"
+  },
+
+  "terms": {
+    "title": "Legal Terms and Conditions of Jadwa Investment Platform",
+    "intro": "Please read these terms and conditions carefully before using the Jadwa Investment Platform. Your use of the platform constitutes full and final acceptance.",
+    "definitions": {
+      "title": "Definitions",
+      "platform": "Platform: The electronic investment system for displaying and managing investment opportunities.",
+      "company": "Company: Jadwa Al-Yaqin Investment Holding.",
+      "user": "User / Investor: Any individual or legal entity using the platform.",
+      "account": "Account: The user's electronic account on the platform.",
+      "services": "Services: All technical and informational services provided through the platform."
+    },
+    "eligibility": {
+      "title": "Eligibility",
+      "1": "The user confirms having full legal capacity.",
+      "2": "The user must provide accurate and up-to-date information.",
+      "3": "The company may suspend or terminate accounts violating eligibility rules."
+    },
+    "risks": {
+      "title": "Services Nature & Risks",
+      "1": "The platform does not guarantee profits.",
+      "2": "Investments involve risks including partial or total loss.",
+      "3": "All investment decisions are the sole responsibility of the user."
+    },
+    "liability": {
+      "title": "Limitation of Liability",
+      "1": "The company is not liable for investment losses.",
+      "2": "The company does not guarantee third-party information accuracy."
+    },
+    "law": {
+      "title": "Governing Law",
+      "text": "These terms are governed and interpreted according to the laws of the Syrian Arab Republic."
+    }
+  },
+  "common": {
+    "close": "Close",
+    "accept": "Accept"
   }
 }
