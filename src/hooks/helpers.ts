@@ -22,24 +22,25 @@ export const generateQuickShareOptions = (
   const min = Math.max(1, minShares);
   const max = Math.max(min, maxShares);
 
-  if (min === max) return [min];
+  const multipliers = [1, 2, 5, 10, 50, 100];
+  const options: number[] = [];
 
-  const options = new Set<number>();
-  options.add(min);
-  options.add(max);
+  for (const m of multipliers) {
+    const value = min * m;
 
-  const midCount = Math.max(0, totalOptions - 2);
-  const logMin = Math.log10(min);
-  const logMax = Math.log10(max);
+    if (value > max) break;
 
-  for (let i = 1; i <= midCount; i++) {
-    const t = i / (midCount + 1);
-    const raw = Math.pow(10, logMin + (logMax - logMin) * t);
-    const rounded = niceRound(raw);
-    options.add(clamp(rounded, min, max));
+    options.push(value);
+
+    if (options.length >= totalOptions) break;
   }
 
-  return Array.from(options).sort((a, b) => a - b);
+  // Fallback: always at least min
+  if (options.length === 0) {
+    options.push(min);
+  }
+
+  return options;
 };
 
 export const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -68,13 +69,28 @@ export const formatCurrency = (
   if (value === null || value === undefined || value === "") return "—";
 
   const num = Number(value);
-  if (Number.isNaN(num)) return "—";
+  if (!Number.isFinite(num)) return "—";
 
-  return new Intl.NumberFormat(undefined, {
-    style: "currency",
-    currency,
+  // Format number ONLY (no currency)
+  const formattedNumber = new Intl.NumberFormat(undefined, {
+    minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(num);
+
+  // Get currency symbol safely
+  const parts = new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+    currencyDisplay: "narrowSymbol",
+  }).formatToParts(0);
+
+  const symbol = parts.find((p) => p.type === "currency")?.value || currency;
+
+  // Unicode LTR isolate to prevent RTL flipping
+  const LTR = "\u2066";
+  const PDI = "\u2069";
+
+  return `${LTR}${formattedNumber} ${symbol}${PDI}`;
 };
 
 export const formatShares = (value?: number | string) =>

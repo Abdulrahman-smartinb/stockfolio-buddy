@@ -12,6 +12,7 @@ import { useProfile } from "@/hooks/useProfile";
 import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
 import { PlatformTermsModal } from "@/components/PlatformTermsModal";
+import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
   const {
@@ -81,13 +82,22 @@ const Dashboard = () => {
         >
           <div className="flex items-center justify-between">
             <div className="relative w-full max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground " />
+              <Search
+                className={cn(
+                  "absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground",
+                  isRtl ? "right-4" : "left-4"
+                )}
+              />
+
               <Input
                 type="text"
                 placeholder={t("home.search_placeholder")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 h-12 bg-card text-xs rounded-[999px]"
+                className={cn(
+                  "h-12 bg-card text-xs rounded-[999px]",
+                  isRtl ? "pr-12 pl-4" : "pl-12 pr-4"
+                )}
               />
             </div>
 

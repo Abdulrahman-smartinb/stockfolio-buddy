@@ -1,4 +1,4 @@
-import { Globe, Moon, Bell, LogOut, User } from "lucide-react";
+import { Globe, Moon, Bell, LogOut, User, RefreshCcw } from "lucide-react";
 import { Header } from "@/components/Header";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
@@ -34,17 +34,27 @@ const Settings = () => {
           <SettingRow
             icon={<Globe className="w-5 h-5" />}
             label={t("settings.language")}
-            onClick={() =>
-              i18n.changeLanguage(i18n.language === "en" ? "ar" : "en")
-            }
             right={
-              <div className="flex items-center gap-2 text-sm font-semibold text-[#042623]">
+              <button
+                onClick={() =>
+                  i18n.changeLanguage(i18n.language === "en" ? "ar" : "en")
+                }
+                className="
+          flex items-center gap-2
+          px-3 py-1.5 rounded-full
+          border border-border
+          bg-muted/50 hover:bg-muted
+          text-sm font-semibold text-[#042623]
+          transition
+          active:scale-[0.97]
+        "
+              >
                 <span>{i18n.language === "en" ? "English" : "العربية"}</span>
-                <Arrow isRtl={isRtl} />
-                <span className="opacity-70">
+                <RefreshCcw />
+                <span className="opacity-60">
                   {i18n.language === "en" ? "العربية" : "English"}
                 </span>
-              </div>
+              </button>
             }
           />
 

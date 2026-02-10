@@ -8,48 +8,62 @@ import { store } from "./store";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Profile from "./pages/Profile";
-import ProtectedRoute from "./routes/ProtectedRoute.tsx";
+import ProtectedRoute from "./routes/ProtectedRoute";
 import NotFound from "./pages/NotFound";
-import InvestorActivity from "./pages/InvestorActivity.tsx";
-import MyShares from "./pages/Activity/MyShares.tsx";
-import MyTransactions from "./pages/Activity/MyTransactions.tsx";
-import MyTradeRequest from "./pages/Activity/MyTradeRequest.tsx";
-import Settings from "./pages/Settings.tsx";
+import InvestorActivity from "./pages/InvestorActivity";
+import MyShares from "./pages/Activity/MyShares";
+import MyTransactions from "./pages/Activity/MyTransactions";
+import MyTradeRequest from "./pages/Activity/MyTradeRequest";
+import Settings from "./pages/Settings";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <Provider store={store}>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/auth" element={<Auth />} />
+const App = () => {
+  const { i18n } = useTranslation();
 
-            <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/investorActivity" element={<InvestorActivity />} />
-              <Route path="/Activity/MyShares" element={<MyShares />} />
-              <Route
-                path="/Activity/MyTransactions"
-                element={<MyTransactions />}
-              />
-              <Route
-                path="/Activity/MyTradeRequest"
-                element={<MyTradeRequest />}
-              />
-              <Route path="/Settings" element={<Settings />} />
-            </Route>
+  useEffect(() => {
+    document.documentElement.lang = i18n.language;
+    document.documentElement.dir = i18n.language === "ar" ? "rtl" : "ltr";
+  }, [i18n.language]);
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </Provider>
-);
+  return (
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/auth" element={<Auth />} />
+
+              <Route element={<ProtectedRoute />}>
+                <Route path="/" element={<Index />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route
+                  path="/investorActivity"
+                  element={<InvestorActivity />}
+                />
+                <Route path="/Activity/MyShares" element={<MyShares />} />
+                <Route
+                  path="/Activity/MyTransactions"
+                  element={<MyTransactions />}
+                />
+                <Route
+                  path="/Activity/MyTradeRequest"
+                  element={<MyTradeRequest />}
+                />
+                <Route path="/Settings" element={<Settings />} />
+              </Route>
+
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </Provider>
+  );
+};
 
 export default App;

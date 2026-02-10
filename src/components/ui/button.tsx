@@ -9,15 +9,22 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl hover:shadow-primary/20",
-        destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg",
-        outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-        secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        default:
+          "bg-primary text-muted hover:bg-primary/90 shadow-lg hover:shadow-xl hover:shadow-primary/20",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-lg",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-success text-success-foreground hover:bg-success/90 shadow-lg hover:shadow-xl hover:shadow-success/20",
-        accent: "bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:shadow-xl hover:shadow-accent/20",
-        glass: "bg-card/50 backdrop-blur-lg border border-border/50 hover:bg-card/80 text-foreground",
+        success:
+          "bg-success text-success-foreground hover:bg-success/90 shadow-lg hover:shadow-xl hover:shadow-success/20",
+        accent:
+          "bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg hover:shadow-xl hover:shadow-accent/20",
+        glass:
+          "bg-card/50 backdrop-blur-lg border border-border/50 hover:bg-card/80 text-foreground",
       },
       size: {
         default: "h-11 px-5 py-2",

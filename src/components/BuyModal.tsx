@@ -14,8 +14,6 @@ interface BuyModalProps {
   onClose: () => void;
 }
 
-const PRIMARY = "#042623";
-
 export const BuyModal = ({
   stock,
   isOpen,
@@ -25,11 +23,11 @@ export const BuyModal = ({
 }: BuyModalProps) => {
   const {
     t,
+
     shares,
     minShares,
     maxShares,
-    quickShareOptions,
-    totalCost,
+    totalInput,
     note,
     isLoading,
 
@@ -37,8 +35,11 @@ export const BuyModal = ({
     increaseShares,
     decreaseShares,
     setSharesFromInput,
-    submitTradeRequest,
+    setSharesFromTotal,
     selectQuickOption,
+    submitTradeRequest,
+
+    quickShareOptions,
   } = useBuyModal({
     stock,
     tradeType: tradType,
@@ -63,28 +64,28 @@ export const BuyModal = ({
           onClick={(e) => e.stopPropagation()}
           className="
             relative w-full max-w-md
-            rounded-2xl bg-white
-            shadow-2xl border border-border/60
-            p-5 max-h-[90vh] overflow-y-auto
+            rounded-2xl bg-popover
+            shadow-2xl border border-border
+            p-6 max-h-[90vh] overflow-y-auto
           "
-          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          initial={{ opacity: 0, y: 24, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.98 }}
+          exit={{ opacity: 0, y: 24, scale: 0.96 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
         >
           {/* ================= Header ================= */}
-          <div className="flex items-start justify-between mb-5">
+          <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-lg font-extrabold text-[#042623]">
+              <h2 className="text-lg font-extrabold text-foreground">
                 {isRtl ? stock?.nameAr : stock.fullLegalName}
               </h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground mt-1">
                 {t("shares.min")}:{" "}
-                <span className="tabular-nums font-medium">
+                <span className="font-medium tabular-nums">
                   {formatNumber(minShares)}
                 </span>{" "}
                 • {t("shares.max")}:{" "}
-                <span className="tabular-nums font-medium">
+                <span className="font-medium tabular-nums">
                   {formatNumber(maxShares)}
                 </span>
               </p>
@@ -96,7 +97,8 @@ export const BuyModal = ({
               className="
                 h-8 w-8 rounded-lg
                 flex items-center justify-center
-                hover:bg-muted/40 transition
+                text-muted-foreground
+                hover:bg-muted transition
               "
             >
               <X className="w-4 h-4" />
@@ -104,21 +106,18 @@ export const BuyModal = ({
           </div>
 
           {/* ================= Share Price ================= */}
-          <div
-            className="rounded-xl px-4 py-3 mb-4 flex justify-between items-center"
-            style={{ backgroundColor: "rgba(4,38,35,0.06)" }}
-          >
+          <div className="mb-5 rounded-xl bg-secondary/40 px-4 py-3 flex justify-between items-center">
             <span className="text-sm text-muted-foreground">
               {t("shares.share_price")}
             </span>
-            <span className="font-bold tabular-nums text-[#042623]">
+            <span className="font-extrabold tabular-nums text-foreground">
               {formatCurrency(stock.sharePrice)}
             </span>
           </div>
 
           {/* ================= Quick Options ================= */}
           {!!quickShareOptions?.length && (
-            <div className="mb-5">
+            <div className="mb-6">
               <p className="text-xs text-muted-foreground mb-2">
                 {t("shares.quick_select")}
               </p>
@@ -130,17 +129,16 @@ export const BuyModal = ({
                       key={opt}
                       onClick={() => selectQuickOption(opt)}
                       disabled={isLoading}
-                      className="
-                        h-9 px-3 rounded-lg text-sm font-medium tabular-nums
-                        ring-1 transition
-                      "
-                      style={{
-                        backgroundColor: active
-                          ? PRIMARY
-                          : "rgba(4,38,35,0.05)",
-                        color: active ? "#fff" : PRIMARY,
-                        borderColor: "rgba(4,38,35,0.25)",
-                      }}
+                      className={`
+                        h-9 px-3 rounded-lg
+                        text-sm font-semibold tabular-nums
+                        border transition
+                        ${
+                          active
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-muted text-foreground border-border hover:bg-muted/70"
+                        }
+                      `}
                     >
                       {formatNumber(opt)}
                     </button>
@@ -151,7 +149,7 @@ export const BuyModal = ({
           )}
 
           {/* ================= Quantity ================= */}
-          <div className="mb-5">
+          <div className="mb-6">
             <p className="text-xs text-muted-foreground mb-2">
               {t("shares.shares")}
             </p>
@@ -170,7 +168,7 @@ export const BuyModal = ({
                 type="number"
                 value={shares}
                 onChange={(e) => setSharesFromInput(e.target.value)}
-                className="w-28 h-10 text-center font-semibold tabular-nums"
+                className="w-28 h-10 text-center font-bold tabular-nums"
                 min={minShares}
                 max={maxShares}
               />
@@ -184,16 +182,10 @@ export const BuyModal = ({
                 <Plus className="w-4 h-4" />
               </Button>
             </div>
-
-            {(shares < minShares || shares > maxShares) && (
-              <div className="mt-3 rounded-lg bg-red-50 text-red-600 px-3 py-2 text-sm text-center">
-                {t("shares.shares_out_of_range")}
-              </div>
-            )}
           </div>
 
           {/* ================= Note ================= */}
-          <div className="mb-5">
+          <div className="mb-6">
             <p className="text-xs text-muted-foreground mb-2">
               {t("shares.description")}
             </p>
@@ -206,16 +198,28 @@ export const BuyModal = ({
           </div>
 
           {/* ================= Total ================= */}
-          <div
-            className="rounded-xl px-4 py-3 mb-6 flex justify-between items-center"
-            style={{ backgroundColor: "rgba(4,38,35,0.1)" }}
-          >
-            <span className="text-sm text-muted-foreground">
+          <div className="mb-7 rounded-xl bg-primary/10 px-4 py-4">
+            <p className="text-xs text-muted-foreground mb-2">
               {t("shares.estimated_total")}
-            </span>
-            <span className="text-lg font-extrabold tabular-nums text-[#042623]">
-              {formatCurrency(totalCost)}
-            </span>
+            </p>
+
+            <Input
+              value={totalInput}
+              onChange={(e) => setSharesFromTotal(e.target.value)}
+              disabled={isLoading}
+              inputMode="decimal"
+              placeholder="0.00"
+              className="
+                text-center
+                text-lg font-extrabold
+                tabular-nums
+                bg-background
+              "
+            />
+
+            <p className="mt-1 text-[11px] text-muted-foreground text-center">
+              {t("shares.total_hint")}
+            </p>
           </div>
 
           {/* ================= Actions ================= */}
@@ -229,21 +233,14 @@ export const BuyModal = ({
               {t("app.cancel")}
             </Button>
 
-            <button
+            <Button
               onClick={submitTradeRequest}
               disabled={isLoading || shares < minShares || shares > maxShares}
-              className="
-                flex-1 h-10 rounded-xl
-                text-sm font-semibold text-white
-                transition
-                disabled:opacity-60 disabled:cursor-not-allowed
-              "
-              style={{
-                backgroundColor: tradType === "sell" ? "#b91c1c" : PRIMARY,
-              }}
+              className="flex-1"
+              variant={tradType === "sell" ? "destructive" : "default"}
             >
               {isLoading ? t("app.processing") : t("shares.send_request")}
-            </button>
+            </Button>
           </div>
         </motion.div>
       </motion.div>

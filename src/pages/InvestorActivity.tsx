@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
+import { formatCurrency, formatNumber } from "@/hooks/helpers";
 
 /* ================= Page ================= */
 
@@ -33,10 +34,9 @@ const InvestorActivity = () => {
           title={t("activity.my_shares")}
           icon={<Wallet className="w-4 h-4" />}
           onRefresh={refetchAll}
-          onMore={() => navigate("/Activity/MyShares")}
+          onNavigate={() => navigate("/Activity/MyShares")}
           isLoading={isLoading}
           empty={!preview?.assets?.length}
-          isRtl={isRtl}
         >
           {preview.assets.slice(0, 2).map((asset) => (
             <Row key={asset.assetId}>
@@ -44,12 +44,15 @@ const InvestorActivity = () => {
                 <p className="truncate text-sm font-medium text-[#042623]">
                   {isRtl ? asset?.fund?.nameAr : asset.fund?.fullLegalName}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
-                  {asset.shares} {t("activity.shares")}
+                <p className="text-[11px] text-muted-foreground ">
+                  <span className="font-google mx-1">
+                    {formatNumber(asset.shares)}
+                  </span>
+                  {t("activity.shares")}
                 </p>
               </div>
 
-              <Amount>${asset.value}</Amount>
+              <Amount>{formatCurrency(asset.value)}</Amount>
             </Row>
           ))}
         </SectionCard>
@@ -59,10 +62,9 @@ const InvestorActivity = () => {
           title={t("activity.transactions")}
           icon={<ListOrdered className="w-4 h-4" />}
           onRefresh={refetchAll}
-          onMore={() => navigate("/Activity/MyTransactions")}
+          onNavigate={() => navigate("/Activity/MyTransactions")}
           isLoading={isLoading}
           empty={!preview?.transactions?.length}
-          isRtl={isRtl}
         >
           {preview.transactions.slice(0, 2).map((tx) => (
             <Row key={tx._id}>
@@ -71,12 +73,12 @@ const InvestorActivity = () => {
                   {tx.side === "buy" ? t("activity.buy") : t("activity.sell")} ·{" "}
                   {tx.quantity} {t("activity.shares")}
                 </p>
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-[11px] text-muted-foreground font-google ">
                   {new Date(tx.createdAt).toLocaleDateString()}
                 </p>
               </div>
 
-              <Amount>${tx.pricePerShare}</Amount>
+              <Amount>{formatCurrency(tx.pricePerShare)}</Amount>
             </Row>
           ))}
         </SectionCard>
@@ -86,10 +88,9 @@ const InvestorActivity = () => {
           title={t("activity.trade_requests")}
           icon={<Clock className="w-4 h-4" />}
           onRefresh={refetchAll}
-          onMore={() => navigate("/Activity/MyTradeRequest")}
+          onNavigate={() => navigate("/Activity/MyTradeRequest")}
           isLoading={isLoading}
           empty={!preview?.tradeRequests?.length}
-          isRtl={isRtl}
         >
           {preview.tradeRequests.slice(0, 2).map((req) => {
             const amount = req.numberOfShares * req.pricePerShare;
@@ -101,14 +102,15 @@ const InvestorActivity = () => {
                     {t(`activity.${req.tradeType}`)} · {req.source.code}
                   </p>
 
-                  <p className="text-[11px] text-muted-foreground">
-                    {req.numberOfShares} × ${req.pricePerShare}
+                  <p className="text-[11px] text-muted-foreground font-google ">
+                    {formatNumber(req.numberOfShares)} ×{" "}
+                    {formatCurrency(req.pricePerShare)}
                   </p>
 
                   <StatusBadge status={req.requestStatus} />
                 </div>
 
-                <Amount>${amount}</Amount>
+                <Amount>{formatCurrency(amount)}</Amount>
               </Row>
             );
           })}
@@ -131,47 +133,64 @@ const SectionCard = ({
   isLoading,
   empty,
   onRefresh,
-  onMore,
-  isRtl,
-}: any) => {
+  onNavigate,
+}: {
+  title: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
+  isLoading?: boolean;
+  empty?: boolean;
+  onRefresh?: () => void;
+  onNavigate?: () => void;
+}) => {
   return (
-    <div className="rounded-2xl bg-white border border-[#042623]/10 shadow-sm p-4 space-y-3">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="rounded-2xl bg-white border border-[#042623]/10 shadow-sm">
+      {/* Header (clickable) */}
+      <div
+        onClick={onNavigate}
+        role={onNavigate ? "button" : undefined}
+        className={cn(
+          "flex items-center justify-between p-4",
+          onNavigate &&
+            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl"
+        )}
+      >
         <div className="flex items-center gap-2">
           <span className="w-8 h-8 rounded-lg bg-[#042623]/5 text-[#042623] flex items-center justify-center">
             {icon}
           </span>
+
           <span className="text-sm font-semibold text-[#042623]">{title}</span>
         </div>
 
-        <div className="flex items-center gap-1">
-          {onRefresh && (
-            <IconButton onClick={onRefresh}>
-              <RefreshCcw className="w-4 h-4" />
-            </IconButton>
-          )}
-
-          {onMore && (
-            <IconButton onClick={onMore}>
-              {isRtl ? (
-                <ChevronLeft className="w-4 h-4" />
-              ) : (
-                <ChevronRight className="w-4 h-4" />
-              )}
-            </IconButton>
-          )}
-        </div>
+        {onRefresh && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // 🔑 prevent navigation
+              onRefresh();
+            }}
+            className="
+              h-8 w-8 rounded-lg
+              flex items-center justify-center
+              hover:bg-[#042623]/10
+              transition
+            "
+          >
+            <RefreshCcw className="w-4 h-4 text-[#042623]" />
+          </button>
+        )}
       </div>
 
       {/* Content */}
-      {isLoading ? (
-        <Skeleton />
-      ) : empty ? (
-        <Empty />
-      ) : (
-        <div className="space-y-2">{children}</div>
-      )}
+      <div className="px-4 pb-4">
+        {isLoading ? (
+          <Skeleton />
+        ) : empty ? (
+          <Empty />
+        ) : (
+          <div className="space-y-2">{children}</div>
+        )}
+      </div>
     </div>
   );
 };
@@ -183,31 +202,32 @@ const Row = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Amount = ({ children }: { children: React.ReactNode }) => (
-  <span className="text-sm font-semibold text-[#042623] tabular-nums">
+  <span className="text-sm font-semibold text-[#042623] tabular-nums font-google ">
     {children}
   </span>
 );
 
 const StatusBadge = ({ status }: { status: string }) => {
+  const { t } = useTranslation();
+
   const styles: Record<string, string> = {
     pending: "bg-amber-500/10 text-amber-600",
     approved: "bg-emerald-500/10 text-emerald-600",
-    rejected: "bg-rose-500/10 text-rose-600",
     confirmed: "bg-emerald-500/10 text-emerald-600",
+    rejected: "bg-rose-500/10 text-rose-600",
   };
 
   return (
     <span
       className={cn(
-        "inline-block px-2 py-0.5 rounded-md text-[10px] font-medium",
-        styles[status]
+        "inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold",
+        styles[status] ?? "bg-muted text-muted-foreground"
       )}
     >
-      {status}
+      {t(`transactions.${status}`)}
     </span>
   );
 };
-
 const IconButton = ({ children, onClick }: any) => (
   <button
     onClick={onClick}

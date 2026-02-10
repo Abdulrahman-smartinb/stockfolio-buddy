@@ -12,13 +12,16 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   const { resolvedRole } = useResolvedRole();
   const profileId = resolvedRole?.profileId;
 
+  const pricePerShare = Number(stock?.sharePrice || 0);
+
   const minShares = Math.max(1, Number(stock?.minInvestShare || 1));
   const maxShares = Math.max(
     minShares,
-    Number(stock?.maxInvestShare || minShares),
+    Number(stock?.maxInvestShare || minShares)
   );
 
   const [shares, setShares] = useState(minShares);
+  const [totalInput, setTotalInput] = useState("");
   const [note, setNote] = useState("");
 
   const [createTradeRequest, { isLoading }] =
@@ -27,22 +30,27 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   /** Reset when stock changes */
   useEffect(() => {
     setShares(minShares);
+    setTotalInput("");
+    setNote("");
   }, [minShares]);
 
-  /** Quick-select options (chips) */
+  /** Sync total when shares change */
+  useEffect(() => {
+    if (!pricePerShare) return;
+    const total = shares * pricePerShare;
+    setTotalInput(total.toFixed(2));
+  }, [shares, pricePerShare]);
+
+  /** Quick-select options */
   const quickShareOptions = useMemo(
-    () => generateQuickShareOptions(minShares, maxShares, 4),
-    [minShares, maxShares],
+    () => generateQuickShareOptions(minShares, maxShares, 5),
+    [minShares, maxShares]
   );
-
-  /** Quick option select */
-  const selectQuickOption = (value: number) => {
-    setShares(clamp(value, minShares, maxShares));
-  };
-
+  console.log(quickShareOptions);
+  /** Total cost (derived, numeric) */
   const totalCost = useMemo(
-    () => Number(stock?.sharePrice || 0) * shares,
-    [shares, stock],
+    () => shares * pricePerShare,
+    [shares, pricePerShare]
   );
 
   /** Quantity controls */
@@ -52,14 +60,33 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   const decreaseShares = () =>
     setShares((v) => clamp(v - minShares, minShares, maxShares));
 
+  /** Manual shares input (ONLY integers) */
   const setSharesFromInput = (value: string) => {
     if (value === "") return;
-
     if (!/^\d+$/.test(value)) return;
 
     const parsed = Number(value);
+    setShares(clamp(parsed, minShares, maxShares));
+  };
 
-    setShares(parsed);
+  /** Manual total input → derive shares (NO fractions) */
+  const setSharesFromTotal = (value: string) => {
+    setTotalInput(value);
+
+    if (value === "") return;
+    if (!/^\d*\.?\d*$/.test(value)) return;
+    if (!pricePerShare) return;
+
+    const total = Number(value);
+    if (!Number.isFinite(total)) return;
+
+    const calculatedShares = Math.floor(total / pricePerShare);
+    setShares(clamp(calculatedShares, minShares, maxShares));
+  };
+
+  /** Quick option select */
+  const selectQuickOption = (value: number) => {
+    setShares(clamp(value, minShares, maxShares));
   };
 
   /** Submit */
@@ -72,7 +99,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
           sourceType: stock?.entityType,
           source: stock?._id,
           numberOfShares: shares,
-          pricePerShare: stock?.sharePrice,
+          pricePerShare,
           description: note,
           paymentStatus: "unpaid",
         },
@@ -85,6 +112,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
       onClose();
       setShares(minShares);
+      setTotalInput("");
       setNote("");
     } catch {
       toast({
@@ -98,21 +126,27 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   return {
     t,
+
+    // state
     shares,
     minShares,
     maxShares,
-    quickShareOptions,
+    totalInput,
     totalCost,
     note,
     isLoading,
 
-    setShares,
+    // actions
     setNote,
     increaseShares,
     decreaseShares,
     setSharesFromInput,
+    setSharesFromTotal,
     selectQuickOption,
     submitTradeRequest,
+
+    // ui helpers
+    quickShareOptions,
   };
 };
 

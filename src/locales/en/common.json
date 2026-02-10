@@ -25,7 +25,9 @@
     "home": "Home",
     "profile": "Profile",
     "login_register": "Log in / Register",
-    "logout": "Logout"
+    "logout": "Logout",
+    "settings": "Settings",
+    "transactions": "Transactions"
   },
 
   "home": {
@@ -118,6 +120,8 @@
     "total_investments": "Total Investments",
     "title": "My Shares",
     "click_upload_receipt": "Click to upload the receipt",
+
+    "total_hint": "Shares are calculated automatically (whole shares only).",
 
     "avg": "Avg",
     "current": "Current",
