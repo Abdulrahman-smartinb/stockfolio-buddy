@@ -16,26 +16,23 @@ const useDashboard = () => {
   const [verfiyModalOpen, setVerfiyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
 
-  const { resolvedRole } = useResolvedRole();
+  const { resolvedRole, refetchRole, loadingRole } = useResolvedRole();
 
   const {
     data: stocks = [],
     isLoading,
-    error,
     refetch,
   } = useGetInvestmentEntitiesQuery({
     keyword: searchQuery,
   });
 
-  const {
-    data: portfolio,
-    isLoading: portfolioLoading,
-    error: portfolioError,
-  } = useGetInvestorPortfolioQuery({
-    id: resolvedRole?.profileId,
-  });
+  const { data: portfolio, isLoading: portfolioLoading } =
+    useGetInvestorPortfolioQuery({
+      id: resolvedRole?.profileId,
+    });
 
-  const handleStockClick = (stock: InvestmentEntity, type: string) => {
+  const handleStockClick = async (stock: InvestmentEntity, type: string) => {
+    await refetchRole();
     if (resolvedRole.isApplicant) {
       setVerfiyModalOpen(true);
       return;

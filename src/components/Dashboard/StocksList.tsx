@@ -43,9 +43,9 @@ const EmptyState = ({ t }) => (
       <Search className="w-8 h-8 text-muted-foreground" />
     </div>
     <h3 className="text-lg font-semibold text-foreground mb-2">
-      {t("no_records_found")}
+      {t("activity.no_records")}
     </h3>
-    <p className="text-muted-foreground">{t("adjust_query")}</p>
+    <p className="text-muted-foreground">{t("app.adjust_query")}</p>
   </motion.div>
 );
 

@@ -11,7 +11,8 @@
     "no_records_found": "No records found",
     "adjust_query": "Try adjusting your search query",
     "page_not_found": "Oops! Page not found",
-    "return_home": "Return Home"
+    "return_home": "Return Home",
+    "unknown_asset": "Unknown asset"
   },
 
   "brand": {
@@ -83,6 +84,8 @@
     },
 
     "errors": {
+      "verification_failed": "Verification failed",
+      "code_failed": "Failed to verify PIN code",
       "auth_failed": "Authentication failed",
       "check_credits": "Please check your credentials and try again",
       "enter_valid_name": "Please enter a valid full name.",
@@ -114,6 +117,7 @@
     "description_optional": "Description (optional)",
     "total_investments": "Total Investments",
     "title": "My Shares",
+    "click_upload_receipt": "Click to upload the receipt",
 
     "avg": "Avg",
     "current": "Current",
@@ -142,7 +146,8 @@
     "pending": "Pending",
     "confirmed": "Confirmed",
     "rejected": "Rejected",
-    "rejection_reason": "Rejection reason"
+    "rejection_reason": "Rejection reason",
+    "pending_payment_doc": "Pending payment document"
   },
 
   "payments": {

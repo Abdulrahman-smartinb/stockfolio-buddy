@@ -100,7 +100,7 @@ const Dashboard = () => {
               {!isLoading && <RefreshCw className="w-5 h-5 md:hidden" />}
 
               {/* Desktop: Text */}
-              <span className="hidden md:inline">{t("refresh")}</span>
+              <span className="hidden md:inline">{t("app.refresh")}</span>
 
               {isLoading && (
                 <span className="flex items-center gap-2">

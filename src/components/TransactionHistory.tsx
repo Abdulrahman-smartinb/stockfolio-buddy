@@ -28,7 +28,7 @@ const TransactionHistory = ({
       <CardHeader>
         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
           <Package className="w-4 h-4 text-primary" />
-          {t("transactions_history")}
+          {t("transactions.history")}
         </CardTitle>
       </CardHeader>
 
@@ -58,7 +58,7 @@ const TransactionHistory = ({
                           : "text-destructive border-destructive/40"
                       }`}
                     >
-                      {isBuy ? t("buy") : t("sell")}
+                      {isBuy ? t("activity.buy") : t("activity.sell")}
                     </Badge>
                   </div>
 
@@ -74,7 +74,7 @@ const TransactionHistory = ({
                 {/* DETAILS */}
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>
-                    {tx.shares} {t("shares")} × ${tx.sharePrice}
+                    {tx.shares} {t("activity.shares")} × ${tx.sharePrice}
                   </span>
                   <span>{format(new Date(tx.createdAt), "MMM dd, HH:mm")}</span>
                 </div>
@@ -83,7 +83,7 @@ const TransactionHistory = ({
           })
         ) : (
           <p className="text-xs text-muted-foreground text-center py-4">
-            {t("no_records_found")}
+            {t("activity.no_records")}
           </p>
         )}
         <div className="md:flex md:justify-between">
@@ -133,7 +133,7 @@ const TransactionHistory = ({
             </PaginationContent>
           </Pagination>
           <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground sm:w-100">
-            <span>{t("rows_per_page")}</span>
+            <span>{t("transactions.rows_per_page")}</span>
             <select
               value={limit}
               onChange={(e) => {

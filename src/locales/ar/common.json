@@ -11,7 +11,8 @@
     "no_records_found": "لا توجد بيانات",
     "adjust_query": "حاول تعديل عبارة البحث",
     "page_not_found": "عذرًا! الصفحة غير موجودة",
-    "return_home": "العودة إلى الصفحة الرئيسية"
+    "return_home": "العودة إلى الصفحة الرئيسية",
+    "unknown_asset": "غير معروف"
   },
 
   "brand": {
@@ -48,7 +49,7 @@
     "email": "البريد الإلكتروني",
     "phone": "رقم الهاتف",
     "birth_date": "تاريخ الميلاد",
-    "full_name": "الاسم الكامل",
+    "full_name": "الاسم الثلاثي",
     "edit": "تعديل",
     "save": "حفظ",
     "change": "تغيير",
@@ -63,7 +64,7 @@
   "auth": {
     "sign_in": "تسجيل الدخول",
     "register": "إنشاء حساب",
-    "full_name": "الاسم الكامل",
+    "full_name": "الاسم الثلاثي",
     "phone_number": "رقم الهاتف",
     "password": "كلمة المرور",
     "pin_code": "رمز التحقق (PIN)",
@@ -83,6 +84,8 @@
     },
 
     "errors": {
+      "verification_failed": "فشل التأكد",
+      "code_failed": "فشل التحقق من رمز الأمان",
       "auth_failed": "فشل التحقق",
       "check_credits": "يرجى التحقق من بيانات الدخول والمحاولة مرة أخرى",
       "enter_valid_name": "يرجى إدخال الاسم الثلاثي الكامل بشكل صحيح.",
@@ -113,6 +116,7 @@
     "description_optional": "الوصف (اختياري)",
     "shares_out_of_range": "عدد الأسهم خارج النطاق المسموح.",
     "title": "أسهمي",
+    "click_upload_receipt": "اضغط لتحميل الإيصال",
 
     "avg": "المتوسط",
     "current": "السعر الحالي",
@@ -141,7 +145,8 @@
     "pending": "قيد المعالجة",
     "confirmed": "تمت الموافقة",
     "rejected": "مرفوض",
-    "rejection_reason": "سبب الرفض"
+    "rejection_reason": "سبب الرفض",
+    "pending_payment_doc": "بانتظار إيصال الدفع"
   },
 
   "payments": {
@@ -152,7 +157,7 @@
 
     "bank": {
       "title": "حوالة بنكية (سورية)",
-      "beneficiary_name": "الاسم الكامل للمستفيد",
+      "beneficiary_name": "الاسم الثلاثي للمستفيد",
       "beneficiary_address": "عنوان المستفيد",
       "bank_name": "اسم المصرف",
       "account_number": "رقم الحساب"

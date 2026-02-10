@@ -72,7 +72,7 @@ const PendingRequests = ({
       <CardHeader className="pb-3">
         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
           <Clock className="w-4 h-4 text-primary shrink-0" />
-          {t("pending_requests")}
+          {t("transactions.pending_requests")}
         </CardTitle>
       </CardHeader>
 
@@ -89,7 +89,7 @@ const PendingRequests = ({
             const title =
               request.source?.fullLegalName ||
               request.source?.tradeName ||
-              t("unknown_asset");
+              t("app.unknown_asset");
 
             return (
               <div
@@ -144,7 +144,7 @@ const PendingRequests = ({
                         className="text-[10px] capitalize"
                       >
                         {request.requestStatus === "approved"
-                          ? t("pending_payment_doc")
+                          ? t("transactions.pending_payment_doc")
                           : t(request.requestStatus)}
                       </Badge>
 
@@ -161,7 +161,7 @@ const PendingRequests = ({
 
                     {/* Shares x price */}
                     <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
-                      {shares} {t("share_s")} × ${price.toFixed(2)}
+                      {shares} {t("shares.share_s")} × ${price.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -172,7 +172,7 @@ const PendingRequests = ({
                 >
                   {request?.requestStatus === "rejected" && (
                     <div className="border bg-destructive/80 rounded-sm p-2 text-white">
-                      <b>{t("rejection_reason")}</b>
+                      <b>{t("transactions.rejection_reason")}</b>
                       <p>{request?.rejectionReason}</p>
                     </div>
                   )}
@@ -196,7 +196,7 @@ const PendingRequests = ({
                         className={`border bg-warning/80 rounded-sm p-2 text-white transition-colors hover:bg-warning 
                           ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}`}
                       >
-                        <b>{t("click_upload_receipt")}</b>
+                        <b>{t("shares.click_upload_receipt")}</b>
                       </label>
                     </>
                   )}
@@ -230,7 +230,7 @@ const PendingRequests = ({
           })
         ) : (
           <p className="text-xs text-muted-foreground text-center py-4">
-            {t("no_records_found")}
+            {t("activity.no_records")}
           </p>
         )}
       </CardContent>

@@ -9,13 +9,13 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   const { t } = useTranslation();
   const { toast } = useToast();
 
-  const { resolvedRole, loadingRole } = useResolvedRole();
+  const { resolvedRole } = useResolvedRole();
   const profileId = resolvedRole?.profileId;
 
   const minShares = Math.max(1, Number(stock?.minInvestShare || 1));
   const maxShares = Math.max(
     minShares,
-    Number(stock?.maxInvestShare || minShares)
+    Number(stock?.maxInvestShare || minShares),
   );
 
   const [shares, setShares] = useState(minShares);
@@ -32,7 +32,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   /** Quick-select options (chips) */
   const quickShareOptions = useMemo(
     () => generateQuickShareOptions(minShares, maxShares, 4),
-    [minShares, maxShares]
+    [minShares, maxShares],
   );
 
   /** Quick option select */
@@ -42,7 +42,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
 
   const totalCost = useMemo(
     () => Number(stock?.sharePrice || 0) * shares,
-    [shares, stock]
+    [shares, stock],
   );
 
   /** Quantity controls */

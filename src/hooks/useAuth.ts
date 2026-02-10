@@ -43,7 +43,7 @@ export const useAuth = () => {
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null
+    null,
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -57,7 +57,7 @@ export const useAuth = () => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(Cookies.get("authToken"))
+    Boolean(Cookies.get("authToken")),
   );
 
   const profile = useMemo(() => {
@@ -77,7 +77,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country]
+    [formData.country],
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -156,8 +156,8 @@ export const useAuth = () => {
     setIsAuthenticated(true);
 
     toast({
-      title: t("auth.welcome_back"),
-      description: t("auth.signed_in"),
+      title: t("auth.success.welcome_back"),
+      description: t("auth.success.signed_in"),
     });
 
     navigate("/");
@@ -226,8 +226,8 @@ export const useAuth = () => {
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: t("verification_failed"),
-        description: error?.data?.message || t("code_failed"),
+        title: t("auth.errors.verification_failed"),
+        description: error?.data?.message || t("auth.errors.code_failed"),
         duration: 5000,
       });
     }

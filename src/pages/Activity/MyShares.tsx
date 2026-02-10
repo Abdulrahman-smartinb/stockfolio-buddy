@@ -47,7 +47,7 @@ const MyShares = () => {
                   "text-lg font-bold",
                   portfolioSummary.pnl >= 0
                     ? "text-emerald-600"
-                    : "text-rose-600"
+                    : "text-rose-600",
                 )}
               >
                 {portfolioSummary.pnl >= 0 ? "+" : "-"}$
@@ -69,7 +69,7 @@ const MyShares = () => {
             className="h-8 w-8 rounded-lg flex items-center justify-center
               bg-[#042623]/5 text-[#042623]
               hover:bg-[#042623]/10 transition"
-            aria-label={t("refresh")}
+            aria-label={t("app.refresh")}
           >
             <RefreshCcw className="w-4 h-4" />
           </button>
@@ -115,7 +115,7 @@ const MyShares = () => {
                       <p
                         className={cn(
                           "text-xs font-medium",
-                          pnlPositive ? "text-emerald-600" : "text-rose-600"
+                          pnlPositive ? "text-emerald-600" : "text-rose-600",
                         )}
                       >
                         {pnlPositive ? "+" : "-"}$
