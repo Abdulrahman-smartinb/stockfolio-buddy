@@ -206,9 +206,8 @@ export const BuyModal = ({
             </p>
 
             <Input
-              value={totalInput === "" ? totalCost.toFixed(2) : totalInput}
+              value={totalInput === "" ? totalCost : totalInput}
               onChange={(e) => setSharesFromTotal(e.target.value)}
-              onBlur={() => setTotalInput("")}
               disabled={isLoading}
               inputMode="decimal"
               placeholder="0.00"

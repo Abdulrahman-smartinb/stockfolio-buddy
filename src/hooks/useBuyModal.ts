@@ -27,33 +27,33 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
   const [createTradeRequest, { isLoading }] =
     useCreateShareTradeRequestMutation();
 
-  /** Reset when stock changes */
+  // Reset when stock changes
   useEffect(() => {
     setShares(minShares);
     setTotalInput("");
     setNote("");
   }, [minShares]);
 
-  /** Quick-select options */
+  // Quick-select options
   const quickShareOptions = useMemo(
     () => generateQuickShareOptions(minShares, maxShares, 5),
     [minShares, maxShares],
   );
 
-  /** Total cost (derived, numeric) */
+  // Total cost (derived, numeric)
   const totalCost = useMemo(() => {
     if (!pricePerShare) return 0;
     return shares * pricePerShare;
   }, [shares, pricePerShare]);
 
-  /** Quantity controls */
+  // Quantity controls
   const increaseShares = () =>
     setShares((v) => clamp(v + minShares, minShares, maxShares));
 
   const decreaseShares = () =>
     setShares((v) => clamp(v - minShares, minShares, maxShares));
 
-  /** Manual shares input (ONLY integers) */
+  // Manual shares input (ONLY integers)
   const setSharesFromInput = (value: string) => {
     if (value === "") return;
     if (!/^\d+$/.test(value)) return;
@@ -62,7 +62,7 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     setShares(clamp(parsed, minShares, maxShares));
   };
 
-  /** Manual total input → derive shares (NO fractions) */
+  // Manual total input → derive shares (NO fractions)
   const setSharesFromTotal = (value: string) => {
     // allow typing freely
     if (!/^\d*\.?\d*$/.test(value)) return;
@@ -74,15 +74,15 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
     if (!Number.isFinite(total)) return;
 
     const calculatedShares = Math.floor(total / pricePerShare);
-    setShares(clamp(calculatedShares, minShares, maxShares));
+    setShares(calculatedShares);
   };
 
-  /** Quick option select */
+  // Quick option select
   const selectQuickOption = (value: number) => {
     setShares(clamp(value, minShares, maxShares));
   };
 
-  /** Submit */
+  // Submit
   const submitTradeRequest = async () => {
     try {
       await createTradeRequest({
@@ -97,12 +97,10 @@ const useBuyModal = ({ stock, tradeType, onClose }) => {
           paymentStatus: "unpaid",
         },
       }).unwrap();
-
       toast({
         title: t("request_sent"),
         description: `${t("request_buy")} ${t("shares_sent_success")}`,
       });
-
       onClose();
       setShares(minShares);
       setTotalInput("");
