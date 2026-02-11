@@ -14,37 +14,22 @@ import {
   useGetOneApplicantQuery,
   useUpdateApplicantProfileMutation,
 } from "@/store/api/applicantApi";
-import { useGetInvestorPurchaseRequestsQuery } from "@/store/api/stocksApi";
 
 import { compressImage } from "@/lib/utils";
 import { UserData } from "@/interfaces/UserData";
+import COUNTRIES from "@/data/countries.json";
 
 export const useProfile = () => {
-  // =========================
-  // Core
-  // =========================
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
 
   const [user, setUser] = useState<UserData>();
-
-  const [isEditing, setIsEditing] = useState(false);
   const [openVerify, setOpenVerify] = useState(false);
 
-  // Verification / files
-  const [idPhoto, setIdPhoto] = useState<File | null>(null);
-  const [livePhoto, setLivePhoto] = useState<File | null>(null);
-  const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
-
-  const [email, setEmail] = useState("");
-  const [idNumber, setIdNumber] = useState("");
-  const [passportNumber, setPassportNumber] = useState("");
-  const [passportExpDate, setPassportExpDate] = useState();
-
   // =========================
-  // Resolve role (single source of truth)
+  // Resolve role
   // =========================
   const { resolvedRole, loadingRole, refetchRole } = useResolvedRole();
 
@@ -55,7 +40,7 @@ export const useProfile = () => {
   const profileId = resolvedRole?.profileId;
 
   // =========================
-  // Queries: fetch profile data
+  // Queries
   // =========================
   const {
     data: applicant,
@@ -63,7 +48,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId },
+    { skip: !isApplicant || !profileId }
   );
 
   const {
@@ -72,52 +57,55 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId },
+    { skip: !isInvestor || !profileId }
   );
 
-  // Pick correct user model
+  // Load correct profile
   useEffect(() => {
     if (isInvestor && investor?.data) setUser(investor.data);
     if (isApplicant && applicant?.data) setUser(applicant.data);
   }, [isInvestor, isApplicant, investor?.data, applicant?.data]);
 
   // =========================
-  // Queries: requests (only for investor)
-  // =========================
-  const {
-    data: purchaseRequests,
-    isLoading: loadingRequests,
-    refetch: refetchRequests,
-  } = useGetInvestorPurchaseRequestsQuery(user?._id, {
-    skip: !user?._id || !isInvestor,
-  });
-
-  // =========================
   // Mutations
   // =========================
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
+
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
 
   // =========================
-  // Edit form state (derived from user)
+  // Edit state
   // =========================
   const [editData, setEditData] = useState({
     fullName: "",
     birthDate: "",
     phone: "",
+    countryCode: "SY",
     email: "",
     profileImageFile: null as File | null,
     profilePreview: "",
   });
 
+  // Split E.164 phone when loading user
   useEffect(() => {
     if (!user) return;
+
+    let detectedCountry = COUNTRIES.find((c) =>
+      user.phone?.startsWith(c.dialCode)
+    );
+
+    let localPhone = user.phone || "";
+
+    if (detectedCountry) {
+      localPhone = user.phone.replace(detectedCountry.dialCode, "");
+    }
 
     setEditData({
       fullName: user.fullName ?? "",
       birthDate: user.birthDate ?? "",
-      phone: user.phone ?? "",
+      phone: localPhone,
+      countryCode: detectedCountry?.code || user.countryCode || "SY",
       email: user.email ?? "",
       profileImageFile: null,
       profilePreview: user.profileImage ? String(user.profileImage) : "",
@@ -125,17 +113,18 @@ export const useProfile = () => {
   }, [user]);
 
   // =========================
-  // Auth redirect
+  // Redirect if not auth
   // =========================
   useEffect(() => {
     if (!isAuthenticated) navigate("/auth");
   }, [isAuthenticated, navigate]);
 
   // =========================
-  // Handlers
+  // Image handler
   // =========================
   const handleProfileImageChange = (file?: File) => {
     if (!file) return;
+
     setEditData((prev) => ({
       ...prev,
       profileImageFile: file,
@@ -143,32 +132,54 @@ export const useProfile = () => {
     }));
   };
 
+  // =========================
+  // SAVE PROFILE
+  // =========================
   const handleSaveProfile = async () => {
     if (!user) return;
 
     try {
       const formData = new FormData();
 
+      // Basic fields
       if (editData.fullName !== user.fullName)
         formData.append("fullName", editData.fullName);
+
       if (editData.birthDate) formData.append("birthDate", editData.birthDate);
-      if (editData.profileImageFile)
-        formData.append("profileImage", editData.profileImageFile);
-      if (editData.phone) formData.append("phone", editData.phone);
+
       if (editData.email) formData.append("email", editData.email);
 
-      // keep your backend behavior
-      if (role) formData.append("role", role);
+      if (editData.profileImageFile)
+        formData.append("profileImage", editData.profileImageFile);
 
-      await updateInvestor({ id: user.authUserId, data: formData }).unwrap();
+      // 🔥 Recombine E.164 phone
+      if (editData.phone && editData.countryCode) {
+        const selectedCountry = COUNTRIES.find(
+          (c) => c.code === editData.countryCode
+        );
+
+        if (selectedCountry) {
+          const fullPhone = `${selectedCountry.dialCode}${editData.phone}`;
+
+          formData.append("phone", fullPhone);
+          formData.append("countryCode", editData.countryCode);
+        }
+      }
+
+      if (role) formData.append("role", role);
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+      await updateInvestor({
+        id: user.authUserId,
+        data: formData,
+      }).unwrap();
 
       if (isApplicant) refetchApplicant();
       else refetchInvestor();
 
-      setIsEditing(false);
       toast({
         title: t("update_success"),
-        variant: "default",
         description: t("info_updated"),
       });
     } catch (error) {
@@ -177,10 +188,20 @@ export const useProfile = () => {
         title: t("update_failed"),
         variant: "destructive",
         description: t("error_while_updating"),
-        duration: 3000,
       });
     }
   };
+
+  // =========================
+  // VERIFY SUBMIT
+  // =========================
+  const [idPhoto, setIdPhoto] = useState<File | null>(null);
+  const [livePhoto, setLivePhoto] = useState<File | null>(null);
+  const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
+  const [email, setEmail] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [passportNumber, setPassportNumber] = useState("");
+  const [passportExpDate, setPassportExpDate] = useState<any>();
 
   const handleSubmit = async () => {
     if (!user) return;
@@ -190,33 +211,36 @@ export const useProfile = () => {
       !livePhoto ||
       (!idNumber && (!passportNumber || !passportExpDate))
     ) {
-      toast({ title: t("fill_all"), variant: "destructive", duration: 3000 });
+      toast({
+        title: t("fill_all"),
+        variant: "destructive",
+      });
       return;
     }
 
     try {
       const formData = new FormData();
 
-      const compressedIdPhoto = await compressImage(idPhoto);
-      const compressedLivePhoto = await compressImage(livePhoto);
+      const compressedId = await compressImage(idPhoto);
+      const compressedLive = await compressImage(livePhoto);
 
-      formData.append("idPhoto", compressedIdPhoto);
-      formData.append("livePhoto", compressedLivePhoto);
-
+      formData.append("idPhoto", compressedId);
+      formData.append("livePhoto", compressedLive);
       formData.append("passportNumber", passportNumber);
-      if (passportNumber?.trim()?.length > 0)
-        formData.append("passportExpDate", passportExpDate);
-
+      formData.append("passportExpDate", passportExpDate);
       formData.append("email", email);
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
 
-      await submit({ id: user.authUserId, data: formData }).unwrap();
+      await submit({
+        id: user.authUserId,
+        data: formData,
+      }).unwrap();
 
       handleClose();
+
       toast({
         title: t("request_sent"),
-        variant: "default",
         description: t("profile_verify_request"),
       });
     } catch (error) {
@@ -224,8 +248,6 @@ export const useProfile = () => {
       toast({
         title: t("request_failed"),
         variant: "destructive",
-        description: t("error_while_saving"),
-        duration: 3000,
       });
     }
   };
@@ -240,7 +262,7 @@ export const useProfile = () => {
   };
 
   // =========================
-  // Animations (kept)
+  // Animations
   // =========================
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -252,40 +274,26 @@ export const useProfile = () => {
     visible: { opacity: 1, y: 0 },
   };
 
-  // =========================
-  // Return
-  // =========================
   return {
-    // loading
     loadingUser: loadingRole || isLoadingApplicant || isLoadingInvestor,
 
-    // data
     user,
-    purchaseRequests,
 
-    // ui state
-    isEditing,
-    setIsEditing,
-    openVerify,
-    setOpenVerify,
-
-    // form state
     editData,
     setEditData,
 
-    // handlers
     handleProfileImageChange,
     handleSaveProfile,
+
+    openVerify,
+    setOpenVerify,
+
     handleSubmit,
     handleClose,
 
-    // statuses
     isSaving,
     isSubmitting,
-    loadingRequests,
-    refetchRequests,
 
-    // verify inputs
     idPhoto,
     setIdPhoto,
     livePhoto,
@@ -301,7 +309,6 @@ export const useProfile = () => {
     email,
     setEmail,
 
-    // role (single source of truth)
     role,
     refetchRole,
     isInvestor,

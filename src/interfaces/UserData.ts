@@ -3,6 +3,7 @@ export interface UserData {
   authUserId: string;
   fullName: string;
   phone: string;
+  countryCode: string;
   email?: string;
   ownedShares?: [OwnedShares];
   active: boolean;

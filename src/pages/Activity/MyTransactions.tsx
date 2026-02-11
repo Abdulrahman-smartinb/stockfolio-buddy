@@ -11,6 +11,7 @@ import { cn } from "@/lib/utils";
 import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { useTranslation } from "react-i18next";
 import { Empty, Skeleton } from "@/components/helpers";
+import { formatCurrency, formatNumber } from "@/hooks/helpers";
 
 const PRIMARY = "#042623";
 
@@ -24,40 +25,50 @@ const MyTransactions = () => {
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
-      <main className="container mx-auto px-4 py-5 space-y-4">
+      <main className="container mx-auto px-4 md:px-6 py-5 md:py-8 space-y-4 md:space-y-6">
         {/* ===== Summary ===== */}
         <div
-          className="rounded-2xl p-4 border shadow-sm"
+          className="rounded-2xl md:rounded-3xl p-4 md:p-6 border shadow-sm md:shadow-md"
           style={{ borderColor: `${PRIMARY}1a`, background: `${PRIMARY}08` }}
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-xs md:text-sm text-muted-foreground">
                 {t("transactions.history")}
               </p>
-              <p className="text-lg font-bold text-[#042623]">
-                {shareTransactions.length}
+              <p className="text-lg md:text-2xl font-bold text-[#042623] font-google tabular-nums">
+                {formatNumber(shareTransactions.length)}
               </p>
             </div>
 
             <button
               onClick={refetch.transactions}
               className="
-                h-8 w-8 rounded-lg
+                h-8 w-8 md:h-9 md:w-9
+                rounded-lg md:rounded-xl
                 flex items-center justify-center
                 bg-[#042623]/5 text-[#042623]
                 hover:bg-[#042623]/10 transition
               "
               aria-label={t("app.refresh")}
             >
-              <RefreshCcw className="w-4 h-4" />
+              <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
         </div>
 
         {/* ===== Header ===== */}
-        <div className="flex items-center gap-2 text-sm font-semibold text-[#042623]">
-          <ListOrdered className="w-4 h-4" />
+        <div className="flex items-center gap-2 text-sm md:text-lg font-semibold md:font-bold text-[#042623]">
+          <span
+            className="
+              w-8 h-8 md:w-10 md:h-10
+              rounded-lg md:rounded-xl
+              bg-[#042623]/5
+              flex items-center justify-center
+            "
+          >
+            <ListOrdered className="w-4 h-4 md:w-5 md:h-5 text-[#042623]" />
+          </span>
           {t("transactions.history")}
         </div>
 
@@ -67,7 +78,7 @@ const MyTransactions = () => {
         ) : shareTransactions.length === 0 ? (
           <Empty text={t("activity.no_records")} />
         ) : (
-          <div className="space-y-3">
+          <div className="space-y-3 md:space-y-4">
             {shareTransactions.map((tx) => {
               const isBuy = tx.side === "buy";
               const total = tx.quantity * tx.pricePerShare;
@@ -76,46 +87,57 @@ const MyTransactions = () => {
                 <div
                   key={tx._id}
                   className="
-                    rounded-xl p-4 border bg-white shadow-sm
-                    transition active:bg-[#042623]/5
+                    rounded-xl md:rounded-2xl
+                    p-4 md:p-6
+                    border bg-white shadow-sm md:shadow-md
+                    hover:shadow-lg
+                    transition
                   "
                   style={{ borderColor: `${PRIMARY}1a` }}
                 >
                   <div className="flex items-start justify-between gap-3">
-                    {/* Left */}
+                    {/* ===== Left ===== */}
                     <div className="flex items-center gap-3 min-w-0">
                       <div
                         className={cn(
-                          "h-8 w-8 rounded-lg flex items-center justify-center",
+                          "h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl flex items-center justify-center",
                           isBuy
                             ? "bg-emerald-500/15 text-emerald-700"
                             : "bg-rose-500/15 text-rose-700"
                         )}
                       >
                         {isBuy ? (
-                          <ArrowDownLeft className="w-4 h-4" />
+                          <ArrowDownLeft className="w-4 h-4 md:w-5 md:h-5" />
                         ) : (
-                          <ArrowUpRight className="w-4 h-4" />
+                          <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
                         )}
                       </div>
 
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[#042623] truncate">
+                        <p className="text-sm md:text-base font-semibold md:font-bold text-[#042623] truncate">
                           {t(`activity.${isBuy ? "buy" : "sell"}`)} ·{" "}
-                          {tx.quantity} {t("activity.shares")}
+                          <span className="font-google tabular-nums">
+                            {formatNumber(tx.quantity)}
+                          </span>{" "}
+                          {t("activity.shares")}
                         </p>
-                        <p className="text-[11px] text-muted-foreground">
-                          {t("shares.price_per_share")} · ${tx.pricePerShare}
+
+                        <p className="text-xs md:text-sm text-muted-foreground">
+                          {t("shares.price_per_share")} ·{" "}
+                          <span className="font-google tabular-nums">
+                            {formatCurrency(tx.pricePerShare)}
+                          </span>
                         </p>
                       </div>
                     </div>
 
-                    {/* Right */}
+                    {/* ===== Right ===== */}
                     <div className="text-right shrink-0">
-                      <p className="text-sm font-semibold text-[#042623] tabular-nums">
-                        ${total.toFixed(2)}
+                      <p className="text-sm md:text-base font-semibold md:font-bold text-[#042623] font-google tabular-nums">
+                        {formatCurrency(total)}
                       </p>
-                      <p className="text-[11px] text-muted-foreground">
+
+                      <p className="text-xs md:text-sm text-muted-foreground font-google tabular-nums">
                         {new Date(tx.createdAt).toLocaleDateString()}
                       </p>
                     </div>

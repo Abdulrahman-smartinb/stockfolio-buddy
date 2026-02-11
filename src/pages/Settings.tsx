@@ -54,7 +54,7 @@ const Settings = () => {
                 ) : (
                   <span className="font-tajawal pt-0.5">العربية</span>
                 )}
-
+                <RefreshCcw className="w-4 h-4 mx-2" />
                 {i18n.language === "en" ? (
                   <span className="font-tajawal pt-0.5"> العربية </span>
                 ) : (

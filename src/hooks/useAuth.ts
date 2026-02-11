@@ -169,7 +169,8 @@ export const useAuth = () => {
     if (!validate()) return;
 
     const fullPhone = buildE164Phone(formData.dialCode, formData.phone);
-
+    console.log("fullPhone", fullPhone);
+    console.log("pinCode", pinCode);
     try {
       const response =
         mode === "login"

@@ -50,7 +50,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           {/* Name */}
           <div className="min-w-0">
             {symbol && (
-              <p className="text-xs md:text-xl  font-bold text-foreground tracking-wide">
+              <p className="text-base md:text-xl font-bold font-google text-foreground tracking-wide">
                 {symbol}
               </p>
             )}
@@ -65,7 +65,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
         <div className="flex flex-col items-center  shrink-0">
           {/* Price */}
           <p
-            className="text-xl font-semi-bold tracking-tight text-foreground"
+            className="text-2xl font-semi-bold tracking-tight text-foreground"
             dir="ltr"
           >
             {price != null ? formatCurrency(price) : "—"}
