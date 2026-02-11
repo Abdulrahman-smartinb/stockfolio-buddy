@@ -216,6 +216,8 @@
       "profile_approve_msg": "Profile verification success",
       "shares_request_updated": "Trade request update",
       "shares_request_update_msg": "There's an update about your trade request",
+      "shares_request_confirmed": "Trading request confirmed",
+      "shares_request_confirm_msg": "Your trading request has been confirmed by the admins",
       "trade_confirmed": "Trade request confirmed"
     }
   },

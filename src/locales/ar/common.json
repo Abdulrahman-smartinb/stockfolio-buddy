@@ -214,6 +214,8 @@
       "profile_approve_msg": "تم التحقق من الملف الشخصي بنجاح",
       "shares_request_updated": "تحديث طلب التداول",
       "shares_request_update_msg": "هناك تحديث بخصوص طلب التداول الخاص بك",
+      "shares_request_confirmed": "تم تأكيد طلب التداول",
+      "shares_request_confirm_msg": "تم تأكيد طلب التداول الخاص بك من قبل المسؤولين",
       "trade_confirmed": "تم تأكيد طلب التداول"
     }
   },
