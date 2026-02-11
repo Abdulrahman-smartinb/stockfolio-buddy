@@ -1,5 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, User, Eye, EyeOff, Redo2, Undo2 } from "lucide-react";
+import {
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  Redo2,
+  Undo2,
+  RefreshCcw,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -35,6 +43,8 @@ const Auth = () => {
     setOpenTerms,
     approveTerms,
     setApproveTerms,
+    termsError,
+    setTermsError,
   } = useAuth();
 
   return (
@@ -128,7 +138,18 @@ const Auth = () => {
             <AnimatePresence mode="wait">
               <motion.form
                 key={mode}
-                onSubmit={/*isPinRequired ? verifyPin :*/ handleSubmit}
+                onSubmit={(e) => {
+                  if (mode === "register" && !approveTerms) {
+                    e.preventDefault();
+                    setTermsError(true);
+
+                    // remove error after animation
+                    setTimeout(() => setTermsError(false), 600);
+                    return;
+                  }
+
+                  handleSubmit(e);
+                }}
                 className="space-y-4"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -222,7 +243,7 @@ const Auth = () => {
                   type="submit"
                   size="lg"
                   className="w-full"
-                  disabled={isLoading || (mode === "register" && !approveTerms)}
+                  disabled={isLoading}
                   style={{ backgroundColor: PRIMARY }}
                 >
                   {isLoading ? (
@@ -244,40 +265,55 @@ const Auth = () => {
           </div>
 
           {mode === "register" && (
-            <div className="mt-4">
-              <div className="flex items-start gap-2">
-                {/* Checkbox */}
+            <motion.div
+              animate={termsError ? { x: [-3, 3, -2, 2, 0] } : { x: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className={cn(
+                "mt-4 rounded-xl p-3 border transition-colors",
+                "relative",
+                termsError
+                  ? "bg-destructive/10 border-destructive"
+                  : "bg-muted/30 border-border/40"
+              )}
+            >
+              {/* Left accent bar */}
+              {termsError && (
+                <span className="absolute inset-y-2 left-1 w-1 rounded-full bg-destructive" />
+              )}
+
+              <div className="flex items-start gap-3 ps-2">
                 <input
                   type="checkbox"
                   id="approveTerms"
                   checked={approveTerms}
-                  onChange={(e) => setApproveTerms(e.target.checked)}
+                  onChange={(e) => {
+                    setApproveTerms(e.target.checked);
+                    setTermsError(false);
+                  }}
                   className="mt-[3px] h-4 w-4 accent-primary"
                 />
 
-                {/* Text */}
                 <label
                   htmlFor="approveTerms"
-                  className="text-[12px] text-muted-foreground leading-5"
+                  className="text-[12px] leading-5 text-foreground/80"
                 >
                   <span>{t("auth.accept_terms")}</span>{" "}
                   <button
                     type="button"
                     onClick={() => setOpenTerms(true)}
-                    className="underline font-medium hover:text-foreground transition"
+                    className="underline font-medium text-foreground hover:opacity-80 transition"
                   >
                     {t("auth.terms_link")}
                   </button>
                 </label>
               </div>
 
-              {/* Helper text */}
-              {!approveTerms && (
-                <p className="mt-1 ms-6 text-[11px] text-muted-foreground">
+              {termsError && (
+                <p className="mt-1 ps-7 text-[11px] font-medium text-destructive">
                   {t("auth.terms_required")}
                 </p>
               )}
-            </div>
+            </motion.div>
           )}
         </motion.div>
         <PlatformTermsModal
@@ -368,20 +404,26 @@ const LanguageSwitch = () => {
     <button
       onClick={() => i18n.changeLanguage(isAr ? "en" : "ar")}
       className="
-        flex items-center gap-2
-        text-xs font-semibold
-        px-3 py-1.5 rounded-full
-        border border-border/60
-        bg-background/70 backdrop-blur
-        hover:bg-muted/40
-        transition
-      "
-      aria-label="Change language"
+          flex items-center gap-1
+          px-3 py-1.5 rounded-full
+          border border-border
+          bg-[#fafafa]
+          text-xs font-semibold text-[#042623]
+          transition
+          active:scale-[0.97]
+        "
     >
-      <span>{isAr ? "العربية" : "English"}</span>
-      {isAr ? <Undo2 /> : <Redo2 />}
-
-      <span className="opacity-80">{isAr ? "English" : "العربية"}</span>
+      {isAr ? (
+        <span className="font-tajawal pt-0.5">العربية</span>
+      ) : (
+        <span className="font-google">English</span>
+      )}
+      <RefreshCcw className="w-4 h-4" />
+      {isAr ? (
+        <span className="font-google"> English </span>
+      ) : (
+        <span className="font-tajawal pt-0.5"> العربية </span>
+      )}
     </button>
   );
 };

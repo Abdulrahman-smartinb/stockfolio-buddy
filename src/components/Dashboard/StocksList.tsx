@@ -11,7 +11,7 @@ const StockListSkeleton = () => {
           key={i}
           className={cn(
             "rounded-2xl border border-border/60 bg-background/60 backdrop-blur-xl",
-            "shadow-sm px-4 py-4 animate-pulse",
+            "shadow-sm px-4 py-4 animate-pulse"
           )}
         >
           <div className="flex items-center justify-between gap-4">
@@ -55,7 +55,13 @@ const StocksList = ({ stocks = [], isLoading, t, lang, onAction }) => {
     return <EmptyState t={t} />;
 
   return (
-    <div className="space-y-3">
+    <div
+      className="
+        grid gap-4
+        grid-cols-1
+        md:grid-cols-2
+      "
+    >
       {stocks.map((stock, index) => (
         <StockListItem
           t={t}

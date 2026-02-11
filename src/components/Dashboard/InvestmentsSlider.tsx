@@ -21,7 +21,7 @@ const SummaryCard = ({ t, summary }: any) => {
   return (
     <div
       className={cn(
-        "snap-start shrink-0 w-full sm:w-[420px]",
+        "snap-start shrink-0 w-full sm:w-[400px]",
         "rounded-3xl p-6",
         "bg-gradient-to-br from-[#072522] via-[#0a2f2c] to-[#0f3a36]",
         "text-muted shadow-lg"
@@ -47,10 +47,10 @@ const SummaryCard = ({ t, summary }: any) => {
 
       <div className="flex flex-wrap gap-3">
         <div className="flex-1 min-w-[140px] rounded-xl bg-muted/10 px-4 py-3">
-          <p className="text-xs text-muted/70 mb-1">
+          <p className="text-xs md:text-xl text-muted/70 mb-1">
             {t("portfolio.invested")}
           </p>
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold md:text-2xl">
             {formatCurrency(summary?.totalInvested)}
           </p>
         </div>
@@ -63,8 +63,10 @@ const SummaryCard = ({ t, summary }: any) => {
               : "bg-rose-500/15 text-rose-300"
           )}
         >
-          <p className="text-xs mb-1 opacity-80">{t("portfolio.pnl")}</p>
-          <p className="text-lg font-semibold">
+          <p className="text-xs md:text-xl mb-1 opacity-80">
+            {t("portfolio.pnl")}
+          </p>
+          <p className="text-lg  md:text-xl font-semibold">
             {formatCurrency(summary?.pnl)}
           </p>
         </div>
@@ -88,11 +90,12 @@ const CompanyCard = ({ row, t, isRtl }: any) => {
   return (
     <div
       className={cn(
-        "snap-start shrink-0 w-full sm:w-[420px]",
+        "snap-start shrink-0 w-full sm:w-[400px]",
         "rounded-3xl p-6 text-muted shadow-lg",
         "bg-gradient-to-br from-[#072522] via-[#0a2f2c] to-[#0f3a36]"
       )}
     >
+      {/* Header */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="h-12 w-12 rounded-2xl bg-muted/10 ring-1 ring-muted/10 overflow-hidden flex items-center justify-center shrink-0">
@@ -103,18 +106,18 @@ const CompanyCard = ({ row, t, isRtl }: any) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <span className="text-sm font-extrabold text-muted/80">
+              <span className="text-sm lg:text-base font-extrabold text-muted/80">
                 {symbol.slice(0, 2)}
               </span>
             )}
           </div>
 
           <div className="min-w-0">
-            <p className="text-xs font-extrabold text-muted/85 tracking-wide">
-              {symbol}
+            <p className="text-sm md:text-base lg:text-lg font-semibold text-muted truncate">
+              {name} / {symbol}
             </p>
-            <p className="text-sm font-medium text-muted/80 truncate">{name}</p>
-            <p className="text-xs text-muted/65 mt-1">
+
+            <p className="text-xs md:text-sm lg:text-base text-muted/65 mt-1">
               {t("portfolio.shares")}:{" "}
               <span className="font-semibold text-muted">
                 {formatCompact(row?.shares)}
@@ -126,6 +129,7 @@ const CompanyCard = ({ row, t, isRtl }: any) => {
 
       <div className="my-5 h-px bg-muted/10" />
 
+      {/* Metrics */}
       <div className="grid grid-cols-3 gap-3">
         <Metric label={t("portfolio.avg_price")} value={row?.avgPrice} />
         <Metric
@@ -135,17 +139,24 @@ const CompanyCard = ({ row, t, isRtl }: any) => {
         <Metric label={t("portfolio.value")} value={row?.value} />
       </div>
 
+      {/* Footer */}
       <div className="mt-5 flex items-center justify-between">
         <div>
-          <p className="text-[11px] text-muted/60">{t("portfolio.invested")}</p>
-          <p className="text-sm font-bold">{formatCurrency(row?.invested)}</p>
+          <p className="text-[11px] md:text-sm text-muted/60">
+            {t("portfolio.invested")}
+          </p>
+          <p className="text-sm md:text-lg lg:text-xl font-bold">
+            {formatCurrency(row?.invested)}
+          </p>
         </div>
 
         <div className="text-right">
-          <p className="text-[11px] text-muted/60">{t("portfolio.pnl")}</p>
+          <p className="text-[11px] md:text-sm text-muted/60">
+            {t("portfolio.pnl")}
+          </p>
           <p
             className={cn(
-              "text-sm font-extrabold",
+              "text-sm md:text-lg lg:text-xl font-extrabold",
               positive ? "text-emerald-200" : "text-rose-200"
             )}
           >
@@ -186,7 +197,11 @@ export default function InvestmentsSlider({ t, portfolio, isRtl }: any) {
       <div
         ref={scrollerRef}
         onScroll={updateProgress}
-        className="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hidden"
+        className="
+        flex gap-4
+        overflow-x-auto snap-x snap-mandatory scrollbar-hidden
+        md:my-6
+      "
       >
         <SummaryCard t={t} summary={summary} />
         {assets.map((row: any) => (

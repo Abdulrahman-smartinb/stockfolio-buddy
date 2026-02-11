@@ -40,10 +40,11 @@ export const useAuth = () => {
   const [openTerms, setOpenTerms] = useState(false);
   const [approveTerms, setApproveTerms] = useState(false);
   const [pinCode, setPinCode] = useState("");
+  const [termsError, setTermsError] = useState(false);
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null,
+    null
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -57,7 +58,7 @@ export const useAuth = () => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(Cookies.get("authToken")),
+    Boolean(Cookies.get("authToken"))
   );
 
   const profile = useMemo(() => {
@@ -77,7 +78,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country],
+    [formData.country]
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -280,5 +281,7 @@ export const useAuth = () => {
     setOpenTerms,
     approveTerms,
     setApproveTerms,
+    termsError,
+    setTermsError,
   };
 };
