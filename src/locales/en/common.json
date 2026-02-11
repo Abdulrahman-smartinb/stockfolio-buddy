@@ -61,7 +61,14 @@
     "approved": "Verified",
     "pending": "Pending",
     "investor_hint": "Keep your info updated for smoother transactions",
-    "applicant_hint": "Complete verification to unlock investing features"
+    "applicant_hint": "Complete verification to unlock investing features",
+    "update_success": "Update success",
+    "info_updated": "Profile information update success",
+    "update_failed": "Update failed",
+    "error_while_updating": "Error occurred while updating profile",
+    "request_sent": "Request sent",
+    "profile_verify_request": "Profile verification request sent",
+    "request_failed": "Request failed"
   },
 
   "auth": {

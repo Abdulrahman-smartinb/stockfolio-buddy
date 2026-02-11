@@ -48,7 +48,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId }
+    { skip: !isApplicant || !profileId },
   );
 
   const {
@@ -57,7 +57,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId }
+    { skip: !isInvestor || !profileId },
   );
 
   // Load correct profile
@@ -92,7 +92,7 @@ export const useProfile = () => {
     if (!user) return;
 
     let detectedCountry = COUNTRIES.find((c) =>
-      user.phone?.startsWith(c.dialCode)
+      user.phone?.startsWith(c.dialCode),
     );
 
     let localPhone = user.phone || "";
@@ -155,7 +155,7 @@ export const useProfile = () => {
       // 🔥 Recombine E.164 phone
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
-          (c) => c.code === editData.countryCode
+          (c) => c.code === editData.countryCode,
         );
 
         if (selectedCountry) {
@@ -179,15 +179,15 @@ export const useProfile = () => {
       else refetchInvestor();
 
       toast({
-        title: t("update_success"),
-        description: t("info_updated"),
+        title: t("profile.update_success"),
+        description: t("profile.info_updated"),
       });
     } catch (error) {
       console.error(error);
       toast({
-        title: t("update_failed"),
+        title: t("profile.update_failed"),
         variant: "destructive",
-        description: t("error_while_updating"),
+        description: t("profile.error_while_updating"),
       });
     }
   };
@@ -212,7 +212,7 @@ export const useProfile = () => {
       (!idNumber && (!passportNumber || !passportExpDate))
     ) {
       toast({
-        title: t("fill_all"),
+        title: t("auth.errors.fill_all"),
         variant: "destructive",
       });
       return;
@@ -240,13 +240,13 @@ export const useProfile = () => {
       handleClose();
 
       toast({
-        title: t("request_sent"),
-        description: t("profile_verify_request"),
+        title: t("profile.request_sent"),
+        description: t("profile.profile_verify_request"),
       });
     } catch (error) {
       console.error(submitError || error);
       toast({
-        title: t("request_failed"),
+        title: t("profile.request_failed"),
         variant: "destructive",
       });
     }
