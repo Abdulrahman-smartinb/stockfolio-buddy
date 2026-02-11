@@ -50,12 +50,12 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           {/* Name */}
           <div className="min-w-0">
             {symbol && (
-              <p className="text-xs font-bold text-foreground tracking-wide">
+              <p className="text-xs md:text-xl  font-bold text-foreground tracking-wide">
                 {symbol}
               </p>
             )}
 
-            <p className="text-sm font-semibold text-muted-foreground truncate">
+            <p className="text-sm md:text-xl font-semibold text-muted-foreground truncate">
               {lang === "ar" && stock?.nameAr ? stock.nameAr : name}
             </p>
           </div>

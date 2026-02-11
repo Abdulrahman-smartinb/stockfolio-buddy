@@ -40,20 +40,26 @@ const Settings = () => {
                   i18n.changeLanguage(i18n.language === "en" ? "ar" : "en")
                 }
                 className="
-          flex items-center gap-2
+          flex items-center gap-1
           px-3 py-1.5 rounded-full
           border border-border
-          bg-muted/50 hover:bg-muted
-          text-sm font-semibold text-[#042623]
+          bg-[#fafafa]
+          text-xs font-semibold text-[#042623]
           transition
           active:scale-[0.97]
         "
               >
-                <span>{i18n.language === "en" ? "English" : "العربية"}</span>
-                <RefreshCcw />
-                <span className="opacity-60">
-                  {i18n.language === "en" ? "العربية" : "English"}
-                </span>
+                {i18n.language === "en" ? (
+                  <span className="font-google">English</span>
+                ) : (
+                  <span className="font-tajawal pt-0.5">العربية</span>
+                )}
+
+                {i18n.language === "en" ? (
+                  <span className="font-tajawal pt-0.5"> العربية </span>
+                ) : (
+                  <span className="font-google"> English </span>
+                )}
               </button>
             }
           />

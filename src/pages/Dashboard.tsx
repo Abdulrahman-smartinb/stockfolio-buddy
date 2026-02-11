@@ -11,7 +11,6 @@ import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { useProfile } from "@/hooks/useProfile";
 import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
-import { PlatformTermsModal } from "@/components/PlatformTermsModal";
 import { cn } from "@/lib/utils";
 
 const Dashboard = () => {
@@ -39,13 +38,9 @@ const Dashboard = () => {
   const {
     openVerify,
     setOpenVerify,
-
     handleSubmit,
     handleClose,
-
     isSubmitting,
-
-    // verify inputs
     idPhoto,
     setIdPhoto,
     livePhoto,
@@ -66,22 +61,33 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
-      <main className="container mx-auto p-4 ">
+      {/* ================= MAIN ================= */}
+      <main
+        className="
+          container mx-auto p-4
+          md:px-6
+          lg:px-8
+          xl:max-w-8xl
+        "
+      >
+        {/* ================= Portfolio Slider ================= */}
         <InvestmentsSlider
           t={t}
           isRtl={isRtl}
           portfolio={portfolio}
           loading={portfolioLoading}
         />
-        {/* Search */}
+
+        {/* ================= Search + Refresh ================= */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           className="mb-6"
         >
-          <div className="flex items-center justify-between">
-            <div className="relative w-full max-w-md">
+          <div className="flex items-center gap-3 md:gap-4">
+            {/* Search */}
+            <div className="relative w-full max-w-md md:max-w-lg lg:max-w-xl">
               <Search
                 className={cn(
                   "absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground",
@@ -101,35 +107,44 @@ const Dashboard = () => {
               />
             </div>
 
+            {/* Refresh */}
             <Button
               disabled={isLoading}
-              className="h-12 w-12 md:w-32 ms-2 rounded-full background-pr"
               onClick={refetch}
+              className="
+                h-12 w-12 md:w-32
+                rounded-full
+                shrink-0
+              "
             >
-              {/* Mobile: Icon */}
+              {/* Mobile */}
               {!isLoading && <RefreshCw className="w-5 h-5 md:hidden" />}
 
-              {/* Desktop: Text */}
+              {/* Desktop */}
               <span className="hidden md:inline">{t("app.refresh")}</span>
 
               {isLoading && (
-                <span className="flex items-center gap-2">
-                  <motion.div
-                    animate={{ rotate: 360 }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 1,
-                      ease: "linear",
-                    }}
-                    className="w-4 h-4 border-2 border-success-foreground/30 border-t-success-foreground rounded-full"
-                  />
-                </span>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1,
+                    ease: "linear",
+                  }}
+                  className="
+                    w-4 h-4
+                    border-2
+                    border-success-foreground/30
+                    border-t-success-foreground
+                    rounded-full
+                  "
+                />
               )}
             </Button>
           </div>
         </motion.div>
 
-        {/* Stocks Grid */}
+        {/* ================= Stocks ================= */}
         <StocksList
           stocks={stocks}
           isLoading={isLoading}
@@ -139,6 +154,7 @@ const Dashboard = () => {
         />
       </main>
 
+      {/* ================= Modals ================= */}
       <BuyModal
         stock={selectedStock}
         isOpen={isBuyModalOpen}
@@ -180,8 +196,8 @@ const Dashboard = () => {
         email={email}
         setEmail={setEmail}
       />
+
       <Footer />
-      {/* <PlatformTermsModal isOpen={true} /> */}
     </div>
   );
 };
