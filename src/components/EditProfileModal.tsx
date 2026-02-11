@@ -35,10 +35,41 @@ export const EditProfileModal = ({
   const isRtl = i18n.language === "ar";
 
   const previewSrc = useMemo(() => {
-    if (!editData?.profilePreview) return avatarPreview;
-    return `${base_url}/Investor/${editData.profilePreview}`;
-  }, [editData?.profilePreview]);
+    const value = editData?.profilePreview;
 
+    // 1️⃣ No image → fallback avatar
+    if (!value) return avatarPreview;
+
+    // 2️⃣ If it's a blob (new uploaded file)
+    if (value.startsWith("blob:")) {
+      return value;
+    }
+
+    // 3️⃣ If backend already returns full URL
+    if (value.startsWith("http")) {
+      return value;
+    }
+
+    // 4️⃣ Otherwise assume it's a filename from server
+    return `${base_url}/Investor/${value}`;
+  }, [editData?.profilePreview, avatarPreview]);
+
+  const handleClose = () => {
+    const value = editData?.profilePreview;
+
+    // If current preview is a blob → revoke it
+    if (value?.startsWith("blob:")) {
+      URL.revokeObjectURL(value);
+    }
+
+    // Reset preview back to original image (from server)
+    setEditData((prev: any) => ({
+      ...prev,
+      profilePreview: prev.originalProfileImage || null,
+    }));
+
+    onClose();
+  };
   return (
     <AnimatePresence>
       {isOpen && (
@@ -177,7 +208,7 @@ export const EditProfileModal = ({
               <Button
                 variant="outline"
                 className="flex-1 h-11 rounded-2xl"
-                onClick={onClose}
+                onClick={handleClose}
               >
                 {t("app.cancel")}
               </Button>

@@ -38,7 +38,7 @@ export const useProfile = () => {
   const role = resolvedRole?.role;
   const reviewStatus = resolvedRole?.reviewStatus;
   const profileId = resolvedRole?.profileId;
-
+  console.log(resolvedRole);
   // =========================
   // Queries
   // =========================

@@ -253,9 +253,11 @@ const Profile = () => {
                     </CardTitle>
 
                     {/* RIGHT SIDE: Status Badge */}
-                    <span className="self-start sm:self-auto px-3 py-1.5 rounded-full text-xs md:text-sm font-semibold bg-primary/10 text-primary ring-1 ring-primary/30">
-                      {t(`profile.${statusKey}`)}
-                    </span>
+                    {isApplicant && (
+                      <span className="self-start sm:self-auto px-3 py-1.5 rounded-full text-xs md:text-sm font-semibold bg-primary/10 text-primary ring-1 ring-primary/30">
+                        {t(`profile.${statusKey}`)}
+                      </span>
+                    )}
                   </CardHeader>
 
                   <CardContent className="grid gap-4 sm:grid-cols-3 ">
