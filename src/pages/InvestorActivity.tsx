@@ -15,7 +15,8 @@ const InvestorActivity = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
 
-  const { preview, isLoading, refetchAll } = useInvestorActivity();
+  const { preview, isLoading, isUploading, refetchAll, handleFileChange } =
+    useInvestorActivity();
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -103,6 +104,28 @@ const InvestorActivity = () => {
                   <StatusBadge status={req.requestStatus} />
                 </div>
 
+                {req.requestStatus === "approved" && (
+                  <div className="cursor-pointer">
+                    <input
+                      type="file"
+                      accept=".pdf,image/*"
+                      onChange={(e) => handleFileChange(e, req)}
+                      disabled={isUploading}
+                      className="hidden"
+                      id={`upload-${req._id}`}
+                    />
+
+                    <label
+                      htmlFor={`upload-${req._id}`}
+                      className={`border bg-warning/80 rounded-sm p-2 text-white transition-colors hover:bg-warning
+                                ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
+                                `}
+                    >
+                      <b>{t("shares.click_upload_receipt")}</b>
+                    </label>
+                  </div>
+                )}
+
                 <Amount>{formatCurrency(amount)}</Amount>
               </Row>
             );
@@ -137,7 +160,7 @@ const SectionCard = ({
         className={cn(
           "flex items-center justify-between p-4 md:p-6",
           onNavigate &&
-            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl"
+            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl",
         )}
       >
         <div className="flex items-center gap-3">
@@ -232,7 +255,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     <span
       className={cn(
         "inline-flex items-center px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold",
-        styles[status] ?? "bg-muted text-muted-foreground"
+        styles[status] ?? "bg-muted text-muted-foreground",
       )}
     >
       {t(`transactions.${status}`)}

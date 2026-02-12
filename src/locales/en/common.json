@@ -158,6 +158,8 @@
     "pending": "Pending",
     "confirmed": "Confirmed",
     "rejected": "Rejected",
+    "approved": "Approved",
+    "check_payment": "Checking payment",
     "rejection_reason": "Rejection reason",
     "pending_payment_doc": "Pending payment document"
   },

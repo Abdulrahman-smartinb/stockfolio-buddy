@@ -157,6 +157,8 @@
     "pending": "قيد المعالجة",
     "confirmed": "تمت الموافقة",
     "rejected": "مرفوض",
+    "approved": "تمت الموافقة",
+    "check_payment": "التحقق من الدفعة",
     "rejection_reason": "سبب الرفض",
     "pending_payment_doc": "بانتظار إيصال الدفع"
   },
