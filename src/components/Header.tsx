@@ -1,8 +1,16 @@
 import { motion } from "framer-motion";
-import { User, Home, Bell, Settings, ArrowLeftRight } from "lucide-react";
+import {
+  User,
+  Home,
+  Bell,
+  Settings,
+  ArrowLeftRight,
+  Globe,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import logo from "../../public/jadwa.png";
+import logoAr from "../assets/images/JadwaAR.png";
+import logoEn from "../assets/images/JadwaEN.png";
 import avatar from "../assets/images/user.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
@@ -30,6 +38,7 @@ export const Header = () => {
   } = useHeader();
 
   const { user } = useProfile();
+  const isRtl = i18n.language === "ar";
   const notifButtonRef = useRef<HTMLButtonElement | null>(null);
   const notifPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -76,22 +85,20 @@ export const Header = () => {
           >
             <div
               className={cn(
-                "w-10 h-10 rounded-xl overflow-hidden",
-                "ring-1 ring-border/60",
-                "bg-muted/30",
-                "flex items-center justify-center",
+                "w-40 h-20 rounded-xl overflow-hidden",
+
                 "transition group-hover:ring-primary/30"
               )}
             >
               <img
-                src={logo}
+                src={isRtl ? logoAr : logoEn}
                 alt="Jadwa Logo"
-                className="w-full h-full object-contain p-1.5"
+                className="w-full h-full object-contain"
               />
             </div>
 
             {/* Brand text */}
-            <div className="leading-none">
+            {/* <div className="leading-none">
               <div className="flex items-baseline ">
                 <span className="text-[15px] sm:text-base font-extrabold tracking-tight text-pr mx-1 uppercase">
                   {t("brand.jadwa")}
@@ -103,27 +110,15 @@ export const Header = () => {
               <div className="text-[11px] text-muted-foreground/80 hidden sm:block">
                 {t("brand.share_market")}
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* CENTER — Navigation */}
           <nav className="hidden md:flex items-center gap-1 rounded-2xl bg-muted/40 p-1">
             {[
-              {
-                path: "/",
-                label: t("nav.home"),
-                icon: Home,
-              },
-              {
-                path: "/profile",
-                label: t("nav.profile"),
-                icon: User,
-              },
-              {
-                path: "/settings",
-                label: t("nav.settings"),
-                icon: Settings,
-              },
+              { path: "/", label: t("nav.home"), icon: Home },
+              { path: "/profile", label: t("nav.profile"), icon: User },
+              { path: "/settings", label: t("nav.settings"), icon: Settings },
               {
                 path: "/investorActivity",
                 label: t("nav.transactions"),
@@ -149,6 +144,23 @@ export const Header = () => {
                 </button>
               );
             })}
+
+            {/* Language Toggle */}
+            <button
+              onClick={() =>
+                i18n.changeLanguage(i18n.language === "en" ? "ar" : "en")
+              }
+              className={cn(
+                "flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
+                "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+              )}
+            >
+              <Globe className="w-4 h-4" />
+
+              <span className="hidden lg:inline pt-0.5">
+                {!isRtl ? "English" : "العربية"}
+              </span>
+            </button>
           </nav>
 
           {/* RIGHT — User Actions */}
@@ -191,7 +203,7 @@ export const Header = () => {
                     ref={notifPanelRef}
                     className={cn(
                       "absolute mt-3 z-50",
-                      i18n.language === "en" ? "right-0" : "left-0",
+                      !isRtl ? "right-0" : "left-0",
                       "rounded-2xl border border-border bg-background shadow-xl",
                       "overflow-hidden",
                       isMobile ? "w-[20rem]" : "w-[24rem]"

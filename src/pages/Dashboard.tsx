@@ -25,6 +25,7 @@ const Dashboard = () => {
     isBuyModalOpen,
     setIsBuyModalOpen,
     verfiyModalOpen,
+    verifyModalMode,
     setVerfiyModalOpen,
     tradeType,
     stocks,
@@ -169,6 +170,7 @@ const Dashboard = () => {
       <CheckVerificationModal
         isOpen={verfiyModalOpen}
         onClose={() => setVerfiyModalOpen(false)}
+        mode={verifyModalMode}
         onVerify={() => {
           setVerfiyModalOpen(false);
           setOpenVerify(true);

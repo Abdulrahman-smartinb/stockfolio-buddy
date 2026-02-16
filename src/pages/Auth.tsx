@@ -113,7 +113,7 @@ const Auth = () => {
             <img
               src={isRtl ? logoAR : logoEN}
               alt="Jadwa Logo"
-              className="w-[73%]"
+              className="w-[63%]"
             />
           </div>
 
@@ -126,7 +126,7 @@ const Auth = () => {
                   onClick={() => setMode(tab)}
                   className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
                     mode === tab
-                      ? "bg-white shadow text-foreground"
+                      ? "bg-[#988662] shadow text-white"
                       : "text-muted-foreground"
                   }`}
                 >
@@ -241,9 +241,8 @@ const Auth = () => {
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-primary hover:bg-[#988662] "
                   disabled={isLoading}
-                  style={{ backgroundColor: PRIMARY }}
                 >
                   {isLoading ? (
                     <motion.div

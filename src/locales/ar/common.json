@@ -210,7 +210,9 @@
     "access_invest_opp": "الوصول إلى فرص الاستثمار",
     "buy_sell_securely": "بيع وشراء الأسهم بشكل آمن",
     "open_camera": "فتح الكاميرا",
-    "retake": "إعادة التصوير"
+    "retake": "إعادة التصوير",
+    "verification_in_progress": "طلب التوثيق قيد المراجعة",
+    "verification_pending_desc": "تم إرسال طلب التوثيق وهو حالياً قيد المراجعة. سيتم إشعارك فور الموافقة عليه."
   },
 
   "notifications": {
@@ -299,6 +301,7 @@
   },
   "common": {
     "close": "إغلاق",
-    "accept": "أوافق"
+    "accept": "أوافق",
+    "no_records": "لا توجد سجلات حتى الآن"
   }
 }

@@ -89,10 +89,10 @@ const Profile = () => {
   }, [user?.profileImage]);
 
   return (
-    <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-background " dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container text-foreground mx-auto px-4 py-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -127,28 +127,38 @@ const Profile = () => {
                       <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" />
                     </button>
 
-                    {!isInvestor && (
+                    {isApplicant && (
                       <button
-                        onClick={() => setOpenVerify(true)}
-                        className="
-                          h-9
-                          px-3 sm:px-4
-                          rounded-xl
-                          ring-1 ring-primary/30
-                          bg-primary/10
-                          text-primary
-                          hover:bg-primary/20
-                          transition
-                          inline-flex
-                          items-center
-                          justify-center
-                          gap-2
-                          whitespace-nowrap
-                        "
+                        onClick={() => {
+                          if (reviewStatus === "draft") {
+                            setOpenVerify(true);
+                          }
+                        }}
+                        disabled={reviewStatus === "pending"}
+                        className={`
+                              h-9
+                              px-3 sm:px-4
+                              rounded-xl
+                              ring-1
+                              transition
+                              inline-flex
+                              items-center
+                              justify-center
+                              gap-2
+                              whitespace-nowrap
+                              ${
+                                reviewStatus === "draft"
+                                  ? "ring-primary/30 bg-primary/10 text-text-foreground hover:bg-primary/20"
+                                  : "ring-muted bg-muted text-muted-foreground cursor-not-allowed"
+                              }
+                            `}
                       >
                         <CircleCheckBig className="w-4 h-4 shrink-0" />
+
                         <span className="font-semibold text-sm leading-none">
-                          {t("verification.verify")}
+                          {reviewStatus === "draft"
+                            ? t("verification.verify")
+                            : t("verification.verification_in_progress")}
                         </span>
                       </button>
                     )}
