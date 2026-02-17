@@ -38,7 +38,7 @@ export const useProfile = () => {
   const role = resolvedRole?.role;
   const reviewStatus = resolvedRole?.reviewStatus;
   const profileId = resolvedRole?.profileId;
-  console.log(resolvedRole);
+
   // =========================
   // Queries
   // =========================
@@ -48,7 +48,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId },
+    { skip: !isApplicant || !profileId }
   );
 
   const {
@@ -57,7 +57,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId },
+    { skip: !isInvestor || !profileId }
   );
 
   // Load correct profile
@@ -92,7 +92,7 @@ export const useProfile = () => {
     if (!user) return;
 
     let detectedCountry = COUNTRIES.find((c) =>
-      user.phone?.startsWith(c.dialCode),
+      user.phone?.startsWith(c.dialCode)
     );
 
     let localPhone = user.phone || "";
@@ -155,7 +155,7 @@ export const useProfile = () => {
       // 🔥 Recombine E.164 phone
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
-          (c) => c.code === editData.countryCode,
+          (c) => c.code === editData.countryCode
         );
 
         if (selectedCountry) {

@@ -211,7 +211,9 @@
     "access_invest_opp": "Access investment opportunities",
     "buy_sell_securely": "Buy & sell shares securely",
     "open_camera": "Open camera",
-    "retake": "Retake"
+    "retake": "Retake",
+    "verification_in_progress": "Verification In Progress",
+    "verification_pending_desc": "Your verification request has been submitted and is currently under review. You will be notified once it is approved."
   },
 
   "notifications": {
@@ -298,6 +300,7 @@
   },
   "common": {
     "close": "Close",
-    "accept": "Accept"
+    "accept": "Accept",
+    "no_records": "No records yet"
   }
 }

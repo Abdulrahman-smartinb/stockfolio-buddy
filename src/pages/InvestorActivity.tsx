@@ -31,6 +31,7 @@ const InvestorActivity = () => {
           onNavigate={() => navigate("/Activity/MyShares")}
           isLoading={isLoading}
           empty={!preview?.assets?.length}
+          t={t}
         >
           {preview.assets.slice(0, 2).map((asset) => (
             <Row key={asset.assetId}>
@@ -59,6 +60,7 @@ const InvestorActivity = () => {
           onNavigate={() => navigate("/Activity/MyTransactions")}
           isLoading={isLoading}
           empty={!preview?.transactions?.length}
+          t={t}
         >
           {preview.transactions.slice(0, 2).map((tx) => (
             <Row key={tx._id}>
@@ -85,6 +87,7 @@ const InvestorActivity = () => {
           onNavigate={() => navigate("/Activity/MyTradeRequest")}
           isLoading={isLoading}
           empty={!preview?.tradeRequests?.length}
+          t={t}
         >
           {preview.tradeRequests.slice(0, 2).map((req) => {
             const amount = req.numberOfShares * req.pricePerShare;
@@ -118,7 +121,11 @@ const InvestorActivity = () => {
                     <label
                       htmlFor={`upload-${req._id}`}
                       className={`border bg-warning/80 rounded-sm p-2 text-white transition-colors hover:bg-warning
-                                ${isUploading ? "cursor-not-allowed opacity-70" : "cursor-pointer"}
+                                ${
+                                  isUploading
+                                    ? "cursor-not-allowed opacity-70"
+                                    : "cursor-pointer"
+                                }
                                 `}
                     >
                       <b>{t("shares.click_upload_receipt")}</b>
@@ -150,6 +157,7 @@ const SectionCard = ({
   empty,
   onRefresh,
   onNavigate,
+  t,
 }: any) => {
   return (
     <div className="rounded-2xl md:rounded-3xl bg-white border border-[#042623]/10 shadow-sm md:shadow-md">
@@ -160,7 +168,7 @@ const SectionCard = ({
         className={cn(
           "flex items-center justify-between p-4 md:p-6",
           onNavigate &&
-            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl",
+            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl"
         )}
       >
         <div className="flex items-center gap-3">
@@ -203,7 +211,7 @@ const SectionCard = ({
         {isLoading ? (
           <Skeleton />
         ) : empty ? (
-          <Empty />
+          <Empty t={t} />
         ) : (
           <div className="space-y-2 md:space-y-3">{children}</div>
         )}
@@ -255,7 +263,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     <span
       className={cn(
         "inline-flex items-center px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold",
-        styles[status] ?? "bg-muted text-muted-foreground",
+        styles[status] ?? "bg-muted text-muted-foreground"
       )}
     >
       {t(`transactions.${status}`)}
@@ -274,8 +282,8 @@ const Skeleton = () => (
   </div>
 );
 
-const Empty = () => (
+const Empty = ({ t }) => (
   <div className="py-3 md:py-6 text-center text-[11px] md:text-sm text-[#042623]/60">
-    No records yet
+    {t("common.no_records")}
   </div>
 );
