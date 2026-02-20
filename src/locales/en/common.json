@@ -105,7 +105,9 @@
       "valid_phone": "A valid phone number must be between 10 and 14 digits, including country code",
       "valid_pass": "A valid password must be longer than 8 characters",
       "valid_pin": "PIN must be exactly 6 digits.",
-      "valid_name": "A valid name must be longer than 2 characters"
+      "valid_name": "A valid name must be longer than 2 characters",
+      "session_timeout_title": "Session expired",
+      "session_timeout_desc": "Session expired due to inactivity. Please log in again"
     }
   },
 

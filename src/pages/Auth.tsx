@@ -1,13 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Lock,
-  User,
-  Eye,
-  EyeOff,
-  Redo2,
-  Undo2,
-  RefreshCcw,
-} from "lucide-react";
+import { Lock, User, Eye, EyeOff, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,12 +10,17 @@ import { cn } from "@/lib/utils";
 import logoAR from "../assets/images/JadwaAR.png";
 import logoEN from "../assets/images/JadwaEN.png";
 import { PlatformTermsModal } from "@/components/PlatformTermsModal";
+import { useSearchParams } from "react-router-dom";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 const PRIMARY = "#072522";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+  const [searchParams] = useSearchParams();
+  const reason = searchParams.get("reason");
+  console.log(`reason`, reason);
 
   const {
     mode,
@@ -106,10 +103,6 @@ const Auth = () => {
         >
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center items-center gap-2 mb-6">
-            {/* <img src={logo} alt="Jadwa" className="w-10 h-10" />
-            <span className="text-xl font-bold" style={{ color: PRIMARY }}>
-              Jadwa Invest
-            </span> */}
             <img
               src={isRtl ? logoAR : logoEN}
               alt="Jadwa Logo"
@@ -118,6 +111,25 @@ const Auth = () => {
           </div>
 
           <div className="rounded-2xl border border-border/60 bg-white p-6 sm:p-8 shadow-sm">
+            {reason === "expired" && (
+              <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600 text-lg">
+                    🔒
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-amber-900">
+                      {t("auth.errors.session_timeout_title")}
+                    </h3>
+
+                    <p className="mt-1 text-[11px] sm:text-xs md:text-sm text-amber-800">
+                      {t("auth.errors.session_timeout_desc")}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
             {/* Mode Switch */}
             <div className="flex bg-muted rounded-xl p-1 mb-6">
               {(["login", "register"] as const).map((tab) => (
@@ -271,7 +283,7 @@ const Auth = () => {
                 "relative",
                 termsError
                   ? "bg-destructive/10 border-destructive"
-                  : "bg-muted/30 border-border/40"
+                  : "bg-muted/30 border-border/40",
               )}
             >
               {/* Left accent bar */}
@@ -383,7 +395,7 @@ const PasswordField = ({
         onClick={toggle}
         className={cn(
           "absolute top-1/2 -translate-y-1/2 text-muted-foreground",
-          isRtl ? "left-3" : "right-3"
+          isRtl ? "left-3" : "right-3",
         )}
       >
         {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}

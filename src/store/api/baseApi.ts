@@ -1,19 +1,9 @@
-import { base_url } from "@/api/GlobalData";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookies from "js-cookie";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithAuth } from "./baseQuery";
 
 export const baseApi = createApi({
   reducerPath: "api",
-  baseQuery: fetchBaseQuery({
-    baseUrl: base_url,
-    prepareHeaders: (headers, { getState }) => {
-      const token = Cookies.get("authToken");
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithAuth,
   tagTypes: [
     "Stocks",
     "Portfolio",

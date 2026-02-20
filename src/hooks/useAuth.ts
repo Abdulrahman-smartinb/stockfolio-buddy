@@ -44,7 +44,7 @@ export const useAuth = () => {
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
-    null
+    null,
   );
 
   const defaultCountry = COUNTRIES[0];
@@ -58,7 +58,7 @@ export const useAuth = () => {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(
-    Boolean(Cookies.get("authToken"))
+    Boolean(Cookies.get("authToken")),
   );
 
   const profile = useMemo(() => {
@@ -78,7 +78,7 @@ export const useAuth = () => {
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
-    [formData.country]
+    [formData.country],
   );
 
   const handleCountryChange = (countryCode: string) => {
@@ -169,8 +169,6 @@ export const useAuth = () => {
     if (!validate()) return;
 
     const fullPhone = buildE164Phone(formData.dialCode, formData.phone);
-    console.log("fullPhone", fullPhone);
-    console.log("pinCode", pinCode);
     try {
       const response =
         mode === "login"
