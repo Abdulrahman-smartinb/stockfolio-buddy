@@ -17,7 +17,7 @@ const niceRound = (value: number) => {
 export const generateQuickShareOptions = (
   minShares: number,
   maxShares: number,
-  totalOptions = 4
+  totalOptions = 4,
 ): number[] => {
   const min = Math.max(1, minShares);
   const max = Math.max(min, maxShares);
@@ -49,7 +49,7 @@ export const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 export const formatNumber = (
   value?: number | string,
-  options?: Intl.NumberFormatOptions
+  options?: Intl.NumberFormatOptions,
 ) => {
   if (value === null || value === undefined || value === "") return "—";
 
@@ -64,7 +64,7 @@ export const formatNumber = (
 
 export const formatCurrency = (
   value?: number | string,
-  currency: string = "USD"
+  currency: string = "USD",
 ) => {
   if (value === null || value === undefined || value === "") return "—";
 
@@ -72,13 +72,13 @@ export const formatCurrency = (
   if (!Number.isFinite(num)) return "—";
 
   // Format number ONLY (no currency)
-  const formattedNumber = new Intl.NumberFormat(undefined, {
+  const formattedNumber = new Intl.NumberFormat("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(num);
 
   // Get currency symbol safely
-  const parts = new Intl.NumberFormat(undefined, {
+  const parts = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
     currencyDisplay: "narrowSymbol",
