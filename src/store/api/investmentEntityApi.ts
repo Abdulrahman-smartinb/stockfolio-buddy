@@ -1,4 +1,4 @@
-import { investmentEntityEP } from "@/api/GlobalData";
+import { investmentEntityEP, investmentFundsEP } from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { ApiResponse } from "@/interfaces/Global";
@@ -35,7 +35,11 @@ export const investmentEntityApi = baseApi.injectEndpoints({
         response.data,
       providesTags: ["InvestmentEntities"],
     }),
+    getOneEntity: builder.query({
+      query: ({ id }) => `${investmentFundsEP}/${id}`,
+    }),
   }),
 });
 
-export const { useGetInvestmentEntitiesQuery } = investmentEntityApi;
+export const { useGetInvestmentEntitiesQuery, useGetOneEntityQuery } =
+  investmentEntityApi;

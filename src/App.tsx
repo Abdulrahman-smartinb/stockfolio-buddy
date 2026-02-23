@@ -17,6 +17,7 @@ import MyTradeRequest from "./pages/Activity/MyTradeRequest";
 import Settings from "./pages/Settings";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import FundDetails from "./pages/FundDetails";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => {
                   element={<MyTradeRequest />}
                 />
                 <Route path="/Settings" element={<Settings />} />
+                <Route path="/fund-details/:id" element={<FundDetails />} />
               </Route>
 
               <Route path="*" element={<NotFound />} />

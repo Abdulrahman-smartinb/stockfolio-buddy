@@ -1,14 +1,15 @@
-import React from "react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { base_url } from "@/api/GlobalData";
 import { formatCurrency } from "@/hooks/helpers";
+import { useNavigate } from "react-router-dom";
 
 const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
   const name = stock?.name || stock?.fullLegalName || "—";
   const symbol = stock?.symbol || stock?.code || "";
   const price = stock?.price ?? stock?.currentPrice ?? stock?.sharePrice;
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -19,7 +20,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
         "group rounded-2xl border border-border/60",
         "bg-background/70 backdrop-blur-xl",
         "shadow-sm hover:shadow-md transition-all",
-        "px-4 py-2"
+        "px-4 py-2",
       )}
     >
       <div className="flex items-center justify-between gap-4">
@@ -29,7 +30,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           <div
             className={cn(
               "h-11 w-11 rounded-2xl ring-1 ring-border/60 overflow-hidden",
-              "bg-muted/30 flex items-center justify-center shrink-0"
+              "bg-muted/30 flex items-center justify-center shrink-0",
             )}
           >
             {stock?.logo ? (
@@ -50,12 +51,18 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           {/* Name */}
           <div className="min-w-0">
             {symbol && (
-              <p className="text-base md:text-xl font-bold font-google text-foreground tracking-wide">
+              <p
+                className="text-base md:text-xl font-bold font-google text-foreground tracking-wide cursor-pointer"
+                onClick={() => navigate(`fund-details/${stock?._id}`)}
+              >
                 {symbol}
               </p>
             )}
 
-            <p className="text-sm md:text-xl font-semibold text-muted-foreground truncate">
+            <p
+              className="text-sm md:text-xl font-semibold text-muted-foreground truncate cursor-pointer"
+              onClick={() => navigate(`fund-details/${stock?._id}`)}
+            >
               {lang === "ar" && stock?.nameAr ? stock.nameAr : name}
             </p>
           </div>
@@ -82,7 +89,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
               "shadow-sm",
               "transition-all duration-200",
               "hover:shadow-md hover:-translate-y-[1px]",
-              "active:translate-y-0 active:scale-[0.98]"
+              "active:translate-y-0 active:scale-[0.98]",
             )}
           >
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-[1px] group-hover:-translate-y-[1px]" />
