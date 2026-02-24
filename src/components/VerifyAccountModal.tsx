@@ -53,41 +53,46 @@ export const VerifyAccountModal = ({
           exit={{ opacity: 0, y: 16, scale: 0.98 }}
           transition={{ type: "spring", stiffness: 260, damping: 24 }}
         >
-          {/* ================= Header ================= */}
+          {/* Header */}
           <div className="px-6 py-4 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5 text-primary" />
+                <ShieldCheck className="w-5 h-5 jadwa-icon-gold" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold">
+                <h3 className="text-lg font-semibold text-jadwa">
                   {t("verification.verify")}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-jadwa-muted">
                   {t("verification.subtitle")}
                 </p>
               </div>
             </div>
 
-            <Button variant="ghost" onClick={onClose} disabled={isSubmitting}>
+            <Button
+              variant="ghost"
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="jadwa-icon-gold"
+            >
               ✕
             </Button>
           </div>
 
-          {/* ================= Body ================= */}
+          {/* Body */}
           <div className="px-6 py-5">
             <div className="max-h-[70vh] overflow-y-auto pr-1 space-y-4">
               <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-warning" />
-                <span className="text-muted-foreground">
+                <AlertTriangle className="w-4 h-4 jadwa-icon-gold" />
+                <span className="text-jadwa-muted">
                   <span className="text-destructive font-semibold">*</span>{" "}
                   {t("verification.indicates_required_fields")}
                 </span>
               </div>
 
-              {/* ================= Identity Section ================= */}
+              {/* Identity Section */}
               <div className="rounded-xl border p-4 space-y-4">
-                <div className="text-sm font-semibold">
+                <div className="text-sm font-semibold text-jadwa">
                   {t("verification.identity_section")}
                 </div>
 
@@ -159,12 +164,12 @@ export const VerifyAccountModal = ({
                     {!isMobile && !openCamera && !livePhoto && (
                       <Button
                         type="button"
-                        variant="accent"
+                        variant="default"
                         size="sm"
                         className="flex items-center gap-2"
                         onClick={() => setOpenCamera(true)}
                       >
-                        <Camera className="w-4 h-4" />
+                        <Camera className="w-4 h-4 jadwa-icon-brown" />
                         {t("verification.open_camera")}
                       </Button>
                     )}
@@ -208,7 +213,7 @@ export const VerifyAccountModal = ({
             </div>
           </div>
 
-          {/* ================= Footer ================= */}
+          {/* Footer */}
           <div className="px-6 py-4 border-t flex items-center justify-end gap-2">
             <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
               {t("app.cancel")}

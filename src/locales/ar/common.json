@@ -85,6 +85,7 @@
     "terms_required": "يجب الموافقة على الشروط والأحكام قبل إنشاء الحساب.",
     "password_hint": "كلمة المرور يجب أن تتكون من 8 رموز على الأقل.",
     "pin_hint": "رمز PIN مكوّن من 6 أرقام فقط.",
+    "forgot_password": "نسيت كلمة المرور؟",
 
     "success": {
       "signed_in": "تم تسجيل الدخول",
@@ -140,6 +141,24 @@
       "pnl": "الربح / الخسارة"
     },
     "empty": "لا تملك أي أسهم حتى الآن"
+  },
+
+  "fund": {
+    "fund_code": "رمز الصندوق",
+    "share_price": "سعر السهم",
+    "initial_shares": "الأسهم الأولية",
+    "issued": "مصدّر",
+    "investment_limits": "حدود الاستثمار",
+    "min_shares": "الحد الأدنى",
+    "max_shares": "الحد الأقصى",
+    "documents": "الملفات",
+    "no_documents": "لم يتم إضافة ملفات",
+    "fund_info": "معلومات الصندوق",
+    "investment_steps": "خطوات الاستثمار",
+    "investment_req_form": "نموذج طلب الاستثمار",
+    "user_agreement": "اتفاقية المستخدم",
+    "click_view_document": "انقر لعرض المستند",
+    "view_only_no_download": "للعرض فقط. التنزيل والنسخ مقيدان"
   },
 
   "portfolio": {
@@ -304,6 +323,8 @@
   "common": {
     "close": "إغلاق",
     "accept": "أوافق",
-    "no_records": "لا توجد سجلات حتى الآن"
+    "no_records": "لا توجد سجلات حتى الآن",
+    "yes": "نعم",
+    "no": "لا"
   }
 }

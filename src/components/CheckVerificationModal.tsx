@@ -6,9 +6,8 @@ import { useTranslation } from "react-i18next";
 export const CheckVerificationModal = ({ isOpen, onClose, onVerify, mode }) => {
   const { t } = useTranslation();
   if (!isOpen) return null;
-  console.log("mode", mode);
+
   const isDraft = mode === "draft";
-  const isPending = mode === "pending";
 
   return (
     <AnimatePresence>
@@ -33,22 +32,22 @@ export const CheckVerificationModal = ({ isOpen, onClose, onVerify, mode }) => {
               }`}
             >
               {isDraft ? (
-                <ShieldAlert className="w-7 h-7 text-warning" />
+                <ShieldAlert className="w-7 h-7 jadwa-icon-gold" />
               ) : (
-                <CheckCircle2 className="w-7 h-7 text-primary" />
+                <CheckCircle2 className="w-7 h-7 jadwa-icon-gold" />
               )}
             </div>
           </div>
 
           {/* Title */}
-          <h2 className="text-lg font-semibold text-center mb-2">
+          <h2 className="text-lg font-semibold text-center mb-2 text-jadwa">
             {isDraft
               ? t("verification.acc_verification_req")
               : t("verification.verification_in_progress")}
           </h2>
 
           {/* Description */}
-          <p className="text-sm text-muted-foreground text-center mb-6">
+          <p className="text-sm text-jadwa-muted text-center mb-6">
             {isDraft
               ? t("verification.acc_verification_req_desc")
               : t("verification.verification_pending_desc")}
@@ -56,13 +55,13 @@ export const CheckVerificationModal = ({ isOpen, onClose, onVerify, mode }) => {
 
           {/* Benefits only in draft */}
           {isDraft && (
-            <div className="bg-muted/40 rounded-lg p-3 mb-6 text-sm">
+            <div className="bg-muted/40 rounded-lg p-3 mb-6 text-sm text-jadwa-muted">
               <div className="flex items-center gap-2 mb-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
+                <CheckCircle2 className="w-4 h-4 jadwa-icon-gold" />
                 <span>{t("verification.access_invest_opp")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-success" />
+                <CheckCircle2 className="w-4 h-4 jadwa-icon-gold" />
                 <span>{t("verification.buy_sell_securely")}</span>
               </div>
             </div>

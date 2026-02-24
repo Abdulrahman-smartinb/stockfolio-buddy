@@ -1,8 +1,13 @@
 import { useState } from "react";
 import DocumentModal from "./DocumentModal";
+import { useTranslation } from "react-i18next";
+import { FileText } from "lucide-react";
 
-const DocumentCard = ({ title, file }) => {
+const DocumentRow = ({ title, file }) => {
   const [open, setOpen] = useState(false);
+  const { t, i18n } = useTranslation();
+
+  const isRtl = i18n.language === "ar";
 
   if (!file) return null;
 
@@ -10,25 +15,36 @@ const DocumentCard = ({ title, file }) => {
     <>
       <div
         onClick={() => setOpen(true)}
-        className="group relative cursor-pointer rounded-2xl border border-border bg-gradient-to-br from-card to-muted/40 p-6 shadow-sm hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+        role="button"
+        tabIndex={0}
+        className="
+          flex items-center justify-between
+          px-4 py-3
+          transition
+          cursor-pointer
+          hover:bg-muted/40
+          active:scale-[0.99]
+        "
       >
-        {/* Subtle Glow Effect */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300 bg-gradient-to-r from-primary/5 via-transparent to-primary/5" />
+        <div className="flex items-center gap-3">
+          <FileText className="w-5 h-5 jadwa-icon-gold" />
 
-        <div className="relative flex flex-col gap-4">
-          {/* Icon */}
-          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary text-xl font-bold">
-            PDF
-          </div>
-
-          {/* Title */}
           <div>
-            <h3 className="text-base font-semibold tracking-tight">{title}</h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              Click to preview document
+            <p className="text-sm font-medium text-foreground">{title}</p>
+            <p className="text-xs text-jadwa-muted">
+              {t("fund.click_view_document")}
             </p>
           </div>
         </div>
+
+        <span
+          className={`
+            text-sm opacity-40 transition
+            ${isRtl ? "rotate-180" : ""}
+          `}
+        >
+          →
+        </span>
       </div>
 
       {open && (
@@ -42,4 +58,4 @@ const DocumentCard = ({ title, file }) => {
   );
 };
 
-export default DocumentCard;
+export default DocumentRow;

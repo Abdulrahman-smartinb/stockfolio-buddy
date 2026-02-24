@@ -1,4 +1,3 @@
-import React from "react";
 import { Wallet, RefreshCcw } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -31,7 +30,7 @@ const MyShares = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-jadwa-muted">
                 {t("shares.summary.total_value")}
               </p>
               <p className="text-lg md:text-2xl font-bold text-[#042623] font-google tabular-nums">
@@ -40,7 +39,7 @@ const MyShares = () => {
             </div>
 
             <div className="text-right">
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-jadwa-muted">
                 {t("shares.summary.pnl")}
               </p>
               <p
@@ -48,7 +47,7 @@ const MyShares = () => {
                   "text-lg md:text-2xl font-bold font-google tabular-nums",
                   portfolioSummary.pnl >= 0
                     ? "text-emerald-600"
-                    : "text-rose-600"
+                    : "text-rose-600",
                 )}
               >
                 {portfolioSummary.pnl >= 0 ? "+" : "-"}
@@ -69,7 +68,7 @@ const MyShares = () => {
               flex items-center justify-center
             "
             >
-              <Wallet className="w-4 h-4 md:w-5 md:h-5 text-[#042623]" />
+              <Wallet className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
             </span>
             {t("shares.title")}
           </h2>
@@ -85,7 +84,7 @@ const MyShares = () => {
             "
             aria-label={t("app.refresh")}
           >
-            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" />
+            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
           </button>
         </div>
 
@@ -122,7 +121,7 @@ const MyShares = () => {
                         {fundName}
                       </p>
 
-                      <p className="text-xs md:text-sm text-muted-foreground">
+                      <p className="text-xs md:text-sm text-jadwa-muted">
                         <span className="font-google tabular-nums">
                           {formatNumber(asset.shares)}
                         </span>{" "}
@@ -141,7 +140,7 @@ const MyShares = () => {
                       <p
                         className={cn(
                           "text-xs md:text-sm font-semibold font-google tabular-nums",
-                          pnlPositive ? "text-emerald-600" : "text-rose-600"
+                          pnlPositive ? "text-emerald-600" : "text-rose-600",
                         )}
                       >
                         {pnlPositive ? "+" : "-"}
@@ -151,7 +150,7 @@ const MyShares = () => {
                   </div>
 
                   {/* ===== Bottom ===== */}
-                  <div className="mt-3 md:mt-4 flex justify-between text-xs md:text-sm text-muted-foreground">
+                  <div className="mt-3 md:mt-4 flex justify-between text-xs md:text-sm text-jadwa-muted">
                     <span>
                       {t("shares.current")}{" "}
                       <span className="font-google tabular-nums">
@@ -194,7 +193,7 @@ const Skeleton = () => (
 );
 
 const Empty = () => (
-  <div className="text-center text-sm md:text-base text-muted-foreground py-10 md:py-16">
+  <div className="text-center text-sm md:text-base text-jadwa-muted py-10 md:py-16">
     You don’t own any shares yet
   </div>
 );

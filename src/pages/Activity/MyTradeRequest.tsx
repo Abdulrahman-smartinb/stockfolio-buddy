@@ -1,4 +1,3 @@
-import React from "react";
 import { Clock, RefreshCcw } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -6,7 +5,6 @@ import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { base_url } from "@/api/GlobalData";
 import { useTranslation } from "react-i18next";
 import { Empty, Skeleton, StatusBadge } from "@/components/helpers";
-import { cn } from "@/lib/utils";
 import { formatCurrency, formatNumber } from "@/hooks/helpers";
 
 const PRIMARY = "#042623";
@@ -33,7 +31,7 @@ const MyTradeRequest = () => {
                 flex items-center justify-center
               "
             >
-              <Clock className="w-4 h-4 md:w-5 md:h-5 text-[#042623]" />
+              <Clock className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
             </span>
 
             {t("activity.trade_requests")}
@@ -50,7 +48,7 @@ const MyTradeRequest = () => {
               hover:bg-[#042623]/10 transition
             "
           >
-            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" />
+            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
           </button>
         </div>
 
@@ -100,7 +98,7 @@ const MyTradeRequest = () => {
                         {fundName}
                       </p>
 
-                      <p className="text-[11px] md:text-sm text-muted-foreground">
+                      <p className="text-[11px] md:text-sm text-jadwa-muted">
                         {t(`activity.${req.tradeType}`)}
                       </p>
                     </div>
@@ -114,7 +112,7 @@ const MyTradeRequest = () => {
 
                   {/* ===== Amount Section ===== */}
                   <div className="mt-4 flex items-center justify-between text-xs md:text-sm">
-                    <span className="text-muted-foreground  tabular-nums">
+                    <span className="text-jadwa-muted  tabular-nums">
                       <span className="font-google">
                         {formatNumber(req.numberOfShares)}
                       </span>{" "}
@@ -130,7 +128,7 @@ const MyTradeRequest = () => {
                   </div>
 
                   {/* ===== Date ===== */}
-                  <div className="mt-2 text-[11px] md:text-xs text-muted-foreground font-google">
+                  <div className="mt-2 text-[11px] md:text-xs text-jadwa-muted font-google">
                     {new Date(req.createdAt).toLocaleDateString()}
                   </div>
                 </div>

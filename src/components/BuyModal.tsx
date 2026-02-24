@@ -74,13 +74,13 @@ export const BuyModal = ({
           exit={{ opacity: 0, y: 24, scale: 0.96 }}
           transition={{ type: "spring", stiffness: 260, damping: 26 }}
         >
-          {/* ================= Header ================= */}
+          {/* Header */}
           <div className="flex items-start justify-between mb-6">
             <div>
-              <h2 className="text-lg font-extrabold text-foreground">
+              <h2 className="text-lg font-extrabold text-jadwa">
                 {isRtl ? stock?.nameAr : stock.fullLegalName}
               </h2>
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="text-xs text-jadwa-muted mt-1">
                 {t("shares.min")}:{" "}
                 <span className="font-medium tabular-nums">
                   {formatNumber(minShares)}
@@ -98,7 +98,7 @@ export const BuyModal = ({
               className="
                 h-8 w-8 rounded-lg
                 flex items-center justify-center
-                text-muted-foreground
+                jadwa-icon-gold
                 hover:bg-muted transition
               "
             >
@@ -106,20 +106,20 @@ export const BuyModal = ({
             </button>
           </div>
 
-          {/* ================= Share Price ================= */}
+          {/* Share Price */}
           <div className="mb-5 rounded-xl bg-secondary/40 px-4 py-3 flex justify-between items-center">
-            <span className="text-sm text-muted-foreground">
+            <span className="text-sm text-jadwa-muted">
               {t("shares.share_price")}
             </span>
-            <span className="font-extrabold tabular-nums text-foreground">
+            <span className="font-extrabold tabular-nums text-jadwa">
               {formatCurrency(stock.sharePrice)}
             </span>
           </div>
 
-          {/* ================= Quick Options ================= */}
+          {/* Quick Options */}
           {!!quickShareOptions?.length && (
             <div className="mb-6">
-              <p className="text-xs text-muted-foreground mb-2">
+              <p className="text-xs text-jadwa-muted mb-2">
                 {t("shares.quick_select")}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -137,7 +137,7 @@ export const BuyModal = ({
                         ${
                           active
                             ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-muted text-foreground border-border hover:bg-muted/70"
+                            : "bg-muted text-jadwa border-border hover:bg-muted/70"
                         }
                       `}
                     >
@@ -149,9 +149,9 @@ export const BuyModal = ({
             </div>
           )}
 
-          {/* ================= Quantity ================= */}
+          {/* Quantity */}
           <div className="mb-6">
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="text-xs text-jadwa-muted mb-2">
               {t("shares.shares")}
             </p>
 
@@ -159,6 +159,7 @@ export const BuyModal = ({
               <Button
                 size="icon"
                 variant="outline"
+                className="jadwa-icon-gold"
                 disabled={isLoading || isMin}
                 onClick={decreaseShares}
               >
@@ -177,6 +178,7 @@ export const BuyModal = ({
               <Button
                 size="icon"
                 variant="outline"
+                className="jadwa-icon-gold"
                 disabled={isLoading || isMax}
                 onClick={increaseShares}
               >
@@ -185,9 +187,9 @@ export const BuyModal = ({
             </div>
           </div>
 
-          {/* ================= Note ================= */}
+          {/* Note */}
           <div className="mb-6">
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="text-xs text-jadwa-muted mb-2">
               {t("shares.description")}
             </p>
             <Input
@@ -198,27 +200,33 @@ export const BuyModal = ({
             />
           </div>
 
-          {/* ================= Total ================= */}
+          {/* Total */}
           <div className="mb-7 rounded-xl bg-primary/10 px-4 py-4">
-            <p className="text-xs text-muted-foreground mb-2">
+            <p className="text-xs text-jadwa-muted mb-2">
               {t("shares.estimated_total")}
             </p>
 
-            <Input
-              value={totalInput === "" ? totalCost : totalInput}
-              onChange={(e) => setSharesFromTotal(e.target.value)}
-              disabled={isLoading}
-              inputMode="decimal"
-              placeholder="0.00"
-              className="text-center text-lg font-extrabold tabular-nums bg-background"
-            />
+            <div className="relative">
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-semibold">
+                $
+              </span>
 
-            <p className="mt-1 text-[11px] text-muted-foreground text-center">
+              <Input
+                value={totalInput === "" ? totalCost : totalInput}
+                onChange={(e) => setSharesFromTotal(e.target.value)}
+                disabled={isLoading}
+                inputMode="decimal"
+                placeholder="0.00"
+                className="pl-8 text-center text-lg font-extrabold tabular-nums bg-background"
+              />
+            </div>
+
+            <p className="mt-1 text-[11px] text-jadwa-muted text-center">
               {t("shares.total_hint")}
             </p>
           </div>
 
-          {/* ================= Actions ================= */}
+          {/* Actions */}
           <div className="flex gap-3">
             <Button
               variant="outline"

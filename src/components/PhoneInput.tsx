@@ -57,7 +57,7 @@ export function PhoneInput({
 
       {/* ================= Phone Input ================= */}
       <div className={isMobile ? "relative w-2/3" : "relative w-1/2"}>
-        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 jadwa-icon-gold" />
 
         <Input
           type="tel"

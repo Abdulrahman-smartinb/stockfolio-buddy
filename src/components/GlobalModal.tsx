@@ -29,7 +29,10 @@ const GlobalModal = ({
         {/* Modal Header */}
         <div className="flex justify-between items-center border-b pb-3">
           <h3 className="text-lg font-semibold capitalize">{title}</h3>
-          <button className="btn btn-xs btn-icon btn-light" onClick={onClose}>
+          <button
+            className="btn btn-xs btn-icon btn-light jadwa-icon-gold"
+            onClick={onClose}
+          >
             <X />
           </button>
         </div>

@@ -44,7 +44,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
       (c) =>
         c.name.toLowerCase().includes(q) ||
         c.nameAr?.toLowerCase().includes(q) ||
-        c.dialCode.includes(search)
+        c.dialCode.includes(search),
     );
   }, [countries, search]);
 
@@ -58,13 +58,13 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
           "h-11 w-full flex items-center justify-between",
           "rounded-lg border border-input bg-background px-3",
           "text-sm text-start py-0",
-          "hover:bg-muted/30 transition"
+          "hover:bg-muted/30 transition",
         )}
       >
         <span
           className={cn(
             "truncate flex items-center",
-            isMobile ? "pt-1 gap-2" : "gap-1"
+            isMobile ? "pt-1 gap-2" : "gap-1",
           )}
         >
           {selected ? (
@@ -80,13 +80,9 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
         </span>
 
         {open ? (
-          <ChevronUp
-            className={cn("h-4 w-4 text-muted-foreground transition")}
-          />
+          <ChevronUp className={cn("h-4 w-4 jadwa-icon-gold transition")} />
         ) : (
-          <ChevronDown
-            className={cn("h-4 w-4 text-muted-foreground transition")}
-          />
+          <ChevronDown className={cn("h-4 w-4 jadwa-icon-gold transition")} />
         )}
       </button>
 
@@ -95,7 +91,7 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
         <div
           className={cn(
             isMobile ? "w-[80vw]" : "w-full",
-            "absolute z-50 mt-1 rounded-lg border bg-background shadow-lg overflow-hidden"
+            "absolute z-50 mt-1 rounded-lg border bg-background shadow-lg overflow-hidden",
           )}
         >
           {/* Search */}
@@ -108,14 +104,14 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
             onChange={(e) => setSearch(e.target.value)}
             className={cn(
               "h-10 w-full border-b px-3 text-sm",
-              "focus:outline-none text-start"
+              "focus:outline-none text-start",
             )}
           />
 
           {/* List */}
           <div className="max-h-64 overflow-y-auto">
             {filtered.length === 0 && (
-              <p className="px-3 py-2 text-sm text-muted-foreground">
+              <p className="px-3 py-2 text-sm text-jadwa-muted">
                 {isRtl ? "لا توجد نتائج" : "No results"}
               </p>
             )}
@@ -132,18 +128,18 @@ export function CountrySelect({ classes, countries, value, onChange }: Props) {
                 className={cn(
                   "flex w-full items-center gap-2 px-3 py-2",
                   "text-sm text-start hover:bg-muted/40 transition",
-                  value === c.code && "bg-muted/30"
+                  value === c.code && "bg-muted/30",
                 )}
               >
                 <span>{c.flag}</span>
 
                 <span className="flex-1 truncate">{getCountryName(c)}</span>
 
-                <span className="text-xs text-muted-foreground">
-                  {c.dialCode}
-                </span>
+                <span className="text-xs text-jadwa-muted">{c.dialCode}</span>
 
-                {value === c.code && <Check className="h-4 w-4 text-primary" />}
+                {value === c.code && (
+                  <Check className="h-4 w-4 jadwa-icon-gold" />
+                )}
               </button>
             ))}
           </div>

@@ -55,14 +55,14 @@ export const Footer = () => {
                 "transition-all duration-200",
                 "text-xs font-medium",
                 active
-                  ? "text-primary"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "text-jadwa"
+                  : "text-jadwa-muted hover:text-foreground",
               )}
             >
               <Icon
                 className={cn(
                   "h-6 w-6 transition-transform duration-200",
-                  active && "scale-110"
+                  active ? "scale-110 jadwa-icon-gold" : "jadwa-icon-brown",
                 )}
               />
               <span className="leading-none">{label}</span>

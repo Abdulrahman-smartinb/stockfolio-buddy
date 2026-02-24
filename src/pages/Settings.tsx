@@ -23,7 +23,7 @@ const Settings = () => {
         {/* Account */}
         <Section title={t("settings.account_settings")}>
           <SettingRow
-            icon={<User className="w-5 h-5" />}
+            icon={<User className="w-5 h-5 jadwa-icon-gold" />}
             label={t("settings.profile")}
             onClick={() => navigate("/profile")}
           />
@@ -32,7 +32,7 @@ const Settings = () => {
         {/* Preferences */}
         <Section title={t("settings.preferences")}>
           <SettingRow
-            icon={<Globe className="w-5 h-5" />}
+            icon={<Globe className="w-5 h-5 jadwa-icon-gold" />}
             label={t("settings.language")}
             right={
               <button
@@ -54,7 +54,7 @@ const Settings = () => {
                 ) : (
                   <span className="font-tajawal pt-0.5">العربية</span>
                 )}
-                <RefreshCcw className="w-4 h-4 mx-2" />
+                <RefreshCcw className="w-4 h-4 mx-2 jadwa-icon-gold" />
                 {i18n.language === "en" ? (
                   <span className="font-tajawal pt-0.5"> العربية </span>
                 ) : (
@@ -65,10 +65,10 @@ const Settings = () => {
           />
 
           <SettingRow
-            icon={<Moon className="w-5 h-5" />}
+            icon={<Moon className="w-5 h-5 jadwa-icon-gold" />}
             label={t("settings.theme")}
             right={
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-jadwa-muted">
                 {t("settings.system")}
               </span>
             }
@@ -78,7 +78,7 @@ const Settings = () => {
         {/* Notifications */}
         <Section title={t("settings.notifications")}>
           <SettingRow
-            icon={<Bell className="w-5 h-5" />}
+            icon={<Bell className="w-5 h-5 jadwa-icon-gold" />}
             label={t("settings.notifications")}
             right={<Toggle />}
           />
@@ -87,7 +87,7 @@ const Settings = () => {
         {/* Danger */}
         <Section>
           <SettingRow
-            icon={<LogOut className="w-5 h-5 text-destructive" />}
+            icon={<LogOut className="w-5 h-5 jadwa-icon-gold" />}
             label={t("settings.logout")}
             danger
             onClick={logout}
@@ -101,7 +101,7 @@ const Settings = () => {
 
 export default Settings;
 
-const Section = ({
+export const Section = ({
   title,
   children,
 }: {
@@ -110,7 +110,7 @@ const Section = ({
 }) => (
   <div className="space-y-2">
     {title && (
-      <h3 className="text-xs font-semibold uppercase text-muted-foreground px-1">
+      <h3 className="text-xs font-semibold uppercase text-jadwa-muted px-1">
         {title}
       </h3>
     )}
@@ -145,7 +145,7 @@ const SettingRow = ({
         "px-4 py-3",
         "transition",
         onClick && "cursor-pointer hover:bg-muted/40 active:scale-[0.99]",
-        danger && "hover:bg-destructive/10"
+        danger && "hover:bg-destructive/10",
       )}
     >
       <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ const SettingRow = ({
         <span
           className={cn(
             "text-sm font-medium",
-            danger ? "text-destructive" : "text-foreground"
+            danger ? "text-destructive" : "text-foreground",
           )}
         >
           {label}

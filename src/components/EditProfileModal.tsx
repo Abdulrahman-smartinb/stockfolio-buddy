@@ -90,7 +90,7 @@ export const EditProfileModal = ({
               "rounded-3xl bg-background shadow-2xl",
               "border border-border/60",
               "flex flex-col",
-              "max-h-[90vh]"
+              "max-h-[90vh]",
             )}
           >
             {/* Header */}
@@ -103,7 +103,7 @@ export const EditProfileModal = ({
                 onClick={onClose}
                 className="h-9 w-9 flex items-center justify-center rounded-xl hover:bg-muted/40 transition"
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4 jadwa-icon-gold" />
               </button>
             </div>
 
@@ -127,7 +127,7 @@ export const EditProfileModal = ({
                   </div>
 
                   <label className="absolute -bottom-2 -right-2 h-9 w-9 rounded-xl bg-primary text-white flex items-center justify-center cursor-pointer shadow-lg hover:scale-105 transition">
-                    <Camera className="w-4 h-4" />
+                    <Camera className="w-4 h-4 jadwa-icon-brown" />
                     <input
                       type="file"
                       hidden
@@ -170,7 +170,7 @@ export const EditProfileModal = ({
                 />
 
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                  <label className="text-xs font-medium text-jadwa-muted mb-1 block">
                     {t("profile.phone")}
                   </label>
 
@@ -222,7 +222,7 @@ export const EditProfileModal = ({
                   <span className="animate-spin h-4 w-4 border-2 border-white/40 border-t-white rounded-full" />
                 ) : (
                   <>
-                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    <CheckCircle2 className="w-4 h-4 mr-2 jadwa-icon-brown" />
                     {t("profile.save")}
                   </>
                 )}
@@ -245,12 +245,12 @@ const FormField = ({
   type = "text",
 }: any) => (
   <div className="space-y-1">
-    <p className="text-sm font-medium text-muted-foreground">{label}</p>
+    <p className="text-sm font-medium text-jadwa-muted">{label}</p>
     <Input
       type={type}
       className={cn(
         "h-11 rounded-2xl bg-muted/20 focus:bg-background transition",
-        customStyle
+        customStyle,
       )}
       value={value}
       onChange={(e) => onChange(e.target.value)}

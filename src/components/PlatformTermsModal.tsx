@@ -35,18 +35,18 @@ export function PlatformTermsModal({ isOpen, onClose, onAccept }: Props) {
           {/* ===== Header ===== */}
           <div className="flex items-center justify-between border-b px-6 py-4">
             <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-primary" />
+              <FileText className="w-5 h-5 jadwa-icon-gold" />
               <h2 className="text-lg font-semibold">{t("terms.title")}</h2>
             </div>
 
             <button onClick={onClose}>
-              <X className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+              <X className="w-5 h-5 jadwa-icon-gold" />
             </button>
           </div>
 
           {/* ===== Content ===== */}
           <div className="max-h-[65vh] overflow-y-auto px-6 py-4 space-y-5 text-sm leading-relaxed">
-            <p className="text-muted-foreground">{t("terms.intro")}</p>
+            <p className="text-jadwa-muted">{t("terms.intro")}</p>
 
             <Section title={t("terms.definitions.title")}>
               <ul className="list-disc ps-5 space-y-1">
@@ -90,7 +90,7 @@ export function PlatformTermsModal({ isOpen, onClose, onAccept }: Props) {
           <div
             className={cn(
               "border-t px-6 py-4 flex gap-3",
-              isRtl ? "justify-start" : "justify-end"
+              isRtl ? "justify-start" : "justify-end",
             )}
           >
             <Button variant="outline" onClick={onClose}>

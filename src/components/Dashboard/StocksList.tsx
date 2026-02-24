@@ -11,7 +11,7 @@ const StockListSkeleton = () => {
           key={i}
           className={cn(
             "rounded-2xl border border-border/60 bg-background/60 backdrop-blur-xl",
-            "shadow-sm px-4 py-4 animate-pulse"
+            "shadow-sm px-4 py-4 animate-pulse",
           )}
         >
           <div className="flex items-center justify-between gap-4">
@@ -40,12 +40,12 @@ const EmptyState = ({ t }) => (
     className="text-center py-16"
   >
     <div className="w-16 h-16 rounded-full bg-muted mx-auto mb-4 flex items-center justify-center">
-      <Search className="w-8 h-8 text-muted-foreground" />
+      <Search className="w-8 h-8 jadwa-icon-gold" />
     </div>
     <h3 className="text-lg font-semibold text-foreground mb-2">
       {t("activity.no_records")}
     </h3>
-    <p className="text-muted-foreground">{t("app.adjust_query")}</p>
+    <p className="text-jadwa-muted">{t("app.adjust_query")}</p>
   </motion.div>
 );
 
@@ -55,13 +55,7 @@ const StocksList = ({ stocks = [], isLoading, t, lang, onAction }) => {
     return <EmptyState t={t} />;
 
   return (
-    <div
-      className="
-        grid gap-4
-        grid-cols-1
-        md:grid-cols-2
-      "
-    >
+    <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
       {stocks.map((stock, index) => (
         <StockListItem
           t={t}

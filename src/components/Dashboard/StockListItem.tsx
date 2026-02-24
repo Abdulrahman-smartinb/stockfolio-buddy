@@ -52,7 +52,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           <div className="min-w-0">
             {symbol && (
               <p
-                className="text-base md:text-xl font-bold font-google text-foreground tracking-wide cursor-pointer"
+                className="text-base md:text-xl font-bold font-google text-jadwa tracking-wide cursor-pointer"
                 onClick={() => navigate(`fund-details/${stock?._id}`)}
               >
                 {symbol}
@@ -60,7 +60,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
             )}
 
             <p
-              className="text-sm md:text-xl font-semibold text-muted-foreground truncate cursor-pointer"
+              className="text-sm md:text-xl font-semibold text-jadwa-muted truncate cursor-pointer"
               onClick={() => navigate(`fund-details/${stock?._id}`)}
             >
               {lang === "ar" && stock?.nameAr ? stock.nameAr : name}
@@ -72,7 +72,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
         <div className="flex flex-col items-center  shrink-0">
           {/* Price */}
           <p
-            className="text-2xl font-semi-bold tracking-tight text-foreground"
+            className="text-2xl font-semi-bold tracking-tight text-jadwa"
             dir="ltr"
           >
             {price != null ? formatCurrency(price) : "—"}
@@ -82,17 +82,16 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
           <button
             onClick={() => onAction?.("buy", stock)}
             className={cn(
-              "group inline-flex items-center justify-center ",
+              "group inline-flex items-center justify-center",
               "h-8 px-3 rounded-[30px]",
               "bg-primary text-primary-foreground",
-              "text-sm font-semibold",
-              "shadow-sm",
+              "text-sm font-semibold shadow-sm",
               "transition-all duration-200",
               "hover:shadow-md hover:-translate-y-[1px]",
               "active:translate-y-0 active:scale-[0.98]",
             )}
           >
-            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-[1px] group-hover:-translate-y-[1px]" />
+            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-[1px] group-hover:-translate-y-[1px] jadwa-icon-brown" />
             <span>{t("shares.buy")}</span>
           </button>
         </div>

@@ -9,7 +9,7 @@ export const Skeleton = () => (
 );
 
 export const Empty = ({ text }: { text?: string }) => (
-  <div className="text-center text-sm text-muted-foreground py-10">
+  <div className="text-center text-sm text-jadwa-muted py-10">
     {text ?? "—"}
   </div>
 );
@@ -23,14 +23,14 @@ export const StatusBadge = ({ status, label }: StatusBadgeProps) => {
     pending: "bg-amber-500/10 text-amber-700",
     confirmed: "bg-emerald-500/10 text-emerald-700",
     rejected: "bg-rose-500/10 text-rose-700",
-    cancelled: "bg-muted/30 text-muted-foreground",
+    cancelled: "bg-muted/30 text-jadwa-muted",
   };
 
   return (
     <span
       className={cn(
         "px-2.5 py-1 rounded-full text-[11px] font-semibold whitespace-nowrap",
-        map[status] ?? "bg-muted/20 text-muted-foreground"
+        map[status] ?? "bg-muted/20 text-jadwa-muted",
       )}
     >
       {label ?? status.toUpperCase()}

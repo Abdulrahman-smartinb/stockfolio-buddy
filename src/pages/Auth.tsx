@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, User, Eye, EyeOff, RefreshCcw } from "lucide-react";
+import { User } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
 import { PhoneInput } from "@/components/PhoneInput";
@@ -11,16 +10,15 @@ import logoAR from "../assets/images/JadwaAR.png";
 import logoEN from "../assets/images/JadwaEN.png";
 import { PlatformTermsModal } from "@/components/PlatformTermsModal";
 import { useSearchParams } from "react-router-dom";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-
-const PRIMARY = "#072522";
+import LanguageSwitch from "@/components/LanguageSwitch";
+import PasswordField from "@/components/PasswordField";
+import Field from "@/components/Field";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
   const [searchParams] = useSearchParams();
   const reason = searchParams.get("reason");
-  console.log(`reason`, reason);
 
   const {
     mode,
@@ -84,10 +82,10 @@ const Auth = () => {
             <h2 className="text-4xl font-bold leading-tight">
               {t("home.headline_1")}
               <br />
-              <span style={{ color: PRIMARY }}>{t("home.headline_2")}</span>
+              <span>{t("home.headline_2")}</span>
             </h2>
 
-            <p className="text-lg text-muted-foreground max-w-md">
+            <p className="text-lg text-jadwa-muted max-w-md">
               {t("home.subtitle")}
             </p>
           </motion.div>
@@ -139,7 +137,7 @@ const Auth = () => {
                   className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
                     mode === tab
                       ? "bg-[#988662] shadow text-white"
-                      : "text-muted-foreground"
+                      : "text-jadwa-muted"
                   }`}
                 >
                   {tab === "login" ? t("auth.sign_in") : t("auth.register")}
@@ -162,7 +160,7 @@ const Auth = () => {
 
                   handleSubmit(e);
                 }}
-                className="space-y-4"
+                className="space-y-3"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -181,7 +179,7 @@ const Auth = () => {
 
                 {/* Phone */}
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">
+                  <label className="text-xs font-medium text-jadwa-muted mb-1 block">
                     {t("auth.phone_number")}
                   </label>
                   <PhoneInput
@@ -248,12 +246,17 @@ const Auth = () => {
                     isRtl={isRtl}
                   />
                 )*/}
+                {mode === "login" && (
+                  <p className="text-sm cursor-pointer text-jadwa">
+                    {t("auth.forgot_password")}
+                  </p>
+                )}
 
                 {/* Submit */}
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-primary hover:bg-[#988662] "
+                  className="w-full bg-primary hover:bg-[#988662]"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -336,104 +339,3 @@ const Auth = () => {
 };
 
 export default Auth;
-
-/* ================= Small Helpers ================= */
-
-const Field = ({ label, icon, value, onChange }: any) => (
-  <div>
-    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-      {label}
-    </label>
-    <div className="relative">
-      <span className="absolute ms-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-        {icon}
-      </span>
-      <Input
-        className="ps-10 h-11"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-      />
-    </div>
-  </div>
-);
-
-const PasswordField = ({
-  label,
-  value,
-  show,
-  toggle,
-  onChange,
-  isRtl,
-  hint,
-  numericOnly = false,
-  maxLength,
-}: any) => (
-  <div>
-    <label className="text-xs font-medium text-muted-foreground mb-1 block">
-      {label}
-    </label>
-
-    <div className="relative">
-      <Lock className="absolute ms-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-      <Input
-        type={show ? "text" : "password"}
-        inputMode={numericOnly ? "numeric" : "text"}
-        pattern={numericOnly ? "[0-9]*" : undefined}
-        maxLength={maxLength}
-        className="ps-10 pr-10 h-11"
-        value={value}
-        onChange={(e) => {
-          const val = numericOnly
-            ? e.target.value.replace(/\D/g, "")
-            : e.target.value;
-          onChange(val);
-        }}
-      />
-
-      <button
-        type="button"
-        onClick={toggle}
-        className={cn(
-          "absolute top-1/2 -translate-y-1/2 text-muted-foreground",
-          isRtl ? "left-3" : "right-3",
-        )}
-      >
-        {show ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-      </button>
-    </div>
-
-    {hint && <p className="mt-1 text-[11px] text-muted-foreground">{hint}</p>}
-  </div>
-);
-
-const LanguageSwitch = () => {
-  const { i18n } = useTranslation();
-  const isAr = i18n.language === "ar";
-
-  return (
-    <button
-      onClick={() => i18n.changeLanguage(isAr ? "en" : "ar")}
-      className="
-          flex items-center gap-1
-          px-3 py-1.5 rounded-full
-          border border-border
-          bg-[#fafafa]
-          text-xs font-semibold text-[#042623]
-          transition
-          active:scale-[0.97]
-        "
-    >
-      {isAr ? (
-        <span className="font-tajawal pt-0.5">العربية</span>
-      ) : (
-        <span className="font-google">English</span>
-      )}
-      <RefreshCcw className="w-4 h-4" />
-      {isAr ? (
-        <span className="font-google"> English </span>
-      ) : (
-        <span className="font-tajawal pt-0.5"> العربية </span>
-      )}
-    </button>
-  );
-};

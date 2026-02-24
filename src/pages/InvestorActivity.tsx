@@ -26,7 +26,7 @@ const InvestorActivity = () => {
         {/* My Shares */}
         <SectionCard
           title={t("activity.my_shares")}
-          icon={<Wallet className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<Wallet className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />}
           onRefresh={refetchAll}
           onNavigate={() => navigate("/Activity/MyShares")}
           isLoading={isLoading}
@@ -39,7 +39,7 @@ const InvestorActivity = () => {
                 <p className="truncate text-sm md:text-lg font-medium md:font-semibold text-[#042623]">
                   {isRtl ? asset?.fund?.nameAr : asset.fund?.fullLegalName}
                 </p>
-                <p className="text-[11px] md:text-sm text-muted-foreground">
+                <p className="text-[11px] md:text-sm text-jadwa-muted">
                   <span className="font-google mx-1">
                     {formatNumber(asset.shares)}
                   </span>
@@ -55,7 +55,9 @@ const InvestorActivity = () => {
         {/* Transactions */}
         <SectionCard
           title={t("activity.transactions")}
-          icon={<ListOrdered className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={
+            <ListOrdered className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
+          }
           onRefresh={refetchAll}
           onNavigate={() => navigate("/Activity/MyTransactions")}
           isLoading={isLoading}
@@ -69,7 +71,7 @@ const InvestorActivity = () => {
                   {tx.side === "buy" ? t("activity.buy") : t("activity.sell")} ·{" "}
                   {tx.quantity} {t("activity.shares")}
                 </p>
-                <p className="text-[11px] md:text-sm text-muted-foreground font-google">
+                <p className="text-[11px] md:text-sm text-jadwa-muted font-google">
                   {new Date(tx.createdAt).toLocaleDateString()}
                 </p>
               </div>
@@ -82,7 +84,7 @@ const InvestorActivity = () => {
         {/* Trade Requests */}
         <SectionCard
           title={t("activity.trade_requests")}
-          icon={<Clock className="w-4 h-4 md:w-5 md:h-5" />}
+          icon={<Clock className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />}
           onRefresh={refetchAll}
           onNavigate={() => navigate("/Activity/MyTradeRequest")}
           isLoading={isLoading}
@@ -99,7 +101,7 @@ const InvestorActivity = () => {
                     {t(`activity.${req.tradeType}`)} · {req.source.code}
                   </p>
 
-                  <p className="text-[11px] md:text-sm text-muted-foreground font-google">
+                  <p className="text-[11px] md:text-sm text-jadwa-muted font-google">
                     {formatNumber(req.numberOfShares)} ×{" "}
                     {formatCurrency(req.pricePerShare)}
                   </p>
@@ -168,7 +170,7 @@ const SectionCard = ({
         className={cn(
           "flex items-center justify-between p-4 md:p-6",
           onNavigate &&
-            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl"
+            "cursor-pointer hover:bg-[#042623]/5 transition rounded-t-2xl md:rounded-t-3xl",
         )}
       >
         <div className="flex items-center gap-3">
@@ -202,7 +204,7 @@ const SectionCard = ({
               transition
             "
           >
-            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 text-[#042623]" />
+            <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
           </button>
         )}
       </div>
@@ -263,7 +265,7 @@ const StatusBadge = ({ status }: { status: string }) => {
     <span
       className={cn(
         "inline-flex items-center px-2.5 py-1 rounded-md text-[10px] md:text-xs font-semibold",
-        styles[status] ?? "bg-muted text-muted-foreground"
+        styles[status] ?? "bg-muted text-jadwa-muted",
       )}
     >
       {t(`transactions.${status}`)}

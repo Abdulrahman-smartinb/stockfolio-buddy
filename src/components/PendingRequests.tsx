@@ -71,7 +71,7 @@ const PendingRequests = ({
     <Card>
       <CardHeader className="pb-3">
         <CardTitle className="text-sm sm:text-base flex items-center gap-2">
-          <Clock className="w-4 h-4 text-primary shrink-0" />
+          <Clock className="w-4 h-4 jadwa-icon-gold shrink-0" />
           {t("transactions.pending_requests")}
         </CardTitle>
       </CardHeader>
@@ -106,7 +106,7 @@ const PendingRequests = ({
                   <div
                     className={`mt-0.5 w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
                       isBuy
-                        ? "bg-primary/10 text-primary"
+                        ? "bg-primary/10 jadwa-icon-gold"
                         : "bg-destructive/10 text-destructive"
                     }`}
                   >
@@ -160,7 +160,7 @@ const PendingRequests = ({
                     <p className="text-xs font-medium leading-tight">{title}</p>
 
                     {/* Shares x price */}
-                    <p className="text-[11px] sm:text-xs text-muted-foreground leading-tight">
+                    <p className="text-[11px] sm:text-xs text-jadwa-muted leading-tight">
                       {shares} {t("shares.share_s")} × ${price.toFixed(2)}
                     </p>
                   </div>
@@ -220,7 +220,7 @@ const PendingRequests = ({
                       {t(request.paymentStatus)}
                     </Badge>
 
-                    <span className="text-[9px] text-muted-foreground">
+                    <span className="text-[9px] text-jadwa-muted">
                       {format(new Date(request.createdAt), "MMM dd")}
                     </span>
                   </div>
@@ -229,7 +229,7 @@ const PendingRequests = ({
             );
           })
         ) : (
-          <p className="text-xs text-muted-foreground text-center py-4">
+          <p className="text-xs text-jadwa-muted text-center py-4">
             {t("activity.no_records")}
           </p>
         )}

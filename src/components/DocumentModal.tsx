@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Document, Page } from "react-pdf";
 
 const DocumentModal = ({ title, file, onClose }) => {
   const [numPages, setNumPages] = useState(null);
   const [containerWidth, setContainerWidth] = useState(null);
   const containerRef = useRef(null);
+  const { t } = useTranslation();
 
   const onDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
@@ -32,7 +34,7 @@ const DocumentModal = ({ title, file, onClose }) => {
           <h3 className="text-lg font-semibold">{title}</h3>
           <button
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-jadwa-muted hover:text-foreground"
           >
             ✕
           </button>
@@ -58,8 +60,8 @@ const DocumentModal = ({ title, file, onClose }) => {
           </Document>
         </div>
 
-        <div className="text-xs text-muted-foreground p-3 border-t border-border">
-          Viewing only. Downloading and copying are restricted.
+        <div className="text-xs text-jadwa-muted p-3 border-t border-border">
+          {t("fund.view_only_no_download")}
         </div>
       </div>
     </div>

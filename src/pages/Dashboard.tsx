@@ -62,16 +62,9 @@ const Dashboard = () => {
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
-      {/* ================= MAIN ================= */}
-      <main
-        className="
-          container mx-auto p-4
-          md:px-6
-          lg:px-8
-          xl:max-w-8xl
-        "
-      >
-        {/* ================= Portfolio Slider ================= */}
+      {/* MAIN */}
+      <main className="container mx-auto p-4 md:px-6 lg:px-8 xl:max-w-8xl">
+        {/* Portfolio Slider */}
         <InvestmentsSlider
           t={t}
           isRtl={isRtl}
@@ -79,7 +72,7 @@ const Dashboard = () => {
           loading={portfolioLoading}
         />
 
-        {/* ================= Search + Refresh ================= */}
+        {/* Search + Refresh */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -91,8 +84,8 @@ const Dashboard = () => {
             <div className="relative w-full max-w-md md:max-w-lg lg:max-w-xl">
               <Search
                 className={cn(
-                  "absolute top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground",
-                  isRtl ? "right-4" : "left-4"
+                  "absolute top-1/2 -translate-y-1/2 w-5 h-5 jadwa-icon-gold",
+                  isRtl ? "right-4" : "left-4",
                 )}
               />
 
@@ -103,7 +96,7 @@ const Dashboard = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={cn(
                   "h-12 bg-card text-xs rounded-[999px]",
-                  isRtl ? "pr-12 pl-4" : "pl-12 pr-4"
+                  isRtl ? "pr-12 pl-4" : "pl-12 pr-4",
                 )}
               />
             </div>
@@ -112,14 +105,12 @@ const Dashboard = () => {
             <Button
               disabled={isLoading}
               onClick={refetch}
-              className="
-                h-12 w-12 md:w-32
-                rounded-full
-                shrink-0
-              "
+              className="h-12 w-12 md:w-32 rounded-full shrink-0"
             >
               {/* Mobile */}
-              {!isLoading && <RefreshCw className="w-5 h-5 md:hidden" />}
+              {!isLoading && (
+                <RefreshCw className="w-5 h-5 md:hidden jadwa-icon-brown" />
+              )}
 
               {/* Desktop */}
               <span className="hidden md:inline">{t("app.refresh")}</span>
@@ -145,7 +136,7 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {/* ================= Stocks ================= */}
+        {/* Stocks */}
         <StocksList
           stocks={stocks}
           isLoading={isLoading}
@@ -155,7 +146,7 @@ const Dashboard = () => {
         />
       </main>
 
-      {/* ================= Modals ================= */}
+      {/* Modals */}
       <BuyModal
         stock={selectedStock}
         isOpen={isBuyModalOpen}

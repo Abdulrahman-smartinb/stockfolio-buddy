@@ -85,6 +85,7 @@
     "terms_required": "You must accept the terms before creating an account.",
     "password_hint": "Must be at least 8 characters.",
     "pin_hint": "6-digit numeric PIN.",
+    "forgot_password": "Forgot password?",
 
     "success": {
       "signed_in": "Signed in",
@@ -141,6 +142,24 @@
       "pnl": "P / L"
     },
     "empty": "You don’t own any shares yet"
+  },
+
+  "fund": {
+    "fund_code": "Fund Code",
+    "share_price": "Share Price",
+    "initial_shares": "Initial Shares",
+    "issued": "Issued",
+    "investment_limits": "Investment Limits",
+    "min_shares": "Minimum Shares",
+    "max_shares": "Maximum Shares",
+    "documents": "Documents",
+    "no_documents": "No Documents Add",
+    "fund_info": "Fund Information",
+    "investment_steps": "Investment Steps",
+    "investment_req_form": "Investment Request Form",
+    "user_agreement": "User Agreement",
+    "click_view_document": "Click to preview document",
+    "view_only_no_download": "Viewing only. Downloading and copying are restricted."
   },
 
   "portfolio": {
@@ -303,6 +322,8 @@
   "common": {
     "close": "Close",
     "accept": "Accept",
-    "no_records": "No records yet"
+    "no_records": "No records yet",
+    "yes": "Yes",
+    "no": "No"
   }
 }

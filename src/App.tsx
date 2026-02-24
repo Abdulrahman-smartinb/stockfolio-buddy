@@ -18,6 +18,7 @@ import Settings from "./pages/Settings";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FundDetails from "./pages/FundDetails";
+import "./App.css";
 
 const queryClient = new QueryClient();
 

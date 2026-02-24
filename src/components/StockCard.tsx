@@ -36,7 +36,7 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
             >
               {stock?.fullLegalName}
             </h3>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-jadwa-muted">
               {t(stock?.entityType?.toLowerCase()) || "—"}
             </p>
           </div>
@@ -64,12 +64,12 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
         <p className="text-4xl font-bold text-foreground">
           $ {stock?.sharePrice?.toFixed(2) ?? "—"}
         </p>
-        <p className="text-xs text-muted-foreground">{t("price_per_share")}</p>
+        <p className="text-xs text-jadwa-muted">{t("price_per_share")}</p>
       </div>
 
       {/* Shares */}
       {/* <div className="flex justify-between text-sm mb-2">
-        <span className="text-muted-foreground">Available Shares</span>
+        <span className="text-jadwa-muted">Available Shares</span>
         <span className="font-medium text-foreground">
           {stock?.availableShares ?? 0}
         </span>
@@ -88,7 +88,7 @@ export const StockCard = ({ stock, onAction, index }: StockCardProps) => {
 
       {/* Valuation */}
       {/* <div className="mt-4 pt-4 border-t border-border/50 flex justify-between text-xs">
-        <span className="text-muted-foreground">Valuation</span>
+        <span className="text-jadwa-muted">Valuation</span>
         <span className="font-medium text-foreground">
           {stock?.valuation
             ? `${stock?.currency || "$"} ${formatNumberCompact(

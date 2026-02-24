@@ -95,3 +95,9 @@ export const formatCurrency = (
 
 export const formatShares = (value?: number | string) =>
   formatNumber(value, { maximumFractionDigits: 0 });
+
+export const formatCompact = (n: number) =>
+  new Intl.NumberFormat(undefined, {
+    notation: "compact",
+    maximumFractionDigits: 2,
+  }).format(Number(n || 0));

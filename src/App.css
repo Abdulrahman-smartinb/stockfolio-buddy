@@ -69,3 +69,30 @@
   cursor: pointer;
   color: black;
 }
+
+.jadwa-icon-gold {
+  color: #988662 !important;
+}
+
+.jadwa-icon-brown {
+  color: #b9a779 !important;
+}
+
+.text-jadwa {
+  color: #3f3b38 !important;
+}
+
+.text-jadwa-muted {
+  color: rgba(63, 59, 56, 0.6) !important;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

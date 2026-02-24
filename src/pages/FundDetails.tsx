@@ -6,17 +6,22 @@ import { base_url } from "@/api/GlobalData";
 import { pdfjs } from "react-pdf";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import { formatNumber } from "@/lib/utils";
-import DocumentCard from "@/components/DocumentCard";
+import { useTranslation } from "react-i18next";
+import { RingLoader } from "react-spinners";
+import DocumentRow from "@/components/DocumentCard";
+import { Section } from "./Settings";
+
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const FundDetails = () => {
   const { id } = useParams();
+  const { t } = useTranslation();
   const { data, isLoading } = useGetOneEntityQuery({ id });
 
   if (isLoading)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-lg">Loading fund details...</div>
+        <RingLoader />
       </div>
     );
 
@@ -29,110 +34,101 @@ const FundDetails = () => {
     >
       <Header />
 
-      <main className="container mx-auto px-4 py-10 space-y-10">
-        {/* Fund Header */}
-        <div className="relative bg-card border border-border rounded-3xl shadow-xl p-8 flex flex-col md:flex-row gap-10 overflow-hidden">
-          {/* Subtle background accent */}
-          <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/5 rounded-full blur-3xl" />
+      <main className="container mx-auto px-4 py-8 space-y-8">
+        {/* Top Grid */}
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* LEFT — HERO PANEL */}
+          <div
+            className="lg:col-span-2 rounded-3xl
+      bg-gradient-to-br from-[#072522] via-[#0a2f2c] to-[#0f3a36]
+      text-white p-6 md:p-8 shadow-2xl relative overflow-hidden"
+          >
+            <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/20 blur-3xl rounded-full opacity-30" />
 
-          <img
-            src={`/uploads/${fund?.logo}`}
-            alt={fund?.fullLegalName}
-            className="w-28 h-28 md:w-32 md:h-32 object-contain rounded-2xl border bg-background p-4 shadow-sm"
-            draggable={false}
-          />
+            <div className="relative flex items-center gap-5">
+              <img
+                src={`${base_url}/InvestmentFunds/${fund?.logo}`}
+                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 p-3"
+                draggable={false}
+              />
 
-          <div className="flex-1 space-y-5 relative">
-            <div>
-              <h1 className="text-3xl md:text-4xl font-bold tracking-tight">
-                {fund?.fullLegalName}
-              </h1>
-              <p className="text-muted-foreground text-lg mt-1">
-                {fund?.nameAr}
-              </p>
+              <div>
+                <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight">
+                  {fund?.fullLegalName}
+                </h1>
+                <p className="text-sm text-white/60 mt-1">{fund?.nameAr}</p>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <InfoCard label="Fund Code" value={fund?.code} />
-              <InfoCard label="Share Price" value={`$${fund?.sharePrice}`} />
-              <InfoCard
-                label="Initial Shares"
-                value={formatNumber(fund?.initialShares)}
+            <div className="mt-6 flex flex-wrap gap-3">
+              <HeroBadge label={t("fund.fund_code")} value={fund?.code} />
+              <HeroBadge
+                label={t("fund.share_price")}
+                value={`$${fund?.sharePrice}`}
               />
-              <InfoCard
-                label="Issued"
-                value={fund?.shareIssued ? "Yes" : "No"}
+              <HeroBadge
+                label={t("fund.issued")}
+                value={fund?.shareIssued ? t("common.yes") : t("common.no")}
               />
             </div>
           </div>
+
+          {/* RIGHT — STATS */}
+          <div className="grid grid-cols-2 gap-4">
+            <StatTile
+              label={t("fund.initial_shares")}
+              value={formatNumber(fund?.initialShares)}
+            />
+            <StatTile
+              label={t("fund.min_shares")}
+              value={formatNumber(fund?.minInvestShare)}
+            />
+            <StatTile
+              label={t("fund.min_shares")}
+              value={formatNumber(fund?.maxInvestShare)}
+            />
+            <StatTile
+              label={t("fund.share_price")}
+              value={`$${fund?.sharePrice}`}
+            />
+          </div>
         </div>
 
-        {/* Investment Info */}
-        <div className="bg-card border border-border rounded-3xl shadow-lg p-8 space-y-6">
-          <h2 className="text-2xl font-semibold tracking-tight">
-            Investment Limits
+        {/* DOCUMENTS SECTION */}
+        <div className="rounded-3xl border border-border/50 bg-muted/30 p-6">
+          <h2 className="text-lg md:text-xl font-semibold mb-6">
+            {t("fund.documents")}
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-muted/50 to-muted p-6">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                Minimum Shares
-              </p>
-              <p className="text-3xl font-bold mt-2">
-                {formatNumber(fund?.minInvestShare)}
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-muted/50 to-muted p-6">
-              <p className="text-xs uppercase tracking-wide text-muted-foreground">
-                Maximum Shares
-              </p>
-              <p className="text-3xl font-bold mt-2">
-                {formatNumber(fund?.maxInvestShare)}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Documents Section */}
-        <div className="space-y-8">
-          <h2 className="text-2xl font-semibold">Documents</h2>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {!fund?.fundInfoFile &&
-              !fund?.investingStepsFile &&
-              !fund?.investingRequestFile &&
-              !fund?.userAgreementFile && (
-                <h3 className="text-lg">No documents added</h3>
-              )}
+          <Section>
             {fund?.fundInfoFile && (
-              <DocumentCard
-                title="Fund Information"
+              <DocumentRow
+                title={t("fund.fund_info")}
                 file={`${base_url}/InvestmentFunds/${fund?.fundInfoFile}`}
               />
             )}
 
             {fund?.investingStepsFile && (
-              <DocumentCard
-                title="Investment Steps"
+              <DocumentRow
+                title={t("fund.investment_steps")}
                 file={`${base_url}/InvestmentFunds/${fund?.investingStepsFile}`}
               />
             )}
 
             {fund?.investingRequestFile && (
-              <DocumentCard
-                title="Investment Request Form"
+              <DocumentRow
+                title={t("fund.investment_req_form")}
                 file={`${base_url}/InvestmentFunds/${fund?.investingRequestFile}`}
               />
             )}
 
             {fund?.userAgreementFile && (
-              <DocumentCard
-                title="User Agreement"
+              <DocumentRow
+                title={t("fund.user_agreement")}
                 file={`${base_url}/InvestmentFunds/${fund?.userAgreementFile}`}
               />
             )}
-          </div>
+          </Section>
         </div>
       </main>
 
@@ -141,12 +137,28 @@ const FundDetails = () => {
   );
 };
 
-const InfoCard = ({ label, value }) => (
-  <div className="rounded-xl border border-border bg-muted/40 p-4 hover:bg-muted/70 transition-colors duration-200">
-    <p className="text-xs uppercase tracking-wide text-muted-foreground">
+const HeroBadge = ({ label, value }) => (
+  <div className="bg-white/10 px-4 py-2 rounded-xl">
+    <p className="text-[10px] uppercase text-white/50 tracking-wide">{label}</p>
+    <p className="text-sm font-medium">{value}</p>
+  </div>
+);
+
+const StatTile = ({ label, value }) => (
+  <div
+    className="
+    rounded-2xl
+    bg-card
+    border border-border/50
+    p-4
+    transition-all duration-300
+    hover:-translate-y-1 hover:shadow-xl
+  "
+  >
+    <p className="text-[10px] uppercase text-muted-foreground tracking-wide">
       {label}
     </p>
-    <p className="text-xl font-semibold mt-1 tracking-tight">{value}</p>
+    <p className="mt-1 text-lg md:text-xl font-semibold">{value}</p>
   </div>
 );
 

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   ListOrdered,
   RefreshCcw,
@@ -33,7 +32,7 @@ const MyTransactions = () => {
         >
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-xs md:text-sm text-muted-foreground">
+              <p className="text-xs md:text-sm text-jadwa-muted">
                 {t("transactions.history")}
               </p>
               <p className="text-lg md:text-2xl font-bold text-[#042623] font-google tabular-nums">
@@ -52,7 +51,7 @@ const MyTransactions = () => {
               "
               aria-label={t("app.refresh")}
             >
-              <RefreshCcw className="w-4 h-4 md:w-5 md:h-5" />
+              <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
             </button>
           </div>
         </div>
@@ -67,7 +66,7 @@ const MyTransactions = () => {
               flex items-center justify-center
             "
           >
-            <ListOrdered className="w-4 h-4 md:w-5 md:h-5 text-[#042623]" />
+            <ListOrdered className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
           </span>
           {t("transactions.history")}
         </div>
@@ -103,13 +102,13 @@ const MyTransactions = () => {
                           "h-8 w-8 md:h-10 md:w-10 rounded-lg md:rounded-xl flex items-center justify-center",
                           isBuy
                             ? "bg-emerald-500/15 text-emerald-700"
-                            : "bg-rose-500/15 text-rose-700"
+                            : "bg-rose-500/15 text-rose-700",
                         )}
                       >
                         {isBuy ? (
-                          <ArrowDownLeft className="w-4 h-4 md:w-5 md:h-5" />
+                          <ArrowDownLeft className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
                         ) : (
-                          <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5" />
+                          <ArrowUpRight className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
                         )}
                       </div>
 
@@ -122,7 +121,7 @@ const MyTransactions = () => {
                           {t("activity.shares")}
                         </p>
 
-                        <p className="text-xs md:text-sm text-muted-foreground">
+                        <p className="text-xs md:text-sm text-jadwa-muted">
                           {t("shares.price_per_share")} ·{" "}
                           <span className="font-google tabular-nums">
                             {formatCurrency(tx.pricePerShare)}
@@ -137,7 +136,7 @@ const MyTransactions = () => {
                         {formatCurrency(total)}
                       </p>
 
-                      <p className="text-xs md:text-sm text-muted-foreground font-google tabular-nums">
+                      <p className="text-xs md:text-sm text-jadwa-muted font-google tabular-nums">
                         {new Date(tx.createdAt).toLocaleDateString()}
                       </p>
                     </div>

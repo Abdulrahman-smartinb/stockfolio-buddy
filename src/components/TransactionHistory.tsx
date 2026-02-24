@@ -72,7 +72,7 @@ const TransactionHistory = ({
                 </div>
 
                 {/* DETAILS */}
-                <div className="flex justify-between text-xs text-muted-foreground">
+                <div className="flex justify-between text-xs text-jadwa-muted">
                   <span>
                     {tx.shares} {t("activity.shares")} × ${tx.sharePrice}
                   </span>
@@ -82,7 +82,7 @@ const TransactionHistory = ({
             );
           })
         ) : (
-          <p className="text-xs text-muted-foreground text-center py-4">
+          <p className="text-xs text-jadwa-muted text-center py-4">
             {t("activity.no_records")}
           </p>
         )}
@@ -132,7 +132,7 @@ const TransactionHistory = ({
               </PaginationItem>
             </PaginationContent>
           </Pagination>
-          <div className="flex items-center justify-end gap-2 text-xs text-muted-foreground sm:w-100">
+          <div className="flex items-center justify-end gap-2 text-xs text-jadwa-muted sm:w-100">
             <span>{t("transactions.rows_per_page")}</span>
             <select
               value={limit}

@@ -21,12 +21,12 @@ export function NotificationItem({ notification, onRead }: Props) {
         </p>
 
         {notification?.message && (
-          <p className="text-xs text-muted-foreground mt-0.5">
+          <p className="text-xs text-jadwa-muted mt-0.5">
             {t(`notifications.types.${notification?.message.toLowerCase()}`)}
           </p>
         )}
 
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="text-[10px] text-jadwa-muted mt-1">
           {new Date(notification?.createdAt).toLocaleString()}
         </p>
       </div>
@@ -37,7 +37,7 @@ export function NotificationItem({ notification, onRead }: Props) {
         className="opacity-0 opacity-100 transition"
         title="Mark as read"
       >
-        <X className="h-4 w-4 text-foreground" />
+        <X className="h-4 w-4 jadwa-icon-gold" />
       </button>
     </div>
   );
