@@ -120,6 +120,13 @@ const Profile = () => {
                       isRtl ? "left-4" : "right-4",
                     )}
                   >
+                    <button
+                      onClick={refetchRole}
+                      className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 rounded-xl ring-1 ring-border/60 bg-muted/30 hover:bg-muted/50 transition flex items-center justify-center"
+                    >
+                      <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                    </button>
+
                     {isApplicant && (
                       <button
                         onClick={() => {
@@ -142,11 +149,11 @@ const Profile = () => {
                               ${
                                 reviewStatus === "draft"
                                   ? "ring-primary/30 bg-primary/10 text-text-foreground hover:bg-primary/20"
-                                  : "ring-muted bg-muted text-jadwa-muted cursor-not-allowed"
+                                  : "ring-muted bg-muted text-muted-foreground cursor-not-allowed"
                               }
                             `}
                       >
-                        <CircleCheckBig className="w-4 h-4 shrink-0 jadwa-icon-gold" />
+                        <CircleCheckBig className="w-4 h-4 shrink-0 text-jadwa-gold" />
 
                         <span className="font-semibold text-sm leading-none">
                           {reviewStatus === "draft"
@@ -155,6 +162,16 @@ const Profile = () => {
                         </span>
                       </button>
                     )}
+
+                    <button
+                      onClick={logout}
+                      className="h-8 w-8 sm:w-auto sm:px-3 rounded-xl ring-1 ring-rose-500/30 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 transition inline-flex items-center justify-center sm:gap-2"
+                    >
+                      <LogOut className="w-4 h-4 text-jadwa-gold" />
+                      <span className="hidden sm:inline font-bold text-sm">
+                        {t("nav.logout")}
+                      </span>
+                    </button>
                   </div>
 
                   {/* ===== Content ===== */}
@@ -204,14 +221,14 @@ const Profile = () => {
                         )} */}
                       </div>
 
-                      {/* <p className="text-sm md:text-lg text-jadwa-muted mt-2">
+                      {/* <p className="text-sm md:text-lg text-muted-foreground mt-2">
                         {t("profile.member_since")}{" "}
                         {format(user?.createdAt || Date.now(), "MMM yyyy")}
                       </p> */}
 
                       {/* ===== Role ===== */}
 
-                      <div className="mt-4 space-y-1 text-sm md:text-lg text-jadwa-muted font-google">
+                      <div className="mt-4 space-y-1 text-sm md:text-lg text-muted-foreground font-google">
                         <div>{user?.email}</div>
                         <div>
                           <LtrValue>{user?.phone}</LtrValue>
@@ -226,64 +243,44 @@ const Profile = () => {
               <motion.div variants={itemVariants}>
                 <Card className="rounded-3xl border-border/60 bg-background shadow-sm">
                   <CardHeader className="flex-row items-center justify-between gap-3 pb-4">
-                    <div className="flex gap-2">
-                      {/* LEFT SIDE: Title */}
-                      <CardTitle className="flex items-center gap-3 text-lg md:text-xl font-extrabold">
-                        <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
-                          <User className="w-5 h-5 md:w-6 md:h-6 jadwa-icon-gold" />
-                        </div>
+                    {/* LEFT SIDE: Title */}
+                    <CardTitle className="flex items-center gap-3 text-lg md:text-xl font-extrabold">
+                      <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+                        <User className="w-5 h-5 md:w-6 md:h-6 text-jadwa-gold" />
+                      </div>
 
-                        <span>{t("profile.personal_info")}</span>
-                      </CardTitle>
-                    </div>
+                      <span>{t("profile.personal_info")}</span>
+                    </CardTitle>
 
-                    <div className="flex gap-2">
-                      <button
-                        onClick={refetchRole}
-                        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 rounded-xl ring-1 ring-border/60 bg-muted/30 hover:bg-muted/50 transition flex items-center justify-center"
-                      >
-                        <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
-                      </button>
-                      <button
-                        onClick={() => setOpenEditModal(true)}
-                        className="h-8 w-8 sm:w-auto sm:px-3 rounded-xl ring-1 ring-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition inline-flex items-center justify-center sm:gap-2"
-                      >
-                        <PenBox className="w-4 h-4 jadwa-icon-gold" />
-                        <span className="hidden sm:inline font-bold text-sm">
-                          {t("profile.edit")}
-                        </span>
-                      </button>
-
-                      <button
-                        onClick={logout}
-                        className="h-8 w-8 sm:w-auto sm:px-3 rounded-xl ring-1 ring-rose-500/30 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 transition inline-flex items-center justify-center sm:gap-2"
-                      >
-                        <LogOut className="w-4 h-4 jadwa-icon-gold" />
-                        <span className="hidden sm:inline font-bold text-sm">
-                          {t("nav.logout")}
-                        </span>
-                      </button>
-                    </div>
+                    <button
+                      onClick={() => setOpenEditModal(true)}
+                      className="h-8 w-8 sm:w-auto sm:px-3 rounded-xl ring-1 ring-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition inline-flex items-center justify-center sm:gap-2"
+                    >
+                      <PenBox className="w-4 h-4 text-jadwa-gold" />
+                      <span className="hidden sm:inline font-bold text-sm">
+                        {t("profile.edit")}
+                      </span>
+                    </button>
                   </CardHeader>
 
                   <CardContent className="grid gap-4 sm:grid-cols-3 ">
                     <InfoBlock
                       icon={
-                        <Mail className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
+                        <Mail className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
                       }
                       label={t("profile.email")}
                       value={user?.email}
                     />
                     <InfoBlock
                       icon={
-                        <Phone className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
+                        <Phone className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
                       }
                       label={t("profile.phone")}
                       value={<LtrValue>{user?.phone}</LtrValue>}
                     />
                     <InfoBlock
                       icon={
-                        <Calendar className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />
+                        <Calendar className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
                       }
                       label={t("profile.birth_date")}
                       value={
@@ -354,7 +351,7 @@ const InfoBlock = ({ icon, label, value }: any) => (
         {icon}
       </div>
       <div>
-        <p className="text-xs md:text-sm text-jadwa-muted">{label}</p>
+        <p className="text-xs md:text-sm text-muted-foreground">{label}</p>
         <p className="text-sm md:text-lg font-semibold font-google">
           {value || "—"}
         </p>

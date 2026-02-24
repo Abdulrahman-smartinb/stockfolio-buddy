@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { RingLoader } from "react-spinners";
 import DocumentRow from "@/components/DocumentCard";
 import { Section } from "./Settings";
+import { formatCurrency } from "@/hooks/helpers";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
@@ -46,11 +47,19 @@ const FundDetails = () => {
             <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/20 blur-3xl rounded-full opacity-30" />
 
             <div className="relative flex items-center gap-5">
-              <img
-                src={`${base_url}/InvestmentFunds/${fund?.logo}`}
-                className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 p-3"
-                draggable={false}
-              />
+              {fund?.logo ? (
+                <img
+                  src={`${base_url}/InvestmentFunds/${fund.logo}`}
+                  className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 p-3"
+                  draggable={false}
+                />
+              ) : (
+                <span className="text-sm font-extrabold text-foreground/70">
+                  {String(fund?.symbol || fund?.fullLegalName)
+                    .slice(0, 2)
+                    .toUpperCase()}
+                </span>
+              )}
 
               <div>
                 <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight">
@@ -64,7 +73,7 @@ const FundDetails = () => {
               <HeroBadge label={t("fund.fund_code")} value={fund?.code} />
               <HeroBadge
                 label={t("fund.share_price")}
-                value={`$${fund?.sharePrice}`}
+                value={formatCurrency(fund?.sharePrice)}
               />
               <HeroBadge
                 label={t("fund.issued")}
@@ -84,12 +93,12 @@ const FundDetails = () => {
               value={formatNumber(fund?.minInvestShare)}
             />
             <StatTile
-              label={t("fund.min_shares")}
+              label={t("fund.max_shares")}
               value={formatNumber(fund?.maxInvestShare)}
             />
             <StatTile
               label={t("fund.share_price")}
-              value={`$${fund?.sharePrice}`}
+              value={formatCurrency(fund?.sharePrice)}
             />
           </div>
         </div>

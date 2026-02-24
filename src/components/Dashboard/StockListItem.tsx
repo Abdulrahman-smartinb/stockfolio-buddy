@@ -72,7 +72,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
         <div className="flex flex-col items-center  shrink-0">
           {/* Price */}
           <p
-            className="text-2xl font-semi-bold tracking-tight text-jadwa"
+            className="text-xl font-semi-bold tracking-tight text-jadwa"
             dir="ltr"
           >
             {price != null ? formatCurrency(price) : "—"}
