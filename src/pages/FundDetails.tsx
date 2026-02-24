@@ -99,25 +99,39 @@ const FundDetails = () => {
           <h2 className="text-2xl font-semibold">Documents</h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <DocumentCard
-              title="Fund Information"
-              file={`${base_url}/InvestmentFunds/${fund?.fundInfoFile}`}
-            />
+            {!fund?.fundInfoFile &&
+              !fund?.investingStepsFile &&
+              !fund?.investingRequestFile &&
+              !fund?.userAgreementFile && (
+                <h3 className="text-lg">No documents added</h3>
+              )}
+            {fund?.fundInfoFile && (
+              <DocumentCard
+                title="Fund Information"
+                file={`${base_url}/InvestmentFunds/${fund?.fundInfoFile}`}
+              />
+            )}
 
-            <DocumentCard
-              title="Investment Steps"
-              file={`${base_url}/InvestmentFunds/${fund?.investingStepsFile}`}
-            />
+            {fund?.investingStepsFile && (
+              <DocumentCard
+                title="Investment Steps"
+                file={`${base_url}/InvestmentFunds/${fund?.investingStepsFile}`}
+              />
+            )}
 
-            <DocumentCard
-              title="Investment Request Form"
-              file={`${base_url}/InvestmentFunds/${fund?.investingRequestFile}`}
-            />
+            {fund?.investingRequestFile && (
+              <DocumentCard
+                title="Investment Request Form"
+                file={`${base_url}/InvestmentFunds/${fund?.investingRequestFile}`}
+              />
+            )}
 
-            <DocumentCard
-              title="User Agreement"
-              file={`${base_url}/InvestmentFunds/${fund?.userAgreementFile}`}
-            />
+            {fund?.userAgreementFile && (
+              <DocumentCard
+                title="User Agreement"
+                file={`${base_url}/InvestmentFunds/${fund?.userAgreementFile}`}
+              />
+            )}
           </div>
         </div>
       </main>
