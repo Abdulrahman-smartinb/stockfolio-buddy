@@ -187,8 +187,13 @@
   "payments": {
     "paid": "مدفوع",
     "unpaid": "غير مدفوع",
-    "payment_method": "طريقة الدفع المفضلة",
+    "preffered_payment_method": "طريقة الدفع المفضلة",
     "payment_required": "طريقة الدفع مطلوبة",
+    "payment_method": "طرق الدفع",
+    "select_view_details": "حدد طريقة لعرض تفاصيل الدفع",
+    "payment_details": "تفاصيل الدفع",
+    "scan_to_pay": "افحص للدفع",
+    "select_payment_above": "يرجى اختيار طريقة الدفع أعلاه",
 
     "bank": {
       "title": "حوالة بنكية (سورية)",
@@ -208,6 +213,12 @@
       "wallet_address": "عنوان المحفظة",
       "wallet_qr": "رمز QR للمحفظة (اختياري)",
       "network": "شبكة التحويل"
+    },
+
+    "cash": {
+      "branch": "المركز",
+      "address": "العنوان",
+      "currency": "Currency"
     }
   },
 
@@ -222,6 +233,7 @@
     "passport_exp_date": "تاريخ انتهاء صلاحية جواز السفر",
     "live_photo": "الصورة الحية",
     "id_photo": "صورة الهوية أو جواز السفر",
+    "id_photo_back": "صورة الهوية أو جواز السفر من الخلف",
     "photo_preview": "معاينة الصورة",
     "permission_denied": "تم رفض الوصول للكاميرا!",
     "permission_denied_desc": "يرجى السماح باستخدام الكاميرا لالتقاط الصورة",

@@ -3,12 +3,14 @@ import { useTranslation } from "react-i18next";
 
 interface GlobalModalProps {
   isOpen: boolean;
-  onSubmit: () => void;
+  onSubmit?: () => void;
   title: string;
   content: any;
-  isLoading: boolean;
+  isLoading?: boolean;
   butText?: string;
   onClose: () => void;
+  isDisplay: boolean;
+  negativeButText: string;
 }
 
 const GlobalModal = ({
@@ -19,6 +21,8 @@ const GlobalModal = ({
   content,
   isLoading = false,
   butText,
+  isDisplay = false,
+  negativeButText = "cancel",
 }: GlobalModalProps) => {
   const { t } = useTranslation();
   if (!isOpen) return null;
@@ -54,19 +58,21 @@ const GlobalModal = ({
             onClick={onClose}
             disabled={isLoading}
           >
-            <span>{t("cancel")}</span>
+            <span>{t(negativeButText)}</span>
           </button>
-          <button
-            className="flex items-center gap-1 text-xs sm:text-sm text-primary"
-            onClick={onSubmit}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <span>{t("loading")}</span>
-            ) : (
-              butText || <span>{t("send_request")}</span>
-            )}
-          </button>
+          {!isDisplay && (
+            <button
+              className="flex items-center gap-1 text-xs sm:text-sm text-primary"
+              onClick={onSubmit}
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <span>{t("loading")}</span>
+              ) : (
+                butText || <span>{t("send_request")}</span>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </div>

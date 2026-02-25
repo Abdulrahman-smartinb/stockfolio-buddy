@@ -44,6 +44,8 @@ const Dashboard = () => {
     isSubmitting,
     idPhoto,
     setIdPhoto,
+    idPhotoBack,
+    setIdPhotoBack,
     livePhoto,
     setLivePhoto,
     livePhotoPreview,
@@ -180,6 +182,8 @@ const Dashboard = () => {
         setPassportExpDate={setPassportExpDate}
         idPhoto={idPhoto}
         setIdPhoto={setIdPhoto}
+        idPhotoBack={idPhotoBack}
+        setIdPhotoBack={setIdPhotoBack}
         livePhoto={livePhoto}
         setLivePhoto={setLivePhoto}
         livePhotoPreview={livePhotoPreview}

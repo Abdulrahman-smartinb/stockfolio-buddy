@@ -22,6 +22,8 @@ export const VerifyAccountModal = ({
   setPassportExpDate,
   idPhoto,
   setIdPhoto,
+  idPhotoBack,
+  setIdPhotoBack,
   livePhoto,
   setLivePhoto,
   livePhotoPreview,
@@ -35,6 +37,7 @@ export const VerifyAccountModal = ({
 
   const disableSubmit =
     !idPhoto ||
+    !idPhotoBack ||
     !livePhoto ||
     (!idNumber && (!passportNumber || !passportExpDate));
 
@@ -146,6 +149,17 @@ export const VerifyAccountModal = ({
                     accept="image/*,.pdf"
                     className="h-10 text-sm"
                     onChange={(e) => setIdPhoto(e.target.files?.[0] ?? null)}
+                  />
+                </Field>
+
+                <Field label={t("verification.id_photo_back")} required>
+                  <Input
+                    type="file"
+                    accept="image/*,.pdf"
+                    className="h-10 text-sm"
+                    onChange={(e) =>
+                      setIdPhotoBack(e.target.files?.[0] ?? null)
+                    }
                   />
                 </Field>
 

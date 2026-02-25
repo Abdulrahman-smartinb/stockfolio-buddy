@@ -188,8 +188,13 @@
   "payments": {
     "paid": "Paid",
     "unpaid": "Unpaid",
-    "payment_method": "Preferred payment method",
+    "preffered_payment_method": "Preferred payment method",
     "payment_required": "Payment method is required",
+    "payment_method": "Payment method",
+    "select_view_details": "Select a method to view payment details",
+    "payment_details": "Payment details",
+    "scan_to_pay": "Scan to pay",
+    "select_payment_above": "Please select a payment method above",
 
     "bank": {
       "title": "Bank transfer (Syria)",
@@ -209,6 +214,12 @@
       "wallet_address": "Wallet address",
       "wallet_qr": "Wallet QR (Optional)",
       "network": "Transfer network"
+    },
+
+    "cash": {
+      "branch": "Branch",
+      "address": "Address",
+      "currency": "Currency"
     }
   },
 
@@ -222,7 +233,8 @@
     "passport_number": "Passport number",
     "passport_exp_date": "Passport expiry date",
     "live_photo": "Live photo",
-    "id_photo": "ID or passport photo",
+    "id_photo": "ID document photo",
+    "id_photo_back": "ID document photo from the back",
     "photo_preview": "Photo preview",
     "permission_denied": "Camera access denied!",
     "permission_denied_desc": "Please allow the use of the camera to take the photo",

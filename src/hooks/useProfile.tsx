@@ -48,7 +48,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId }
+    { skip: !isApplicant || !profileId },
   );
 
   const {
@@ -57,7 +57,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId }
+    { skip: !isInvestor || !profileId },
   );
 
   // Load correct profile
@@ -92,7 +92,7 @@ export const useProfile = () => {
     if (!user) return;
 
     let detectedCountry = COUNTRIES.find((c) =>
-      user.phone?.startsWith(c.dialCode)
+      user.phone?.startsWith(c.dialCode),
     );
 
     let localPhone = user.phone || "";
@@ -155,7 +155,7 @@ export const useProfile = () => {
       // 🔥 Recombine E.164 phone
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
-          (c) => c.code === editData.countryCode
+          (c) => c.code === editData.countryCode,
         );
 
         if (selectedCountry) {
@@ -196,6 +196,7 @@ export const useProfile = () => {
   // VERIFY SUBMIT
   // =========================
   const [idPhoto, setIdPhoto] = useState<File | null>(null);
+  const [idPhotoBack, setIdPhotoBack] = useState<File | null>(null);
   const [livePhoto, setLivePhoto] = useState<File | null>(null);
   const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
   const [email, setEmail] = useState("");
@@ -208,6 +209,7 @@ export const useProfile = () => {
 
     if (
       !idPhoto ||
+      !idPhotoBack ||
       !livePhoto ||
       (!idNumber && (!passportNumber || !passportExpDate))
     ) {
@@ -222,9 +224,11 @@ export const useProfile = () => {
       const formData = new FormData();
 
       const compressedId = await compressImage(idPhoto);
+      const compressedIdBack = await compressImage(idPhotoBack);
       const compressedLive = await compressImage(livePhoto);
 
       formData.append("idPhoto", compressedId);
+      formData.append("idPhotoBack", compressedIdBack);
       formData.append("livePhoto", compressedLive);
       formData.append("passportNumber", passportNumber);
       formData.append("passportExpDate", passportExpDate);
@@ -257,6 +261,7 @@ export const useProfile = () => {
     setIdNumber("");
     setPassportNumber("");
     setIdPhoto(null);
+    setIdPhotoBack(null);
     setLivePhoto(null);
     setLivePhotoPreview(null);
   };
@@ -296,6 +301,8 @@ export const useProfile = () => {
 
     idPhoto,
     setIdPhoto,
+    idPhotoBack,
+    setIdPhotoBack,
     livePhoto,
     setLivePhoto,
     livePhotoPreview,

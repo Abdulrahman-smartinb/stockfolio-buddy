@@ -62,6 +62,8 @@ const Profile = () => {
     setOpenVerify,
     idPhoto,
     setIdPhoto,
+    idPhotoBack,
+    setIdPhotoBack,
     livePhoto,
     setLivePhoto,
     idNumber,
@@ -325,6 +327,8 @@ const Profile = () => {
         setPassportExpDate={setPassportExpDate}
         idPhoto={idPhoto}
         setIdPhoto={setIdPhoto}
+        idPhotoBack={idPhotoBack}
+        setIdPhotoBack={setIdPhotoBack}
         livePhoto={livePhoto}
         setLivePhoto={setLivePhoto}
         livePhotoPreview={livePhotoPreview}

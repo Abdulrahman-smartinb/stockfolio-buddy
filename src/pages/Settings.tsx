@@ -1,19 +1,30 @@
-import { Globe, Moon, Bell, LogOut, User, RefreshCcw } from "lucide-react";
+import {
+  Globe,
+  Moon,
+  Bell,
+  LogOut,
+  User,
+  RefreshCcw,
+  Banknote,
+  QrCode,
+} from "lucide-react";
 import { Header } from "@/components/Header";
-import { useTranslation } from "react-i18next";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
 import { Footer } from "@/components/Footer";
-
-/* ================= Page ================= */
+import useSettings from "@/hooks/useSettings";
+import PaymentMethodsModal from "@/components/PaymentMethodsModal";
 
 const Settings = () => {
-  const { t, i18n } = useTranslation();
-  const navigate = useNavigate();
-  const { logout } = useAuth();
-
-  const isRtl = i18n.language === "ar";
+  const {
+    t,
+    i18n,
+    navigate,
+    logout,
+    isRtl,
+    openPaymentMethods,
+    setOpenPaymentMethods,
+    data,
+  } = useSettings();
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -73,6 +84,21 @@ const Settings = () => {
               </span>
             }
           />
+
+          <SettingRow
+            icon={<Banknote className="w-5 h-5 jadwa-icon-gold" />}
+            label={t("payments.payment_method")}
+            right={
+              <span
+                className="text-sm text-jadwa-muted cursor-pointer"
+                onClick={() => {
+                  setOpenPaymentMethods(true);
+                }}
+              >
+                <QrCode />
+              </span>
+            }
+          />
         </Section>
 
         {/* Notifications */}
@@ -94,6 +120,13 @@ const Settings = () => {
           />
         </Section>
       </main>
+
+      <PaymentMethodsModal
+        isOpen={openPaymentMethods}
+        onClose={() => setOpenPaymentMethods(false)}
+        data={data}
+        t={t}
+      />
       <Footer />
     </div>
   );
@@ -165,9 +198,6 @@ const SettingRow = ({
   );
 };
 
-const Arrow = ({ isRtl }: { isRtl: boolean }) => (
-  <span className={cn("opacity-40", isRtl ? "rotate-180" : "")}>→</span>
-);
 const Toggle = () => (
   <div className="w-10 h-6 bg-muted rounded-full relative">
     <div className="absolute top-1 left-1 w-4 h-4 bg-white rounded-full shadow" />

@@ -6,12 +6,9 @@ import { CompanyInfo } from "@/interfaces/CompanyInfo";
 export const companyInfoApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     // Get all investment companies
-    getCompanyInfo: builder.query<CompanyInfo[], {}>({
-      query: () => ({
-        url: `${companyInfoEP}?companyId=${companyId}`,
-      }),
-      transformResponse: (response: ApiResponse<CompanyInfo[]>) =>
-        response.data,
+    getCompanyInfo: builder.query<CompanyInfo, {}>({
+      query: () => ({ url: companyInfoEP }),
+      transformResponse: (response: ApiResponse<CompanyInfo>) => response.data,
       providesTags: ["CompanyInfo"],
     }),
   }),
