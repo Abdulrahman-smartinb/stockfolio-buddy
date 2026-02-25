@@ -1,23 +1,19 @@
-import { useParams } from "react-router-dom";
-import { useGetOneEntityQuery } from "@/store/api/investmentEntityApi";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { base_url } from "@/api/GlobalData";
 import { pdfjs } from "react-pdf";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
 import { formatNumber } from "@/lib/utils";
-import { useTranslation } from "react-i18next";
 import { RingLoader } from "react-spinners";
 import DocumentRow from "@/components/DocumentCard";
 import { Section } from "./Settings";
 import { formatCurrency } from "@/hooks/helpers";
+import useFundDetails from "@/hooks/useFundDetails";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const FundDetails = () => {
-  const { id } = useParams();
-  const { t } = useTranslation();
-  const { data, isLoading } = useGetOneEntityQuery({ id });
+  const { fund, isLoading, t } = useFundDetails();
 
   if (isLoading)
     return (
@@ -25,8 +21,6 @@ const FundDetails = () => {
         <RingLoader />
       </div>
     );
-
-  const fund = data?.data;
 
   return (
     <div

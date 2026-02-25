@@ -58,10 +58,54 @@ export const shareTransactionApi = baseApi.injectEndpoints({
       },
       providesTags: ["ShareTransaction"],
     }),
+    getFundTransactions: builder.query({
+      query: ({
+        page = 1,
+        limit = 10,
+        sort = "-createdAt",
+
+        assetType = "InvestmentFund",
+        assetId,
+
+        holderType,
+        holderId,
+
+        type,
+        side,
+      }) => {
+        const params = new URLSearchParams();
+
+        params.set("page", String(page));
+        params.set("limit", String(limit));
+        if (sort) params.set("sort", sort);
+
+        if (assetType) params.set("assetType", assetType);
+        if (assetId) params.set("assetId", assetId);
+
+        if (holderType) params.set("holderType", holderType);
+        if (holderId) params.set("holderId", holderId);
+
+        if (type) params.set("type", type);
+        if (side) params.set("side", side);
+
+        return `${ShareTransactionEP}?${params.toString()}`;
+      },
+      providesTags: (result) =>
+        result?.data
+          ? [
+              ...result.data.map((tx) => ({
+                type: "ShareTransaction",
+                id: tx._id,
+              })),
+              { type: "ShareTransaction", id: "LIST" },
+            ]
+          : [{ type: "ShareTransaction", id: "LIST" }],
+    }),
   }),
   overrideExisting: false,
 });
 
 /* ========= Hooks ========= */
 
-export const { useGetShareTransactionsQuery } = shareTransactionApi;
+export const { useGetShareTransactionsQuery, useGetFundTransactionsQuery } =
+  shareTransactionApi;
