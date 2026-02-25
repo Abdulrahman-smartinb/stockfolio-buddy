@@ -19,7 +19,7 @@ const DocumentRow = ({ title, file }) => {
         tabIndex={0}
         className="
           flex items-center justify-between
-          px-4 py-3
+          px-4 py-1
           transition
           cursor-pointer
           hover:bg-muted/40

@@ -28,6 +28,18 @@ export interface GetShareTransactionsParams {
   side?: ShareSide;
 }
 
+export interface ShareNetTimelineItem {
+  date: string;
+  total: number;
+}
+
+export interface GetShareNetParams {
+  assetType: string;
+  assetId: string;
+  startDate?: string;
+  endDate?: string;
+}
+
 /* ========= API ========= */
 
 export const shareTransactionApi = baseApi.injectEndpoints({
@@ -58,6 +70,7 @@ export const shareTransactionApi = baseApi.injectEndpoints({
       },
       providesTags: ["ShareTransaction"],
     }),
+
     getFundTransactions: builder.query({
       query: ({
         page = 1,
@@ -72,6 +85,9 @@ export const shareTransactionApi = baseApi.injectEndpoints({
 
         type,
         side,
+
+        startDate,
+        endDate,
       }) => {
         const params = new URLSearchParams();
 
@@ -88,6 +104,9 @@ export const shareTransactionApi = baseApi.injectEndpoints({
         if (type) params.set("type", type);
         if (side) params.set("side", side);
 
+        if (startDate) params.set("startDate", startDate);
+        if (endDate) params.set("endDate", endDate);
+
         return `${ShareTransactionEP}?${params.toString()}`;
       },
       providesTags: (result) =>
@@ -101,11 +120,34 @@ export const shareTransactionApi = baseApi.injectEndpoints({
             ]
           : [{ type: "ShareTransaction", id: "LIST" }],
     }),
+    getShareNetInvestment: builder.query<
+      { data: ShareNetTimelineItem[] },
+      GetShareNetParams
+    >({
+      query: ({ assetType, assetId, startDate, endDate }) => {
+        const params = new URLSearchParams();
+
+        params.set("assetType", assetType);
+        params.set("assetId", assetId);
+
+        if (startDate) params.set("startDate", startDate);
+        if (endDate) params.set("endDate", endDate);
+
+        return `api/shares/net-investment?${params.toString()}`;
+      },
+
+      providesTags: (result, error, arg) => [
+        { type: "ShareTransaction", id: arg.assetId },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
 
 /* ========= Hooks ========= */
 
-export const { useGetShareTransactionsQuery, useGetFundTransactionsQuery } =
-  shareTransactionApi;
+export const {
+  useGetShareTransactionsQuery,
+  useGetFundTransactionsQuery,
+  useGetShareNetInvestmentQuery,
+} = shareTransactionApi;

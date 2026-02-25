@@ -7,131 +7,173 @@ import { formatNumber } from "@/lib/utils";
 import { RingLoader } from "react-spinners";
 import DocumentRow from "@/components/DocumentCard";
 import { Section } from "./Settings";
-import { formatCurrency } from "@/hooks/helpers";
 import useFundDetails from "@/hooks/useFundDetails";
+import FundNetFlowChart from "@/components/FundNetFlowChart";
+import { useState } from "react";
+import { formatCurrency } from "@/hooks/helpers";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const FundDetails = () => {
-  const { fund, isLoading, t } = useFundDetails();
+  type RangeType = "24H" | "7D" | "1M" | "3M" | "1Y" | "ALL";
 
-  if (isLoading)
+  const [range, setRange] = useState<RangeType>("1M");
+
+  const { fund, netTimeline, isLoading, netLoading } = useFundDetails(range);
+
+  const [activeTab, setActiveTab] = useState<"overview" | "files">("overview");
+
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <RingLoader />
       </div>
     );
+  }
+
+  const currentShares =
+    netTimeline.length > 0 ? netTimeline[netTimeline.length - 1].total : 0;
+
+  const currentInvestment = currentShares * (fund?.sharePrice || 0);
 
   return (
-    <div
-      className="min-h-screen bg-background select-none"
-      onContextMenu={(e) => e.preventDefault()}
-    >
+    <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 space-y-8">
-        {/* Top Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* LEFT — HERO PANEL */}
-          <div
-            className="lg:col-span-2 rounded-3xl
-      bg-gradient-to-br from-[#072522] via-[#0a2f2c] to-[#0f3a36]
-      text-white p-6 md:p-8 shadow-2xl relative overflow-hidden"
-          >
-            <div className="absolute -top-20 -right-20 w-72 h-72 bg-primary/20 blur-3xl rounded-full opacity-30" />
+      <main className="container mx-auto px-4 py-8 space-y-6">
+        {/* ===============================
+            DARK TRADING SECTION
+        =============================== */}
+        <div className="rounded-3xl overflow-hidden shadow-2xl">
+          <div className="bg-[#0f3a36] text-white px-6 pt-6 pb-6">
+            {/* Floating Fund Card */}
+            <div className="bg-white/10 backdrop-blur-md rounded-2xl px-5 py-3 flex justify-between items-center mb-4">
+              <div className="flex items-center gap-4">
+                {fund?.logo ? (
+                  <img
+                    src={`${base_url}/InvestmentFunds/${fund.logo}`}
+                    className="w-10 h-10 rounded-lg"
+                  />
+                ) : (
+                  <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center font-bold">
+                    {fund?.fullLegalName?.slice(0, 2)}
+                  </div>
+                )}
 
-            <div className="relative flex items-center gap-5">
-              {fund?.logo ? (
-                <img
-                  src={`${base_url}/InvestmentFunds/${fund.logo}`}
-                  className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-white/10 p-3"
-                  draggable={false}
-                />
-              ) : (
-                <span className="text-sm font-extrabold text-foreground/70">
-                  {String(fund?.symbol || fund?.fullLegalName)
-                    .slice(0, 2)
-                    .toUpperCase()}
-                </span>
-              )}
+                <div>
+                  <p className="font-semibold text-sm">{fund?.fullLegalName}</p>
+                  <p className="text-xs text-white/60">{fund?.code}</p>
+                </div>
+              </div>
 
-              <div>
-                <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold tracking-tight">
-                  {fund?.fullLegalName}
-                </h1>
-                <p className="text-sm text-white/60 mt-1">{fund?.nameAr}</p>
+              <div className="text-right">
+                <p className="font-semibold text-lg">
+                  {formatCurrency(currentInvestment)}
+                </p>
+                <p className="text-xs text-emerald-400">Total Invested</p>
               </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <HeroBadge label={t("fund.fund_code")} value={fund?.code} />
-              <HeroBadge
-                label={t("fund.share_price")}
-                value={formatCurrency(fund?.sharePrice)}
+            {/* Chart */}
+            <FundNetFlowChart data={netTimeline} loading={netLoading} />
+
+            <div className="flex justify-center gap-3 mt-4 text-xs">
+              {(["ALL", "1Y", "3M", "1M", "7D", "24H"] as RangeType[]).map(
+                (r) => (
+                  <button
+                    key={r}
+                    onClick={() => setRange(r)}
+                    className={`px-3 py-1 rounded-full transition
+        ${
+          range === r
+            ? "bg-emerald-400 text-black font-semibold"
+            : "bg-white/10 hover:bg-white/20 text-white"
+        }
+      `}
+                  >
+                    {r}
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ===============================
+            TABS SECTION
+        =============================== */}
+        <div className="relative rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/40 p-2 shadow-xl overflow-hidden">
+          {/* Subtle glow */}
+          <div className="absolute -top-20 -right-20 w-60 h-60 bg-emerald-400/5 blur-3xl rounded-full" />
+
+          {/* ===============================
+      SEGMENTED TABS
+=============================== */}
+          <div className="relative z-10 flex justify-center mb-8">
+            <div className="bg-muted/40 backdrop-blur-md p-1 rounded-2xl flex gap-1">
+              <TabButton
+                active={activeTab === "overview"}
+                onClick={() => setActiveTab("overview")}
+                label="Overview"
               />
-              <HeroBadge
-                label={t("fund.issued")}
-                value={fund?.shareIssued ? t("common.yes") : t("common.no")}
+              <TabButton
+                active={activeTab === "files"}
+                onClick={() => setActiveTab("files")}
+                label="Files"
               />
             </div>
           </div>
 
-          {/* RIGHT — STATS */}
-          <div className="grid grid-cols-2 gap-4">
-            <StatTile
-              label={t("fund.initial_shares")}
-              value={formatNumber(fund?.initialShares)}
-            />
-            <StatTile
-              label={t("fund.min_shares")}
-              value={formatNumber(fund?.minInvestShare)}
-            />
-            <StatTile
-              label={t("fund.max_shares")}
-              value={formatNumber(fund?.maxInvestShare)}
-            />
-            <StatTile
-              label={t("fund.share_price")}
-              value={formatCurrency(fund?.sharePrice)}
-            />
-          </div>
-        </div>
+          {/* ===============================
+      CONTENT
+=============================== */}
 
-        {/* DOCUMENTS SECTION */}
-        <div className="rounded-3xl border border-border/50 bg-muted/30 p-6">
-          <h2 className="text-lg md:text-xl font-semibold mb-6">
-            {t("fund.documents")}
-          </h2>
-
-          <Section>
-            {fund?.fundInfoFile && (
-              <DocumentRow
-                title={t("fund.fund_info")}
-                file={`${base_url}/InvestmentFunds/${fund?.fundInfoFile}`}
+          {activeTab === "overview" && (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <InfoCard label="Fund Code" value={fund?.code} />
+              <InfoCard
+                label="Issued"
+                value={fund?.shareIssued ? "Yes" : "No"}
               />
-            )}
-
-            {fund?.investingStepsFile && (
-              <DocumentRow
-                title={t("fund.investment_steps")}
-                file={`${base_url}/InvestmentFunds/${fund?.investingStepsFile}`}
+              <InfoCard
+                label="Created At"
+                value={new Date(fund?.createdAt).toLocaleDateString()}
               />
-            )}
-
-            {fund?.investingRequestFile && (
-              <DocumentRow
-                title={t("fund.investment_req_form")}
-                file={`${base_url}/InvestmentFunds/${fund?.investingRequestFile}`}
+              <InfoCard
+                label="Last Updated"
+                value={new Date(fund?.updatedAt).toLocaleDateString()}
               />
-            )}
+            </div>
+          )}
 
-            {fund?.userAgreementFile && (
-              <DocumentRow
-                title={t("fund.user_agreement")}
-                file={`${base_url}/InvestmentFunds/${fund?.userAgreementFile}`}
-              />
-            )}
-          </Section>
+          {activeTab === "files" && (
+            <div className="relative z-10 space-y-4">
+              {fund?.fundInfoFile && (
+                <DocumentRow
+                  title="Fund Info"
+                  file={`${base_url}/InvestmentFunds/${fund.fundInfoFile}`}
+                />
+              )}
+              {fund?.investingStepsFile && (
+                <DocumentRow
+                  title="Investment Steps"
+                  file={`${base_url}/InvestmentFunds/${fund.investingStepsFile}`}
+                />
+              )}
+              {fund?.investingRequestFile && (
+                <DocumentRow
+                  title="Investment Form"
+                  file={`${base_url}/InvestmentFunds/${fund.investingRequestFile}`}
+                />
+              )}
+              {fund?.userAgreementFile && (
+                <DocumentRow
+                  title="User Agreement"
+                  file={`${base_url}/InvestmentFunds/${fund.userAgreementFile}`}
+                />
+              )}
+            </div>
+          )}
         </div>
       </main>
 
@@ -140,29 +182,75 @@ const FundDetails = () => {
   );
 };
 
-const HeroBadge = ({ label, value }) => (
-  <div className="bg-white/10 px-4 py-2 rounded-xl">
-    <p className="text-[10px] uppercase text-white/50 tracking-wide">{label}</p>
-    <p className="text-sm font-medium">{value}</p>
+const InfoCard = ({ label, value }) => (
+  <div
+    className="
+    group
+    relative
+    rounded-2xl
+    border border-border/40
+    bg-gradient-to-br from-card to-card/80
+    px-5 py-3
+    transition-all duration-300
+    hover:border-emerald-400/40
+    hover:shadow-lg
+  "
+  >
+    <div className="flex items-center justify-between">
+      <span
+        className="
+        text-xs
+        uppercase
+        tracking-wide
+        text-muted-foreground
+        transition-colors
+        group-hover:text-foreground
+      "
+      >
+        {label}
+      </span>
+
+      <span
+        className="
+        text-sm
+        font-semibold
+        tracking-tight
+        text-foreground
+      "
+      >
+        {value}
+      </span>
+    </div>
+
+    {/* Subtle bottom accent line */}
+    <div
+      className="
+      absolute
+      bottom-0 left-0
+      h-[2px]
+      w-0
+      bg-emerald-400
+      transition-all duration-300
+      group-hover:w-full
+    "
+    />
   </div>
 );
 
-const StatTile = ({ label, value }) => (
-  <div
-    className="
-    rounded-2xl
-    bg-card
-    border border-border/50
-    p-4
-    transition-all duration-300
-    hover:-translate-y-1 hover:shadow-xl
-  "
+const TabButton = ({ active, onClick, label }) => (
+  <button
+    onClick={onClick}
+    className={`
+      px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200
+      ${
+        active
+          ? "bg-primary text-white shadow-md"
+          : "text-muted-foreground hover:text-foreground"
+      }
+    `}
   >
-    <p className="text-[10px] uppercase text-muted-foreground tracking-wide">
-      {label}
-    </p>
-    <p className="mt-1 text-lg md:text-xl font-semibold">{value}</p>
-  </div>
+    {label}
+  </button>
 );
 
 export default FundDetails;
