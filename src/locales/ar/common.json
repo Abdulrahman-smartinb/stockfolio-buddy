@@ -156,9 +156,11 @@
     "fund_info": "معلومات الصندوق",
     "investment_steps": "خطوات الاستثمار",
     "investment_req_form": "نموذج طلب الاستثمار",
-    "user_agreement": "اتفاقية المستخدم",
+    "user_agreement": "عقد الاستثمار",
     "click_view_document": "انقر لعرض المستند",
-    "view_only_no_download": "للعرض فقط. التنزيل والنسخ مقيدان"
+    "view_only_no_download": "للعرض فقط. التنزيل والنسخ مقيدان",
+    "overview": "نظرة عامة",
+    "files": "الملفات"
   },
 
   "portfolio": {
@@ -168,7 +170,8 @@
     "shares": "عدد الأسهم",
     "avg_price": "متوسط سعر السهم",
     "current_price": "السعر الحالي",
-    "value": "القيمة"
+    "value": "القيمة",
+    "total_invested": "الكمية المستثمرة"
   },
 
   "transactions": {
@@ -337,6 +340,8 @@
     "accept": "أوافق",
     "no_records": "لا توجد سجلات حتى الآن",
     "yes": "نعم",
-    "no": "لا"
+    "no": "لا",
+    "created_at": "أُنشئ بتاريخ",
+    "last_updated": "آخر تحديث"
   }
 }

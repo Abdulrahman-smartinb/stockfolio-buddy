@@ -3,18 +3,18 @@ import { Footer } from "@/components/Footer";
 import { base_url } from "@/api/GlobalData";
 import { pdfjs } from "react-pdf";
 import workerSrc from "pdfjs-dist/build/pdf.worker.min?url";
-import { formatNumber } from "@/lib/utils";
 import { RingLoader } from "react-spinners";
 import DocumentRow from "@/components/DocumentCard";
-import { Section } from "./Settings";
 import useFundDetails from "@/hooks/useFundDetails";
 import FundNetFlowChart from "@/components/FundNetFlowChart";
 import { useState } from "react";
 import { formatCurrency } from "@/hooks/helpers";
+import { useTranslation } from "react-i18next";
 
 pdfjs.GlobalWorkerOptions.workerSrc = workerSrc;
 
 const FundDetails = () => {
+  const { t } = useTranslation();
   type RangeType = "24H" | "7D" | "1M" | "3M" | "1Y" | "ALL";
 
   const [range, setRange] = useState<RangeType>("1M");
@@ -41,9 +41,7 @@ const FundDetails = () => {
       <Header />
 
       <main className="container mx-auto px-4 py-8 space-y-6">
-        {/* ===============================
-            DARK TRADING SECTION
-        =============================== */}
+        {/* DARK TRADING SECTION */}
         <div className="rounded-3xl overflow-hidden shadow-2xl">
           <div className="bg-[#0f3a36] text-white px-6 pt-6 pb-6">
             {/* Floating Fund Card */}
@@ -70,7 +68,9 @@ const FundDetails = () => {
                 <p className="font-semibold text-lg">
                   {formatCurrency(currentInvestment)}
                 </p>
-                <p className="text-xs text-emerald-400">Total Invested</p>
+                <p className="text-xs text-emerald-400">
+                  {t("portfolio.total_invested")}
+                </p>
               </div>
             </div>
 
@@ -93,54 +93,47 @@ const FundDetails = () => {
                   >
                     {r}
                   </button>
-                )
+                ),
               )}
             </div>
           </div>
         </div>
 
-        {/* ===============================
-            TABS SECTION
-        =============================== */}
+        {/* TABS SECTION */}
         <div className="relative rounded-3xl bg-gradient-to-br from-card to-card/80 border border-border/40 p-2 shadow-xl overflow-hidden">
           {/* Subtle glow */}
           <div className="absolute -top-20 -right-20 w-60 h-60 bg-emerald-400/5 blur-3xl rounded-full" />
 
-          {/* ===============================
-      SEGMENTED TABS
-=============================== */}
+          {/* SEGMENTED TABS */}
           <div className="relative z-10 flex justify-center mb-8">
             <div className="bg-muted/40 backdrop-blur-md p-1 rounded-2xl flex gap-1">
               <TabButton
                 active={activeTab === "overview"}
                 onClick={() => setActiveTab("overview")}
-                label="Overview"
+                label={t("fund.overview")}
               />
               <TabButton
                 active={activeTab === "files"}
                 onClick={() => setActiveTab("files")}
-                label="Files"
+                label={t("fund.files")}
               />
             </div>
           </div>
 
-          {/* ===============================
-      CONTENT
-=============================== */}
-
+          {/* CONTENT */}
           {activeTab === "overview" && (
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <InfoCard label="Fund Code" value={fund?.code} />
+              <InfoCard label={t("fund.fund_code")} value={fund?.code} />
               <InfoCard
-                label="Issued"
-                value={fund?.shareIssued ? "Yes" : "No"}
+                label={t("fund.issued")}
+                value={fund?.shareIssued ? t("common.yes") : t("common.no")}
               />
               <InfoCard
-                label="Created At"
+                label={t("common.created_at")}
                 value={new Date(fund?.createdAt).toLocaleDateString()}
               />
               <InfoCard
-                label="Last Updated"
+                label={t("common.last_updated")}
                 value={new Date(fund?.updatedAt).toLocaleDateString()}
               />
             </div>
@@ -150,25 +143,25 @@ const FundDetails = () => {
             <div className="relative z-10 space-y-4">
               {fund?.fundInfoFile && (
                 <DocumentRow
-                  title="Fund Info"
+                  title={t("fund.fund_info")}
                   file={`${base_url}/InvestmentFunds/${fund.fundInfoFile}`}
                 />
               )}
               {fund?.investingStepsFile && (
                 <DocumentRow
-                  title="Investment Steps"
+                  title={t("fund.investment_steps")}
                   file={`${base_url}/InvestmentFunds/${fund.investingStepsFile}`}
                 />
               )}
               {fund?.investingRequestFile && (
                 <DocumentRow
-                  title="Investment Form"
+                  title={t("fund.investment_req_form")}
                   file={`${base_url}/InvestmentFunds/${fund.investingRequestFile}`}
                 />
               )}
               {fund?.userAgreementFile && (
                 <DocumentRow
-                  title="User Agreement"
+                  title={t("fund.user_agreement")}
                   file={`${base_url}/InvestmentFunds/${fund.userAgreementFile}`}
                 />
               )}
@@ -210,14 +203,7 @@ const InfoCard = ({ label, value }) => (
         {label}
       </span>
 
-      <span
-        className="
-        text-sm
-        font-semibold
-        tracking-tight
-        text-foreground
-      "
-      >
+      <span className="text-sm font-semibold tracking-tight text-foreground">
         {value}
       </span>
     </div>

@@ -157,9 +157,11 @@
     "fund_info": "Fund Information",
     "investment_steps": "Investment Steps",
     "investment_req_form": "Investment Request Form",
-    "user_agreement": "User Agreement",
+    "user_agreement": "Investment Contract",
     "click_view_document": "Click to preview document",
-    "view_only_no_download": "Viewing only. Downloading and copying are restricted."
+    "view_only_no_download": "Viewing only. Downloading and copying are restricted.",
+    "overview": "Overview",
+    "files": "Files"
   },
 
   "portfolio": {
@@ -169,7 +171,8 @@
     "shares": "Shares",
     "avg_price": "Avg. Price",
     "current_price": "Current Price",
-    "value": "Value"
+    "value": "Value",
+    "total_invested": "Total Invested"
   },
 
   "transactions": {
@@ -336,6 +339,8 @@
     "accept": "Accept",
     "no_records": "No records yet",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "created_at": "Created at",
+    "last_updated": "Last Updated"
   }
 }
