@@ -88,13 +88,11 @@ const Settings = () => {
           <SettingRow
             icon={<Banknote className="w-5 h-5 jadwa-icon-gold" />}
             label={t("payments.payment_method")}
+            onClick={() => {
+              setOpenPaymentMethods(true);
+            }}
             right={
-              <span
-                className="text-sm text-jadwa-muted cursor-pointer"
-                onClick={() => {
-                  setOpenPaymentMethods(true);
-                }}
-              >
+              <span className="text-sm text-jadwa-muted cursor-pointer">
                 <QrCode />
               </span>
             }

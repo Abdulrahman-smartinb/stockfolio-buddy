@@ -123,12 +123,21 @@ const useInvestorActivity = () => {
       setSelectedRequest(null);
     } catch (err) {
       console.error("Upload failed", err);
-      toast({
-        title: t("toast.error_while_uploading"),
-        variant: "default",
-        description: error?.data?.message || err.message,
-        duration: 5000,
-      });
+      if (err?.data?.message === "File too large") {
+        toast({
+          title: t("toast.file_too_large"),
+          variant: "default",
+          description: t("toast.file_too_large_desc"),
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: t("toast.error_while_uploading"),
+          variant: "default",
+          description: error?.data?.message || err.message,
+          duration: 5000,
+        });
+      }
     }
   };
 

@@ -343,7 +343,9 @@
     "unsupported_file": "Unsupported file type",
     "supported_files_pdf_img": "The file you uploaded is not supported. Use PDF or images only",
     "file_uploaded": "File uploaded",
-    "error_while_uploading": "Error while uploading file. Try again in a few minutes"
+    "error_while_uploading": "Error while uploading file. Try again in a few minutes",
+    "file_too_large": "File too large",
+    "file_too_large_desc": "The file you uploaded is too large. Max 2MB"
   },
 
   "common": {
