@@ -13,7 +13,6 @@ const useSettings = () => {
   const isRtl = i18n.language === "ar";
 
   const { data, isLoading } = useGetCompanyInfoQuery(null);
-  console.log(`data`, data?.paymentMethods);
 
   return {
     t,

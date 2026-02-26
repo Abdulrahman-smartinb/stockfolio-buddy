@@ -16,6 +16,7 @@ export interface BankQr {
 }
 
 export interface PaymentMethods {
+  _id: string;
   method: string;
   bank?: Bank;
   shamCash?: ShamCash;

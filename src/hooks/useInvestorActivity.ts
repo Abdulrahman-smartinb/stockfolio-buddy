@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { useResolvedRole } from "./useResolveRole";
 import { useGetInvestorShareTradeRequestsQuery } from "@/store/api/shares/shareTradeRequestApi";
 import { useGetInvestorPortfolioQuery } from "@/store/api/investorApi";
@@ -12,23 +12,23 @@ const useInvestorActivity = () => {
   const { resolvedRole } = useResolvedRole();
   const { t } = useTranslation();
   const profileId = resolvedRole?.profileId;
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
 
-  /* ================= Trade Requests ================= */
-
+  // Trade Requests
   const tradeRequestsQuery = useGetInvestorShareTradeRequestsQuery(
     { id: profileId },
     { skip: !profileId },
   );
 
-  /* ================= Portfolio / Shares ================= */
-
+  // Portfolio / Shares
   const portfolioQuery = useGetInvestorPortfolioQuery(
     { id: profileId },
     { skip: !profileId },
   );
 
-  /* ================= Share Transactions ================= */
-
+  // Share Transactions
   const transactionsQuery = useGetShareTransactionsQuery(
     {
       holderId: profileId,
@@ -38,8 +38,7 @@ const useInvestorActivity = () => {
     { skip: !profileId },
   );
 
-  /* ================= Normalized Data ================= */
-
+  // Normalized Data
   const tradeRequests = tradeRequestsQuery.data?.data ?? [];
 
   const portfolioSummary = portfolioQuery.data?.data?.summary ?? {
@@ -53,8 +52,7 @@ const useInvestorActivity = () => {
 
   const shareTransactions = transactionsQuery.data?.data ?? [];
 
-  /* ================= Derived Helpers ================= */
-
+  // Derived Helpers
   // Mobile previews (max 2 items each)
   const preview = useMemo(() => {
     return {
@@ -85,34 +83,60 @@ const useInvestorActivity = () => {
     request: PendingRequestItem,
   ) => {
     const file = e.target.files?.[0];
-    if (!file) return; // Validate file type (Images or PDF)
+    if (!file) {
+      toast({
+        title: t("toast.file_req"),
+        variant: "destructive",
+        description: t("toast.pls_upload_file"),
+        duration: 5000,
+      });
+      return;
+    }
+    if (!selectedPaymentMethod) {
+      toast({
+        title: t("toast.payment_method_req"),
+        variant: "destructive",
+        description: t("toast.pls_select_payment_method"),
+        duration: 5000,
+      });
+      return;
+    }
     const isPDF = file.type === "application/pdf";
     const isImage = file.type.startsWith("image/");
     if (!isPDF && !isImage) {
       toast({
-        title: t("unsupported_file"),
+        title: t("toast.unsupported_file"),
         variant: "destructive",
-        description: t("supported_files_pdf_img"),
+        description: t("toast.supported_files_pdf_img"),
+        duration: 5000,
       });
       return;
     } // Create FormData for the backend
     const formData = new FormData();
     formData.append("paymentConfirmationDocument", file);
+    formData.append("paymentMethodId", selectedPaymentMethod._id);
     try {
       await uploadReceipt({ id: request._id, formData }).unwrap();
-      toast({ title: t("file_uploaded"), variant: "default" });
+      toast({ title: t("toast.file_uploaded"), variant: "default" });
       tradeRequestsQuery.refetch();
+      setSelectedPaymentMethod(null);
+      setSelectedRequest(null);
     } catch (err) {
       console.error("Upload failed", err);
       toast({
-        title: t("error_while_uploading"),
+        title: t("toast.error_while_uploading"),
         variant: "default",
         description: error?.data?.message || err.message,
+        duration: 5000,
       });
     }
   };
 
-  /* ================= Public API ================= */
+  useEffect(() => {
+    if (selectedPaymentMethod && selectedRequest) {
+      document.getElementById("real-upload-input")?.click();
+    }
+  }, [selectedPaymentMethod]);
 
   return {
     profileId,
@@ -145,6 +169,12 @@ const useInvestorActivity = () => {
       portfolio: portfolioQuery.refetch,
       transactions: transactionsQuery.refetch,
     },
+    isPaymentModalOpen,
+    setIsPaymentModalOpen,
+    selectedRequest,
+    setSelectedRequest,
+    selectedPaymentMethod,
+    setSelectedPaymentMethod,
   };
 };
 

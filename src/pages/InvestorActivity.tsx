@@ -1,5 +1,11 @@
 import React from "react";
-import { RefreshCcw, Wallet, ListOrdered, Clock } from "lucide-react";
+import {
+  RefreshCcw,
+  Wallet,
+  ListOrdered,
+  Clock,
+  ArrowUpFromLine,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -7,6 +13,9 @@ import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { formatCurrency, formatNumber } from "@/hooks/helpers";
+import { MoonLoader } from "react-spinners";
+import PaymentMethodsModal from "@/components/PaymentMethodsModal";
+import PaymentModal from "@/components/PaymentModal";
 
 /* ================= Page ================= */
 
@@ -15,8 +24,18 @@ const InvestorActivity = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
 
-  const { preview, isLoading, isUploading, refetchAll, handleFileChange } =
-    useInvestorActivity();
+  const {
+    preview,
+    isLoading,
+    isUploading,
+    refetchAll,
+    handleFileChange,
+    isPaymentModalOpen,
+    setIsPaymentModalOpen,
+    setSelectedRequest,
+    selectedRequest,
+    setSelectedPaymentMethod,
+  } = useInvestorActivity();
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -82,64 +101,80 @@ const InvestorActivity = () => {
         </SectionCard>
 
         {/* Trade Requests */}
-        <SectionCard
-          title={t("activity.trade_requests")}
-          icon={<Clock className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />}
-          onRefresh={refetchAll}
-          onNavigate={() => navigate("/Activity/MyTradeRequest")}
-          isLoading={isLoading}
-          empty={!preview?.tradeRequests?.length}
-          t={t}
-        >
-          {preview.tradeRequests.slice(0, 2).map((req) => {
-            const amount = req.numberOfShares * req.pricePerShare;
+        <>
+          {/* Hidden Global File Input */}
+          <input
+            id="real-upload-input"
+            type="file"
+            accept=".pdf,image/*"
+            className="hidden"
+            onChange={(e) => handleFileChange(e, selectedRequest)}
+          />
 
-            return (
-              <Row key={req._id}>
-                <div className="min-w-0 space-y-0.5">
-                  <p className="truncate text-sm md:text-lg font-medium md:font-semibold text-[#042623]">
-                    {t(`activity.${req.tradeType}`)} · {req.source.code}
-                  </p>
+          <SectionCard
+            title={t("activity.trade_requests")}
+            icon={<Clock className="w-4 h-4 md:w-5 md:h-5 jadwa-icon-gold" />}
+            onRefresh={refetchAll}
+            onNavigate={() => navigate("/Activity/MyTradeRequest")}
+            isLoading={isLoading}
+            empty={!preview?.tradeRequests?.length}
+            t={t}
+          >
+            {preview.tradeRequests.slice(0, 2).map((req) => {
+              const amount = req.numberOfShares * req.pricePerShare;
 
-                  <p className="text-[11px] md:text-sm text-jadwa-muted font-google">
-                    {formatNumber(req.numberOfShares)} ×{" "}
-                    {formatCurrency(req.pricePerShare)}
-                  </p>
+              return (
+                <Row key={req._id}>
+                  <div className="min-w-0 space-y-0.5">
+                    <p className="truncate text-sm md:text-lg font-medium md:font-semibold text-[#042623]">
+                      {t(`activity.${req.tradeType}`)} · {req.source.code}
+                    </p>
 
-                  <StatusBadge status={req.requestStatus} />
-                </div>
+                    <p className="text-[11px] md:text-sm text-jadwa-muted font-google">
+                      {formatNumber(req.numberOfShares)} ×{" "}
+                      {formatCurrency(req.pricePerShare)}
+                    </p>
 
-                {req.requestStatus === "approved" && (
-                  <div className="cursor-pointer">
-                    <input
-                      type="file"
-                      accept=".pdf,image/*"
-                      onChange={(e) => handleFileChange(e, req)}
-                      disabled={isUploading}
-                      className="hidden"
-                      id={`upload-${req._id}`}
-                    />
-
-                    <label
-                      htmlFor={`upload-${req._id}`}
-                      className={`border bg-warning/80 rounded-sm p-2 text-white transition-colors hover:bg-warning
-                                ${
-                                  isUploading
-                                    ? "cursor-not-allowed opacity-70"
-                                    : "cursor-pointer"
-                                }
-                                `}
-                    >
-                      <b>{t("shares.click_upload_receipt")}</b>
-                    </label>
+                    <StatusBadge status={req.requestStatus} />
                   </div>
-                )}
 
-                <Amount>{formatCurrency(amount)}</Amount>
-              </Row>
-            );
-          })}
-        </SectionCard>
+                  {req.requestStatus === "approved" && (
+                    <button
+                      type="button"
+                      disabled={isUploading}
+                      onClick={() => {
+                        setSelectedRequest(req);
+                        setIsPaymentModalOpen(true);
+                      }}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-xl border
+                    ${
+                      isUploading
+                        ? "opacity-60 cursor-not-allowed"
+                        : "hover:bg-[#042623] hover:text-white"
+                    }`}
+                    >
+                      {isUploading
+                        ? t("common.uploading")
+                        : t("shares.click_upload_receipt")}
+                    </button>
+                  )}
+
+                  <Amount>{formatCurrency(amount)}</Amount>
+                </Row>
+              );
+            })}
+          </SectionCard>
+
+          {/* Payment Method Modal */}
+          <PaymentModal
+            isOpen={isPaymentModalOpen}
+            onClose={() => setIsPaymentModalOpen(false)}
+            t={t}
+            onConfirm={(method) => {
+              setSelectedPaymentMethod(method);
+            }}
+          />
+        </>
       </main>
 
       <Footer />
