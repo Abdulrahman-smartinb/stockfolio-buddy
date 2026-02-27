@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Footer } from "@/components/Footer";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { EditProfileModal } from "@/components/EditProfileModal";
-
 import {
   User,
   Mail,
@@ -14,8 +13,9 @@ import {
   RefreshCcw,
   PenBox,
   CircleCheckBig,
+  Clock,
+  XCircle,
 } from "lucide-react";
-
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "react-i18next";
@@ -24,6 +24,8 @@ import { RingLoader } from "react-spinners";
 import { CSSProperties, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
+import { VerifyAccountTermsModal } from "@/components/VerifyAccountTermsModal";
+import { CustomTooltip } from "@/components/ui/CustomTooltip";
 
 function LtrValue({ children, className = "" }) {
   return (
@@ -79,11 +81,19 @@ const Profile = () => {
     setLivePhotoPreview,
     email,
     setEmail,
+    openInstructions,
+    setOpenInstructions,
+    idPhotoPreview,
+    setIdPhotoPreview,
+    idPhotoBackPreview,
+    setIdPhotoBackPreview,
+    passportImage,
+    setPassportImage,
+    setPassportPreview,
+    passportPreview,
   } = useProfile();
 
   const [openEditModal, setOpenEditModal] = useState(false);
-
-  const statusKey = reviewStatus?.toLowerCase() ?? "draft";
 
   const avatarSrc = useMemo(() => {
     if (!user?.profileImage) return "";
@@ -112,7 +122,7 @@ const Profile = () => {
             </div>
           ) : (
             <>
-              {/* ================= HERO ================= */}
+              {/* HERO */}
               <motion.div variants={itemVariants}>
                 <div className="relative rounded-3xl border border-border/60 bg-background shadow-sm p-5 sm:p-6">
                   {/* ===== Actions ===== */}
@@ -122,22 +132,30 @@ const Profile = () => {
                       isRtl ? "left-4" : "right-4",
                     )}
                   >
-                    <button
-                      onClick={refetchRole}
-                      className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 rounded-xl ring-1 ring-border/60 bg-muted/30 hover:bg-muted/50 transition flex items-center justify-center"
+                    <CustomTooltip
+                      content={t("app.refresh")}
+                      side="top"
+                      delay={200}
                     >
-                      <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
-                    </button>
+                      <button
+                        onClick={refetchRole}
+                        className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 rounded-xl ring-1 ring-border/60 bg-muted/30 hover:bg-muted/50 transition flex items-center justify-center"
+                      >
+                        <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      </button>
+                    </CustomTooltip>
 
                     {isApplicant && (
-                      <button
-                        onClick={() => {
-                          if (reviewStatus === "draft") {
-                            setOpenVerify(true);
-                          }
-                        }}
-                        disabled={reviewStatus === "pending"}
-                        className={`
+                      <CustomTooltip
+                        content={t("profile.click_update_request")}
+                        side="top"
+                        delay={200}
+                      >
+                        <button
+                          onClick={() => {
+                            setOpenInstructions(true);
+                          }}
+                          className={`
                               h-9
                               px-3 sm:px-4
                               rounded-xl
@@ -149,20 +167,29 @@ const Profile = () => {
                               gap-2
                               whitespace-nowrap
                               ${
-                                reviewStatus === "draft"
-                                  ? "ring-primary/30 bg-primary/10 text-text-foreground hover:bg-primary/20"
-                                  : "ring-muted bg-muted text-muted-foreground cursor-not-allowed"
+                                reviewStatus === "rejected"
+                                  ? "ring-destructive/30 bg-destructive/10 text-destructive hover:bg-destructive/20"
+                                  : "ring-primary/30 bg-primary/10 text-text-foreground hover:bg-primary/20"
                               }
                             `}
-                      >
-                        <CircleCheckBig className="w-4 h-4 shrink-0 text-jadwa-gold" />
+                        >
+                          {reviewStatus === "draft" ? (
+                            <CircleCheckBig className="w-4 h-4 shrink-0 text-jadwa-gold" />
+                          ) : reviewStatus === "pending" ? (
+                            <Clock className="w-4 h-4 shrink-0 text-jadwa-gold" />
+                          ) : (
+                            <XCircle className="w-4 h-4 shrink-0 text-jadwa-gold" />
+                          )}
 
-                        <span className="font-semibold text-sm leading-none">
-                          {reviewStatus === "draft"
-                            ? t("verification.verify")
-                            : t("verification.verification_in_progress")}
-                        </span>
-                      </button>
+                          <span className="font-semibold text-sm leading-none">
+                            {reviewStatus === "draft"
+                              ? t("verification.verify")
+                              : reviewStatus === "pending"
+                                ? t("verification.verification_in_progress")
+                                : t("verification.retry_verification")}
+                          </span>
+                        </button>
+                      </CustomTooltip>
                     )}
 
                     <button
@@ -241,7 +268,7 @@ const Profile = () => {
                 </div>
               </motion.div>
 
-              {/* ================= PERSONAL INFO ================= */}
+              {/* PERSONAL INFO */}
               <motion.div variants={itemVariants}>
                 <Card className="rounded-3xl border-border/60 bg-background shadow-sm">
                   <CardHeader className="flex-row items-center justify-between gap-3 pb-4">
@@ -333,10 +360,28 @@ const Profile = () => {
         setLivePhoto={setLivePhoto}
         livePhotoPreview={livePhotoPreview}
         setLivePhotoPreview={setLivePhotoPreview}
+        passportImage={passportImage}
+        setPassportImage={setPassportImage}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
         email={email}
         setEmail={setEmail}
+        user={user}
+        idPhotoPreview={idPhotoPreview}
+        setIdPhotoPreview={setIdPhotoPreview}
+        idPhotoBackPreview={idPhotoBackPreview}
+        setIdPhotoBackPreview={setIdPhotoBackPreview}
+        setPassportPreview={setPassportPreview}
+        passportPreview={passportPreview}
+      />
+
+      <VerifyAccountTermsModal
+        isOpen={openInstructions}
+        onClose={() => setOpenInstructions(false)}
+        onAccept={() => {
+          setOpenVerify(true);
+          setOpenInstructions(false);
+        }}
       />
 
       <Footer />
@@ -346,8 +391,7 @@ const Profile = () => {
 
 export default Profile;
 
-/* ================= INFO BLOCK ================= */
-
+// INFO BLOCK
 const InfoBlock = ({ icon, label, value }: any) => (
   <div className="rounded-2xl p-4 md:p-5 ring-1 ring-border/50 bg-muted/10 hover:bg-muted/20 transition">
     <div className="flex items-center gap-3 md:gap-4">

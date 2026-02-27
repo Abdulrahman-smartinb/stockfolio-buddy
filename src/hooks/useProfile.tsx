@@ -27,10 +27,9 @@ export const useProfile = () => {
 
   const [user, setUser] = useState<UserData>();
   const [openVerify, setOpenVerify] = useState(false);
+  const [openInstructions, setOpenInstructions] = useState(false);
 
-  // =========================
   // Resolve role
-  // =========================
   const { resolvedRole, loadingRole, refetchRole } = useResolvedRole();
 
   const isInvestor = !!resolvedRole?.isInvestor;
@@ -39,9 +38,7 @@ export const useProfile = () => {
   const reviewStatus = resolvedRole?.reviewStatus;
   const profileId = resolvedRole?.profileId;
 
-  // =========================
   // Queries
-  // =========================
   const {
     data: applicant,
     isLoading: isLoadingApplicant,
@@ -66,17 +63,13 @@ export const useProfile = () => {
     if (isApplicant && applicant?.data) setUser(applicant.data);
   }, [isInvestor, isApplicant, investor?.data, applicant?.data]);
 
-  // =========================
   // Mutations
-  // =========================
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
 
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
 
-  // =========================
   // Edit state
-  // =========================
   const [editData, setEditData] = useState({
     fullName: "",
     birthDate: "",
@@ -112,16 +105,12 @@ export const useProfile = () => {
     });
   }, [user]);
 
-  // =========================
   // Redirect if not auth
-  // =========================
   useEffect(() => {
     if (!isAuthenticated) navigate("/auth");
   }, [isAuthenticated, navigate]);
 
-  // =========================
   // Image handler
-  // =========================
   const handleProfileImageChange = (file?: File) => {
     if (!file) return;
 
@@ -132,9 +121,7 @@ export const useProfile = () => {
     }));
   };
 
-  // =========================
   // SAVE PROFILE
-  // =========================
   const handleSaveProfile = async () => {
     if (!user) return;
 
@@ -152,7 +139,7 @@ export const useProfile = () => {
       if (editData.profileImageFile)
         formData.append("profileImage", editData.profileImageFile);
 
-      // 🔥 Recombine E.164 phone
+      // Recombine phone with country code
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
           (c) => c.code === editData.countryCode,
@@ -167,9 +154,6 @@ export const useProfile = () => {
       }
 
       if (role) formData.append("role", role);
-      for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-      }
       await updateInvestor({
         id: user.authUserId,
         data: formData,
@@ -192,26 +176,30 @@ export const useProfile = () => {
     }
   };
 
-  // =========================
   // VERIFY SUBMIT
-  // =========================
   const [idPhoto, setIdPhoto] = useState<File | null>(null);
   const [idPhotoBack, setIdPhotoBack] = useState<File | null>(null);
   const [livePhoto, setLivePhoto] = useState<File | null>(null);
+  const [passportImage, setPassportImage] = useState<File | null>(null);
+  const [passportPreview, setPassportPreview] = useState<any>(null);
   const [livePhotoPreview, setLivePhotoPreview] = useState<any>(null);
   const [email, setEmail] = useState("");
   const [idNumber, setIdNumber] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
   const [passportExpDate, setPassportExpDate] = useState<any>();
+  const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
+  const [idPhotoBackPreview, setIdPhotoBackPreview] = useState<string | null>(
+    null,
+  );
 
   const handleSubmit = async () => {
     if (!user) return;
 
     if (
-      !idPhoto ||
-      !idPhotoBack ||
-      !livePhoto ||
-      (!idNumber && (!passportNumber || !passportExpDate))
+      (!idPhoto && !idPhotoPreview) ||
+      (!idPhotoBack && !idPhotoBackPreview) ||
+      (!livePhoto && !livePhotoPreview) ||
+      (!idNumber && (!passportNumber || !passportExpDate || !passportImage))
     ) {
       toast({
         title: t("auth.errors.fill_all"),
@@ -223,13 +211,25 @@ export const useProfile = () => {
     try {
       const formData = new FormData();
 
-      const compressedId = await compressImage(idPhoto);
-      const compressedIdBack = await compressImage(idPhotoBack);
-      const compressedLive = await compressImage(livePhoto);
+      if (idPhoto instanceof File) {
+        const compressedId = await compressImage(idPhoto);
+        formData.append("idPhoto", compressedId);
+      }
 
-      formData.append("idPhoto", compressedId);
-      formData.append("idPhotoBack", compressedIdBack);
-      formData.append("livePhoto", compressedLive);
+      if (idPhotoBack instanceof File) {
+        const compressedIdBack = await compressImage(idPhotoBack);
+        formData.append("idPhotoBack", compressedIdBack);
+      }
+
+      if (livePhoto instanceof File) {
+        const compressedLive = await compressImage(livePhoto);
+        formData.append("livePhoto", compressedLive);
+      }
+
+      if (passportImage instanceof File) {
+        const compressedPassport = await compressImage(passportImage);
+        formData.append("passportImage", compressedPassport);
+      }
       formData.append("passportNumber", passportNumber);
       formData.append("passportExpDate", passportExpDate);
       formData.append("email", email);
@@ -266,9 +266,7 @@ export const useProfile = () => {
     setLivePhotoPreview(null);
   };
 
-  // =========================
   // Animations
-  // =========================
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.1 } },
@@ -315,6 +313,12 @@ export const useProfile = () => {
     setPassportExpDate,
     email,
     setEmail,
+    openInstructions,
+    setOpenInstructions,
+    idPhotoPreview,
+    setIdPhotoPreview,
+    idPhotoBackPreview,
+    setIdPhotoBackPreview,
 
     role,
     refetchRole,
@@ -324,5 +328,9 @@ export const useProfile = () => {
 
     containerVariants,
     itemVariants,
+    passportImage,
+    setPassportImage,
+    setPassportPreview,
+    passportPreview,
   };
 };

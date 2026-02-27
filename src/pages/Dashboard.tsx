@@ -12,6 +12,7 @@ import { useProfile } from "@/hooks/useProfile";
 import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
 import { cn } from "@/lib/utils";
+import { VerifyAccountTermsModal } from "@/components/VerifyAccountTermsModal";
 
 const Dashboard = () => {
   const {
@@ -37,6 +38,7 @@ const Dashboard = () => {
   } = useDashboard();
 
   const {
+    user,
     openVerify,
     setOpenVerify,
     handleSubmit,
@@ -58,6 +60,16 @@ const Dashboard = () => {
     setPassportExpDate,
     email,
     setEmail,
+    openInstructions,
+    setOpenInstructions,
+    idPhotoPreview,
+    setIdPhotoPreview,
+    idPhotoBackPreview,
+    setIdPhotoBackPreview,
+    passportImage,
+    setPassportImage,
+    setPassportPreview,
+    passportPreview,
   } = useProfile();
 
   return (
@@ -166,7 +178,7 @@ const Dashboard = () => {
         mode={verifyModalMode}
         onVerify={() => {
           setVerfiyModalOpen(false);
-          setOpenVerify(true);
+          setOpenInstructions(true);
         }}
       />
 
@@ -188,10 +200,28 @@ const Dashboard = () => {
         setLivePhoto={setLivePhoto}
         livePhotoPreview={livePhotoPreview}
         setLivePhotoPreview={setLivePhotoPreview}
+        passportImage={passportImage}
+        setPassportImage={setPassportImage}
         onSubmit={handleSubmit}
         isSubmitting={isSubmitting}
         email={email}
         setEmail={setEmail}
+        user={user}
+        idPhotoPreview={idPhotoPreview}
+        setIdPhotoPreview={setIdPhotoPreview}
+        idPhotoBackPreview={idPhotoBackPreview}
+        setIdPhotoBackPreview={setIdPhotoBackPreview}
+        setPassportPreview={setPassportPreview}
+        passportPreview={passportPreview}
+      />
+
+      <VerifyAccountTermsModal
+        isOpen={openInstructions}
+        onClose={() => setOpenInstructions(false)}
+        onAccept={() => {
+          setOpenVerify(true);
+          setOpenInstructions(false);
+        }}
       />
 
       <Footer />

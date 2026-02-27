@@ -15,6 +15,7 @@ import useSettings from "@/hooks/useSettings";
 import PaymentMethodsModal from "@/components/PaymentMethodsModal";
 
 const Settings = () => {
+  const currentYear = new Date().getFullYear();
   const {
     t,
     i18n,
@@ -39,7 +40,6 @@ const Settings = () => {
             onClick={() => navigate("/profile")}
           />
         </Section>
-
         {/* Preferences */}
         <Section title={t("settings.preferences")}>
           <SettingRow
@@ -98,7 +98,6 @@ const Settings = () => {
             }
           />
         </Section>
-
         {/* Notifications */}
         <Section title={t("settings.notifications")}>
           <SettingRow
@@ -107,7 +106,6 @@ const Settings = () => {
             right={<Toggle />}
           />
         </Section>
-
         {/* Danger */}
         <Section>
           <SettingRow
@@ -117,6 +115,16 @@ const Settings = () => {
             onClick={logout}
           />
         </Section>
+        <span className="text-jadwa-muted text-xs ms-2 text-start">
+          Jadwa Share Market V1.0.4 |
+          <b
+            className="cursor-pointer"
+            onClick={() => window.open("https://smartinb.com", "_blank")}
+          >
+            {" "}
+            {currentYear} &copy; Smartinb Solutions
+          </b>
+        </span>
       </main>
 
       <PaymentMethodsModal

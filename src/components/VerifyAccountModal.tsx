@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Camera, ShieldCheck, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { CameraCapture } from "./CameraCapture";
-import { Field } from "./ui/Field";
 import { isMobile } from "@/hooks/helpers";
+import { base_url } from "@/api/GlobalData";
+import InputField from "./InputField";
+import UploadCard from "./UploadCard";
 
 export const VerifyAccountModal = ({
   isOpen,
@@ -28,214 +27,254 @@ export const VerifyAccountModal = ({
   setLivePhoto,
   livePhotoPreview,
   setLivePhotoPreview,
+  passportImage,
+  setPassportImage,
   email,
   setEmail,
+  user,
+  idPhotoPreview,
+  setIdPhotoPreview,
+  idPhotoBackPreview,
+  setIdPhotoBackPreview,
+  setPassportPreview,
+  passportPreview,
 }) => {
   if (!isOpen) return null;
-
   const [openCamera, setOpenCamera] = useState(false);
 
   const disableSubmit =
-    !idPhoto ||
-    !idPhotoBack ||
-    !livePhoto ||
-    (!idNumber && (!passportNumber || !passportExpDate));
+    (!idPhoto && !idPhotoPreview) ||
+    (!idPhotoBack && !idPhotoBackPreview) ||
+    (!livePhoto && !livePhotoPreview) ||
+    (!idNumber &&
+      (!passportNumber ||
+        !passportExpDate ||
+        (!passportImage && !passportPreview)));
+
+  useEffect(() => {
+    if (user) {
+      setEmail(user?.email ?? "");
+      setIdNumber(user?.idNumber ?? "");
+      setPassportNumber(user?.passportNumber ?? "");
+      setPassportExpDate(user?.passportExpDate ?? "");
+
+      setIdPhotoPreview(
+        user?.idPhoto ? `${base_url}/Applicants/${user.idPhoto}` : null,
+      );
+
+      setIdPhotoBackPreview(
+        user?.idPhotoBack ? `${base_url}/Applicants/${user.idPhotoBack}` : null,
+      );
+
+      setLivePhotoPreview(
+        user?.livePhoto ? `${base_url}/Applicants/${user.livePhoto}` : null,
+      );
+
+      setPassportPreview(
+        user?.passportImage
+          ? `${base_url}/Applicants/${user.passportImage}`
+          : null,
+      );
+    }
+  }, [user]);
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-3"
+        className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="w-full max-w-3xl bg-card rounded-2xl shadow-xl border border-border overflow-hidden"
-          initial={{ opacity: 0, y: 16, scale: 0.98 }}
+          className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
+          initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 16, scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          exit={{ opacity: 0, y: 20, scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 200, damping: 22 }}
         >
-          {/* Header */}
-          <div className="px-6 py-4 border-b flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                <ShieldCheck className="w-5 h-5 jadwa-icon-gold" />
-              </div>
+          {/* HEADER */}
+          <div className="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
+            <div className="flex justify-between items-center">
               <div>
-                <h3 className="text-lg font-semibold text-jadwa">
+                <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
                   {t("verification.verify")}
-                </h3>
-                <p className="text-xs text-jadwa-muted">
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
                   {t("verification.subtitle")}
                 </p>
               </div>
-            </div>
 
-            <Button
-              variant="ghost"
-              onClick={onClose}
-              disabled={isSubmitting}
-              className="jadwa-icon-gold"
-            >
-              ✕
-            </Button>
+              <button
+                onClick={onClose}
+                disabled={isSubmitting}
+                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center text-gray-600"
+              >
+                ✕
+              </button>
+            </div>
           </div>
 
-          {/* Body */}
-          <div className="px-6 py-5">
-            <div className="max-h-[70vh] overflow-y-auto pr-1 space-y-4">
-              <div className="rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-sm flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 jadwa-icon-gold" />
-                <span className="text-jadwa-muted">
-                  <span className="text-destructive font-semibold">*</span>{" "}
-                  {t("verification.indicates_required_fields")}
-                </span>
+          {/* BODY */}
+          <div className="p-8 max-h-[75vh] overflow-y-auto space-y-8">
+            {/* Alert Section */}
+            <div className="space-y-4">
+              {user?.reviewStatus === "pending" && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  {t("verification.pending_note")}
+                </div>
+              )}
+              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                <span className="font-medium">*</span>{" "}
+                {t("verification.indicates_required_fields")}
               </div>
 
-              {/* Identity Section */}
-              <div className="rounded-xl border p-4 space-y-4">
-                <div className="text-sm font-semibold text-jadwa">
-                  {t("verification.identity_section")}
+              {user?.rejectionReason && (
+                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  <span className="font-semibold">
+                    {t("transactions.rejection_reason")}:
+                  </span>{" "}
+                  {user?.rejectionReason}
                 </div>
+              )}
+            </div>
 
-                <Field label={t("profile.email")} required>
-                  <Input
-                    type="email"
-                    className="h-10 text-sm"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </Field>
+            {/* IDENTITY CARD */}
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-6">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {t("verification.identity_section")}
+              </h3>
 
-                <Field
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <InputField
+                  label={t("profile.email")}
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  type="email"
+                  required
+                />
+
+                <InputField
                   label={t("verification.id_number")}
+                  value={idNumber}
+                  onChange={(e) => setIdNumber(e.target.value)}
+                  type="number"
                   required={!passportNumber}
-                >
-                  <Input
-                    type="number"
-                    className="h-10 text-sm"
-                    value={idNumber}
-                    onChange={(e) => setIdNumber(e.target.value)}
-                  />
-                </Field>
+                />
 
-                <Field
+                <InputField
                   label={t("verification.passport_number")}
+                  value={passportNumber}
+                  onChange={(e) => setPassportNumber(e.target.value)}
+                  type="text"
                   required={!idNumber}
-                >
-                  <Input
-                    type="text"
-                    className="h-10 text-sm"
-                    value={passportNumber}
-                    onChange={(e) => setPassportNumber(e.target.value)}
-                  />
-                </Field>
+                />
 
                 {passportNumber && (
-                  <Field label={t("verification.passport_exp_date")} required>
-                    <Input
-                      type="date"
-                      className="h-10 text-sm"
-                      value={passportExpDate}
-                      onChange={(e) => setPassportExpDate(e.target.value)}
-                    />
-                  </Field>
+                  <InputField
+                    label={t("verification.passport_exp_date")}
+                    value={passportExpDate}
+                    onChange={(e) => setPassportExpDate(e.target.value)}
+                    type="date"
+                    required
+                  />
                 )}
-
-                <Field label={t("verification.id_photo")} required>
-                  <Input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="h-10 text-sm"
-                    onChange={(e) => setIdPhoto(e.target.files?.[0] ?? null)}
-                  />
-                </Field>
-
-                <Field label={t("verification.id_photo_back")} required>
-                  <Input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="h-10 text-sm"
-                    onChange={(e) =>
-                      setIdPhotoBack(e.target.files?.[0] ?? null)
-                    }
-                  />
-                </Field>
-
-                <Field label={t("verification.live_photo")} required>
-                  <div className="space-y-2">
-                    {isMobile && (
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          setLivePhoto(e.target.files?.[0] ?? null)
-                        }
-                      />
-                    )}
-
-                    {!isMobile && !openCamera && !livePhoto && (
-                      <Button
-                        type="button"
-                        variant="default"
-                        size="sm"
-                        className="flex items-center gap-2"
-                        onClick={() => setOpenCamera(true)}
-                      >
-                        <Camera className="w-4 h-4 jadwa-icon-brown" />
-                        {t("verification.open_camera")}
-                      </Button>
-                    )}
-
-                    {openCamera && (
-                      <CameraCapture
-                        onCapture={(file) => {
-                          setLivePhoto(file);
-                          setLivePhotoPreview(URL.createObjectURL(file));
-                        }}
-                        onClose={() => setOpenCamera(false)}
-                      />
-                    )}
-
-                    {livePhoto && !openCamera && (
-                      <div className="rounded-lg border p-3 bg-muted/30">
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-sm">
-                            {t("verification.photo_preview")}
-                          </p>
-                          {!isMobile && (
-                            <button
-                              type="button"
-                              className="text-xs text-primary hover:underline"
-                              onClick={() => setOpenCamera(true)}
-                            >
-                              {t("verification.retake")}
-                            </button>
-                          )}
-                        </div>
-                        <img
-                          alt="live preview"
-                          className="rounded-lg max-h-52 w-auto"
-                          src={livePhotoPreview}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </Field>
               </div>
+
+              {/* Passport Upload */}
+              {passportNumber && (
+                <UploadCard
+                  label={t("verification.passport_photo")}
+                  preview={passportPreview}
+                  onFile={(file) => {
+                    setPassportImage(file);
+                    setPassportPreview(URL.createObjectURL(file));
+                  }}
+                />
+              )}
+            </div>
+
+            {/* DOCUMENTS */}
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-6">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {t("verification.identity_documents")}
+              </h3>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <UploadCard
+                  label={t("verification.id_photo")}
+                  preview={idPhotoPreview}
+                  onFile={(file) => {
+                    setIdPhoto(file);
+                    setIdPhotoPreview(URL.createObjectURL(file));
+                  }}
+                />
+
+                <UploadCard
+                  label={t("verification.id_photo_back")}
+                  preview={idPhotoBackPreview}
+                  onFile={(file) => {
+                    setIdPhotoBack(file);
+                    setIdPhotoBackPreview(URL.createObjectURL(file));
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* LIVE PHOTO */}
+            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-4">
+              <h3 className="text-lg font-semibold text-gray-800">
+                {t("verification.live_photo")}
+              </h3>
+
+              {!isMobile && !openCamera && !livePhoto && (
+                <button
+                  onClick={() => setOpenCamera(true)}
+                  className="px-5 py-2.5 rounded-xl bg-black text-white text-sm hover:opacity-90 transition"
+                >
+                  {t("verification.open_camera")}
+                </button>
+              )}
+
+              {openCamera && (
+                <CameraCapture
+                  onCapture={(file) => {
+                    setLivePhoto(file);
+                    setLivePhotoPreview(URL.createObjectURL(file));
+                  }}
+                  onClose={() => setOpenCamera(false)}
+                />
+              )}
+
+              {livePhotoPreview && (
+                <div className="rounded-2xl border border-gray-200 p-4 bg-gray-50">
+                  <img
+                    src={livePhotoPreview}
+                    alt="live preview"
+                    className="rounded-xl max-h-64"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="px-6 py-4 border-t flex items-center justify-end gap-2">
-            <Button variant="outline" onClick={onClose} disabled={isSubmitting}>
+          {/* FOOTER */}
+          <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3">
+            <button
+              onClick={onClose}
+              disabled={isSubmitting}
+              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+            >
               {t("app.cancel")}
-            </Button>
+            </button>
 
-            <Button onClick={onSubmit} disabled={disableSubmit}>
+            <button
+              onClick={onSubmit}
+              disabled={disableSubmit}
+              className="px-6 py-2.5 rounded-xl bg-black text-white hover:opacity-90 transition disabled:opacity-50"
+            >
               {isSubmitting ? t("app.loading") : t("verification.verify_now")}
-            </Button>
+            </button>
           </div>
         </motion.div>
       </motion.div>

@@ -68,7 +68,8 @@
     "error_while_updating": "Error occurred while updating profile",
     "request_sent": "Request sent",
     "profile_verify_request": "Profile verification request sent",
-    "request_failed": "Request failed"
+    "request_failed": "Request failed",
+    "click_update_request": "Click to update the request"
   },
 
   "auth": {
@@ -107,6 +108,7 @@
       "valid_pass": "A valid password must be longer than 8 characters",
       "valid_pin": "PIN must be exactly 6 digits.",
       "valid_name": "A valid name must be longer than 2 characters",
+      "fill_all": "Please fill in all the required fields",
       "session_timeout_title": "Session expired",
       "session_timeout_desc": "Session expired due to inactivity. Please log in again"
     }
@@ -131,7 +133,6 @@
     "total_investments": "Total Investments",
     "title": "My Shares",
     "click_upload_receipt": "Click to upload the receipt",
-
     "total_hint": "Shares are calculated automatically (whole shares only).",
 
     "avg": "Avg",
@@ -228,6 +229,7 @@
 
   "verification": {
     "verify": "Verify account",
+    "retry_verification": "Retry verification",
     "verify_now": "Verify now",
     "subtitle": "Complete KYC verification process to enable trading.",
     "identity_section": "Identity Information",
@@ -236,8 +238,8 @@
     "passport_number": "Passport number",
     "passport_exp_date": "Passport expiry date",
     "live_photo": "Live photo",
-    "id_photo": "ID document photo",
-    "id_photo_back": "ID document photo from the back",
+    "id_photo": "ID document photo (front)",
+    "id_photo_back": "ID document photo (back)",
     "photo_preview": "Photo preview",
     "permission_denied": "Camera access denied!",
     "permission_denied_desc": "Please allow the use of the camera to take the photo",
@@ -249,7 +251,11 @@
     "open_camera": "Open camera",
     "retake": "Retake",
     "verification_in_progress": "Verification In Progress",
-    "verification_pending_desc": "Your verification request has been submitted and is currently under review. You will be notified once it is approved."
+    "verification_pending_desc": "Your verification request has been submitted and is currently under review. You will be notified once it is approved.",
+    "passport_photo": "Passport photo",
+    "identity_documents": "Identity documents",
+    "click_upload": "Click to upload",
+    "pending_note": "Your request is under review. If your data is accurate and no changes are needed, there is nothing more you need to do. We will notify you if any issues arise."
   },
 
   "notifications": {
@@ -260,7 +266,7 @@
     "types": {
       "profile_rejected": "Profile rejected",
       "profile_approved": "Profile approved",
-      "profile_rejecte_msg": "Profile verification failed",
+      "profile_reject_msg": "Profile verification failed",
       "profile_approve_msg": "Profile verification success",
       "shares_request_updated": "Trade request update",
       "shares_request_update_msg": "There's an update about your trade request",
@@ -269,6 +275,7 @@
       "trade_confirmed": "Trade request confirmed"
     }
   },
+
   "activity": {
     "my_shares": "My Shares",
     "transactions": "Transactions",
@@ -286,6 +293,7 @@
       "rejected": "Rejected"
     }
   },
+
   "settings": {
     "account_settings": "Account",
     "preferences": "Preferences",
@@ -332,6 +340,27 @@
     "law": {
       "title": "Governing Law",
       "text": "These terms are governed and interpreted according to the laws of the Syrian Arab Republic."
+    }
+  },
+
+  "instructions": {
+    "title": "Account Verification Instructions",
+    "intro": "Please review these instructions carefully. By proceeding, you confirm all data is accurate and accept responsibility for any discrepancies.",
+    "profile": {
+      "title": "Profile Information & Documentation",
+      "email": "Email Address: The primary contact email linked to your investment account.",
+      "id_number": "ID Number: The unique national identification number as issued by government authorities.",
+      "passport_number": "Passport Number: The identification number found on the primary data page of your valid passport.",
+      "passport_image": "Passport photo: A clear, high-resolution upload of the front of the first page of the passport (Max size 2MB) is required only when adding the passport number.",
+      "id_front": "ID Document (Front): A clear, high-resolution upload of the front side of your national ID (Max size 2MB).",
+      "id_back": "ID Document (Back): A clear, high-resolution upload of the reverse side of your national ID (Max size 2MB).",
+      "live_photo": "Live Photo: A real-time facial photograph taken via the platform to verify identity."
+    },
+    "requirements": {
+      "title": "Document Standards",
+      "1": "All uploaded documents must be valid and not expired.",
+      "2": "Images must be clear, uncropped, and free from glare or obstructions.",
+      "3": "The 'Live Photo' must be taken in a well-lit environment without headwear or sunglasses."
     }
   },
 
