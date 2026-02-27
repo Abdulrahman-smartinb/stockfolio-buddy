@@ -17,11 +17,13 @@ export const baseQueryWithAuth = async (args, api, extraOptions) => {
   const result = await rawBaseQuery(args, api, extraOptions);
 
   if (result.error) {
-    const status = result.error.status;
+    const status = result.error.status || result.error.statsCode;
     const message = result.error.data?.message;
 
     const isSessionExpired =
-      status === 401 || message === "Session expired. Please log in again.";
+      status === 401 ||
+      message === "Session expired. Please log in again." ||
+      message === "Token expired or invalid";
 
     if (isSessionExpired) {
       Cookies.remove("authToken");
