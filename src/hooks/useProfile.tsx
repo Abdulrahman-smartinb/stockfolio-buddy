@@ -45,16 +45,16 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId },
+    { skip: !isApplicant || !profileId }
   );
-
+  console.log(resolvedRole);
   const {
     data: investor,
     isLoading: isLoadingInvestor,
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId },
+    { skip: !isInvestor || !profileId }
   );
 
   // Load correct profile
@@ -85,7 +85,7 @@ export const useProfile = () => {
     if (!user) return;
 
     let detectedCountry = COUNTRIES.find((c) =>
-      user.phone?.startsWith(c.dialCode),
+      user.phone?.startsWith(c.dialCode)
     );
 
     let localPhone = user.phone || "";
@@ -142,7 +142,7 @@ export const useProfile = () => {
       // Recombine phone with country code
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
-          (c) => c.code === editData.countryCode,
+          (c) => c.code === editData.countryCode
         );
 
         if (selectedCountry) {
@@ -189,7 +189,7 @@ export const useProfile = () => {
   const [passportExpDate, setPassportExpDate] = useState<any>();
   const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
   const [idPhotoBackPreview, setIdPhotoBackPreview] = useState<string | null>(
-    null,
+    null
   );
 
   const handleSubmit = async () => {
@@ -247,6 +247,7 @@ export const useProfile = () => {
         title: t("profile.request_sent"),
         description: t("profile.profile_verify_request"),
       });
+      refetchRole();
     } catch (error) {
       console.error(submitError || error);
       toast({

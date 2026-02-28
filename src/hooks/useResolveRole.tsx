@@ -15,7 +15,7 @@ export const useResolvedRole = () => {
   const authUserId = profile?.authUserId;
   const { data, isLoading, error, refetch } = useResolveRoleQuery(
     { authUserId },
-    { skip: !authUserId },
+    { skip: !authUserId }
   );
 
   const resolved = useMemo(() => {

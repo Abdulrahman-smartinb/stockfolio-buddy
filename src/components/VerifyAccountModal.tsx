@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CameraCapture } from "./CameraCapture";
-import { isMobile } from "@/hooks/helpers";
 import { base_url } from "@/api/GlobalData";
 import InputField from "./InputField";
 import UploadCard from "./UploadCard";
+import { X } from "lucide-react";
 
 export const VerifyAccountModal = ({
   isOpen,
@@ -12,7 +12,6 @@ export const VerifyAccountModal = ({
   onSubmit,
   isSubmitting,
   t,
-
   idNumber,
   setIdNumber,
   passportNumber,
@@ -40,6 +39,7 @@ export const VerifyAccountModal = ({
   passportPreview,
 }) => {
   if (!isOpen) return null;
+  console.log("user", user);
   const [openCamera, setOpenCamera] = useState(false);
 
   const disableSubmit =
@@ -52,55 +52,66 @@ export const VerifyAccountModal = ({
         (!passportImage && !passportPreview)));
 
   useEffect(() => {
-    if (user) {
-      setEmail(user?.email ?? "");
-      setIdNumber(user?.idNumber ?? "");
-      setPassportNumber(user?.passportNumber ?? "");
-      setPassportExpDate(user?.passportExpDate ?? "");
+    if (!user) return;
 
-      setIdPhotoPreview(
-        user?.idPhoto ? `${base_url}/Applicants/${user.idPhoto}` : null,
-      );
+    setEmail(user?.email ?? "");
+    setIdNumber(user?.idNumber ?? "");
+    setPassportNumber(user?.passportNumber ?? "");
+    setPassportExpDate(user?.passportExpDate ?? "");
 
-      setIdPhotoBackPreview(
-        user?.idPhotoBack ? `${base_url}/Applicants/${user.idPhotoBack}` : null,
-      );
-
-      setLivePhotoPreview(
-        user?.livePhoto ? `${base_url}/Applicants/${user.livePhoto}` : null,
-      );
-
-      setPassportPreview(
-        user?.passportImage
-          ? `${base_url}/Applicants/${user.passportImage}`
-          : null,
-      );
-    }
+    setIdPhotoPreview(
+      user?.idPhoto ? `${base_url}/Applicants/${user.idPhoto}` : null
+    );
+    setIdPhotoBackPreview(
+      user?.idPhotoBack ? `${base_url}/Applicants/${user.idPhotoBack}` : null
+    );
+    setLivePhotoPreview(
+      user?.livePhoto ? `${base_url}/Applicants/${user.livePhoto}` : null
+    );
+    setPassportPreview(
+      user?.passportImage
+        ? `${base_url}/Applicants/${user.passportImage}`
+        : null
+    );
   }, [user]);
 
   return (
     <AnimatePresence>
       <motion.div
-        className="fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-6"
+        className="
+          fixed inset-0 z-50
+          bg-black/30 backdrop-blur-sm
+          flex items-end md:items-center
+          justify-center
+          p-0 md:p-6
+        "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
       >
         <motion.div
-          className="w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-gray-200 overflow-hidden"
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: 20, scale: 0.98 }}
-          transition={{ type: "spring", stiffness: 200, damping: 22 }}
+          className="
+            w-full h-full md:h-auto
+            max-w-full md:max-w-2xl
+            bg-white
+            rounded-none md:rounded-xl
+            shadow-none md:shadow-lg
+            border-0 md:border border-gray-100
+            flex flex-col
+          "
+          initial={{ y: 60, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 60, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 180, damping: 26 }}
         >
           {/* HEADER */}
-          <div className="px-8 py-6 border-b border-gray-100 bg-gradient-to-r from-white to-gray-50">
+          <div className="px-4 md:px-6 py-4 border-b border-gray-100">
             <div className="flex justify-between items-center">
               <div>
-                <h2 className="text-2xl font-semibold text-gray-900 tracking-tight">
+                <h2 className="text-base md:text-lg font-semibold text-gray-900">
                   {t("verification.verify")}
                 </h2>
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-[11px] md:text-xs text-gray-400 mt-1">
                   {t("verification.subtitle")}
                 </p>
               </div>
@@ -108,44 +119,38 @@ export const VerifyAccountModal = ({
               <button
                 onClick={onClose}
                 disabled={isSubmitting}
-                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition flex items-center justify-center text-gray-600"
+                className="
+    w-9 h-9
+    rounded-full
+    bg-gray-50
+    hover:bg-gray-100
+    text-gray-400
+    hover:text-gray-700
+    flex items-center justify-center
+    transition-all duration-200
+  "
               >
-                ✕
+                <X size={18} strokeWidth={2} />
               </button>
             </div>
           </div>
 
           {/* BODY */}
-          <div className="p-8 max-h-[75vh] overflow-y-auto space-y-8">
-            {/* Alert Section */}
-            <div className="space-y-4">
-              {user?.reviewStatus === "pending" && (
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                  {t("verification.pending_note")}
-                </div>
-              )}
-              <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                <span className="font-medium">*</span>{" "}
-                {t("verification.indicates_required_fields")}
+          <div className="flex-1 overflow-y-auto px-4 md:px-6 py-5 space-y-6">
+            {user?.rejectionReason && (
+              <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <span className="font-semibold">
+                  {t("transactions.rejection_reason")}:
+                </span>{" "}
+                {user?.rejectionReason}
               </div>
-
-              {user?.rejectionReason && (
-                <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-                  <span className="font-semibold">
-                    {t("transactions.rejection_reason")}:
-                  </span>{" "}
-                  {user?.rejectionReason}
-                </div>
-              )}
-            </div>
-
-            {/* IDENTITY CARD */}
-            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
+            )}
+            <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-4">
+              <h3 className="text-sm font-medium text-gray-900">
                 {t("verification.identity_section")}
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputField
                   label={t("profile.email")}
                   value={email}
@@ -181,7 +186,6 @@ export const VerifyAccountModal = ({
                 )}
               </div>
 
-              {/* Passport Upload */}
               {passportNumber && (
                 <UploadCard
                   label={t("verification.passport_photo")}
@@ -194,13 +198,12 @@ export const VerifyAccountModal = ({
               )}
             </div>
 
-            {/* DOCUMENTS */}
-            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-6">
-              <h3 className="text-lg font-semibold text-gray-800">
+            <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-4">
+              <h3 className="text-sm font-medium text-gray-900">
                 {t("verification.identity_documents")}
               </h3>
 
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <UploadCard
                   label={t("verification.id_photo")}
                   preview={idPhotoPreview}
@@ -221,16 +224,25 @@ export const VerifyAccountModal = ({
               </div>
             </div>
 
-            {/* LIVE PHOTO */}
-            <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800">
+            <div className="bg-white rounded-lg border border-gray-100 p-4 space-y-3">
+              <h3 className="text-sm font-medium text-gray-900">
                 {t("verification.live_photo")}
               </h3>
 
-              {!isMobile && !openCamera && !livePhoto && (
+              {!openCamera && (
                 <button
                   onClick={() => setOpenCamera(true)}
-                  className="px-5 py-2.5 rounded-xl bg-black text-white text-sm hover:opacity-90 transition"
+                  className="
+                    w-full md:w-auto
+                    px-4 py-2
+                    rounded-md
+                    bg-gray-900
+                    text-white
+                    text-xs md:text-sm
+                    font-medium
+                    hover:opacity-90
+                    transition
+                  "
                 >
                   {t("verification.open_camera")}
                 </button>
@@ -247,11 +259,11 @@ export const VerifyAccountModal = ({
               )}
 
               {livePhotoPreview && (
-                <div className="rounded-2xl border border-gray-200 p-4 bg-gray-50">
+                <div className="rounded-lg border border-gray-100 p-2 bg-gray-50">
                   <img
                     src={livePhotoPreview}
                     alt="live preview"
-                    className="rounded-xl max-h-64"
+                    className="rounded-md max-h-48 w-full object-cover"
                   />
                 </div>
               )}
@@ -259,11 +271,20 @@ export const VerifyAccountModal = ({
           </div>
 
           {/* FOOTER */}
-          <div className="px-8 py-5 border-t border-gray-100 bg-white flex justify-end gap-3">
+          <div className="px-4 md:px-6 py-4 border-t border-gray-100 flex flex-col md:flex-row gap-2 md:justify-end">
             <button
               onClick={onClose}
               disabled={isSubmitting}
-              className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-100 transition"
+              className="
+                w-full md:w-auto
+                px-4 py-2
+                rounded-md
+                border border-gray-200
+                text-gray-600
+                text-xs md:text-sm
+                hover:bg-gray-50
+                transition
+              "
             >
               {t("app.cancel")}
             </button>
@@ -271,7 +292,17 @@ export const VerifyAccountModal = ({
             <button
               onClick={onSubmit}
               disabled={disableSubmit}
-              className="px-6 py-2.5 rounded-xl bg-black text-white hover:opacity-90 transition disabled:opacity-50"
+              className="
+                w-full md:w-auto
+                px-5 py-2
+                rounded-md
+                bg-gray-900
+                text-white
+                text-xs md:text-sm
+                font-medium
+                disabled:opacity-40
+                transition
+              "
             >
               {isSubmitting ? t("app.loading") : t("verification.verify_now")}
             </button>
