@@ -47,7 +47,7 @@ export const useProfile = () => {
     { id: profileId },
     { skip: !isApplicant || !profileId }
   );
-  console.log(resolvedRole);
+
   const {
     data: investor,
     isLoading: isLoadingInvestor,
@@ -60,7 +60,9 @@ export const useProfile = () => {
   // Load correct profile
   useEffect(() => {
     if (isInvestor && investor?.data) setUser(investor.data);
-    if (isApplicant && applicant?.data) setUser(applicant.data);
+    if (isApplicant && applicant?.data) {
+      setUser(applicant.data);
+    }
   }, [isInvestor, isApplicant, investor?.data, applicant?.data]);
 
   // Mutations

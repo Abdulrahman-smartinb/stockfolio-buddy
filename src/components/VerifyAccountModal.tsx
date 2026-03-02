@@ -39,7 +39,7 @@ export const VerifyAccountModal = ({
   passportPreview,
 }) => {
   if (!isOpen) return null;
-  console.log("user", user);
+
   const [openCamera, setOpenCamera] = useState(false);
 
   const disableSubmit =
