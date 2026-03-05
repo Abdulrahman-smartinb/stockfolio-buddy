@@ -1,6 +1,7 @@
 import { base_url } from "@/api/GlobalData";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query";
 import Cookies from "js-cookie";
+import { sessionExpired } from "../sessionSlice";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: base_url,
@@ -27,8 +28,10 @@ export const baseQueryWithAuth = async (args, api, extraOptions) => {
 
     if (isSessionExpired) {
       Cookies.remove("authToken");
-      api.dispatch({ type: "auth/logout" });
-      window.location.href = "/auth?reason=expired";
+      if (isSessionExpired) {
+        Cookies.remove("authToken");
+        api.dispatch(sessionExpired());
+      }
     }
   }
 

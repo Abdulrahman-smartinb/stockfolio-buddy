@@ -91,6 +91,8 @@ const Profile = () => {
     setPassportImage,
     setPassportPreview,
     passportPreview,
+    disableSubmit,
+    setDisableSubmit,
   } = useProfile();
 
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -373,6 +375,8 @@ const Profile = () => {
         setIdPhotoBackPreview={setIdPhotoBackPreview}
         setPassportPreview={setPassportPreview}
         passportPreview={passportPreview}
+        disableSubmit={disableSubmit}
+        setDisableSubmit={setDisableSubmit}
       />
 
       <VerifyAccountTermsModal

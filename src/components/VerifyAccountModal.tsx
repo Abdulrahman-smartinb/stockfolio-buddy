@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CameraCapture } from "./CameraCapture";
-import { base_url } from "@/api/GlobalData";
 import InputField from "./InputField";
 import UploadCard from "./UploadCard";
 import { X } from "lucide-react";
@@ -37,19 +36,26 @@ export const VerifyAccountModal = ({
   setIdPhotoBackPreview,
   setPassportPreview,
   passportPreview,
+  disableSubmit,
+  setDisableSubmit,
 }) => {
   if (!isOpen) return null;
 
   const [openCamera, setOpenCamera] = useState(false);
+  const [hasIdPhoto, setHasIdPhoto] = useState(false);
+  const [hasIdPhotoBack, setHasIdPhotoBack] = useState(false);
+  const [hasLivePhoto, setHasLivePhoto] = useState(false);
+  const [hasPassportImage, setHasPassportImage] = useState(false);
 
-  const disableSubmit =
-    (!idPhoto && !idPhotoPreview) ||
-    (!idPhotoBack && !idPhotoBackPreview) ||
-    (!livePhoto && !livePhotoPreview) ||
-    (!idNumber &&
-      (!passportNumber ||
-        !passportExpDate ||
-        (!passportImage && !passportPreview)));
+  setDisableSubmit(
+    (!idPhoto && !idPhotoPreview && !hasIdPhoto) ||
+      (!idPhotoBack && !idPhotoBackPreview && !hasIdPhotoBack) ||
+      (!livePhoto && !livePhotoPreview && !hasLivePhoto) ||
+      (!idNumber &&
+        (!passportNumber ||
+          !passportExpDate ||
+          (!passportImage && !passportPreview && !hasPassportImage))),
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -59,20 +65,15 @@ export const VerifyAccountModal = ({
     setPassportNumber(user?.passportNumber ?? "");
     setPassportExpDate(user?.passportExpDate ?? "");
 
-    setIdPhotoPreview(
-      user?.idPhoto ? `${base_url}/Applicants/${user.idPhoto}` : null
-    );
-    setIdPhotoBackPreview(
-      user?.idPhotoBack ? `${base_url}/Applicants/${user.idPhotoBack}` : null
-    );
-    setLivePhotoPreview(
-      user?.livePhoto ? `${base_url}/Applicants/${user.livePhoto}` : null
-    );
-    setPassportPreview(
-      user?.passportImage
-        ? `${base_url}/Applicants/${user.passportImage}`
-        : null
-    );
+    setIdPhotoPreview(null);
+    setIdPhotoBackPreview(null);
+    setLivePhotoPreview(null);
+    setPassportPreview(null);
+
+    setHasIdPhoto(!!user?.idPhoto);
+    setHasIdPhotoBack(!!user?.idPhotoBack);
+    setHasLivePhoto(!!user?.livePhoto);
+    setHasPassportImage(!!user?.passportImage);
   }, [user]);
 
   return (
@@ -93,11 +94,11 @@ export const VerifyAccountModal = ({
           className="
             w-full h-full md:h-auto
             max-w-full md:max-w-2xl
-            bg-white
+            bg-white max-h-[80vh]
             rounded-none md:rounded-xl
             shadow-none md:shadow-lg
             border-0 md:border border-gray-100
-            flex flex-col
+            flex flex-col overflow-y
           "
           initial={{ y: 60, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -190,6 +191,7 @@ export const VerifyAccountModal = ({
                 <UploadCard
                   label={t("verification.passport_photo")}
                   preview={passportPreview}
+                  alreadyUploaded={hasPassportImage}
                   onFile={(file) => {
                     setPassportImage(file);
                     setPassportPreview(URL.createObjectURL(file));
@@ -207,6 +209,7 @@ export const VerifyAccountModal = ({
                 <UploadCard
                   label={t("verification.id_photo")}
                   preview={idPhotoPreview}
+                  alreadyUploaded={hasIdPhoto}
                   onFile={(file) => {
                     setIdPhoto(file);
                     setIdPhotoPreview(URL.createObjectURL(file));
@@ -216,6 +219,7 @@ export const VerifyAccountModal = ({
                 <UploadCard
                   label={t("verification.id_photo_back")}
                   preview={idPhotoBackPreview}
+                  alreadyUploaded={hasIdPhotoBack}
                   onFile={(file) => {
                     setIdPhotoBack(file);
                     setIdPhotoBackPreview(URL.createObjectURL(file));
@@ -258,6 +262,18 @@ export const VerifyAccountModal = ({
                 />
               )}
 
+              {!livePhotoPreview && hasLivePhoto && (
+                <>
+                  <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
+                    ✓ {t("verification.already_uploaded")}
+                  </div>
+                  <div className="text-[10px] text-gray-500 mt-1">
+                    {t("verification.replacing_notice")}
+                  </div>
+                </>
+              )}
+
+              {/* New Preview */}
               {livePhotoPreview && (
                 <div className="rounded-lg border border-gray-100 p-2 bg-gray-50">
                   <img

@@ -122,7 +122,8 @@ const Settings = () => {
             onClick={() => window.open("https://smartinb.com", "_blank")}
           >
             {" "}
-            {currentYear} &copy; Smartinb Solutions
+            {currentYear} &copy;{" "}
+            <span className="underline">Smartinb Solutions</span>
           </b>
         </span>
       </main>

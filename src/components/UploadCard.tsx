@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 
-const UploadCard = ({ label, preview, onFile }) => {
+const UploadCard = ({ label, preview, alreadyUploaded, onFile }) => {
   const { t } = useTranslation();
 
   return (
@@ -37,6 +37,15 @@ const UploadCard = ({ label, preview, onFile }) => {
           />
         </label>
       </div>
+
+      {alreadyUploaded && !preview && (
+        <div className="text-[10px] text-gray-500">
+          <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
+            ✓ {t("verification.already_uploaded")}
+          </div>{" "}
+          {t("verification.replacing_notice")}
+        </div>
+      )}
 
       {preview && (
         <div className="rounded-lg border border-gray-100 bg-gray-50 p-2">

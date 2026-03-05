@@ -45,7 +45,7 @@ export const useProfile = () => {
     refetch: refetchApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
-    { skip: !isApplicant || !profileId }
+    { skip: !isApplicant || !profileId },
   );
 
   const {
@@ -54,7 +54,7 @@ export const useProfile = () => {
     refetch: refetchInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
-    { skip: !isInvestor || !profileId }
+    { skip: !isInvestor || !profileId },
   );
 
   // Load correct profile
@@ -87,7 +87,7 @@ export const useProfile = () => {
     if (!user) return;
 
     let detectedCountry = COUNTRIES.find((c) =>
-      user.phone?.startsWith(c.dialCode)
+      user.phone?.startsWith(c.dialCode),
     );
 
     let localPhone = user.phone || "";
@@ -144,7 +144,7 @@ export const useProfile = () => {
       // Recombine phone with country code
       if (editData.phone && editData.countryCode) {
         const selectedCountry = COUNTRIES.find(
-          (c) => c.code === editData.countryCode
+          (c) => c.code === editData.countryCode,
         );
 
         if (selectedCountry) {
@@ -191,21 +191,18 @@ export const useProfile = () => {
   const [passportExpDate, setPassportExpDate] = useState<any>();
   const [idPhotoPreview, setIdPhotoPreview] = useState<string | null>(null);
   const [idPhotoBackPreview, setIdPhotoBackPreview] = useState<string | null>(
-    null
+    null,
   );
+  const [disableSubmit, setDisableSubmit] = useState(false);
 
   const handleSubmit = async () => {
     if (!user) return;
 
-    if (
-      (!idPhoto && !idPhotoPreview) ||
-      (!idPhotoBack && !idPhotoBackPreview) ||
-      (!livePhoto && !livePhotoPreview) ||
-      (!idNumber && (!passportNumber || !passportExpDate || !passportImage))
-    ) {
+    if (disableSubmit) {
       toast({
         title: t("auth.errors.fill_all"),
         variant: "destructive",
+        duration: 5000,
       });
       return;
     }
@@ -255,6 +252,7 @@ export const useProfile = () => {
       toast({
         title: t("profile.request_failed"),
         variant: "destructive",
+        duration: 5000,
       });
     }
   };
@@ -335,5 +333,7 @@ export const useProfile = () => {
     setPassportImage,
     setPassportPreview,
     passportPreview,
+    disableSubmit,
+    setDisableSubmit,
   };
 };

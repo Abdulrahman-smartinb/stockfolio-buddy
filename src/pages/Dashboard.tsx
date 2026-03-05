@@ -70,6 +70,8 @@ const Dashboard = () => {
     setPassportImage,
     setPassportPreview,
     passportPreview,
+    disableSubmit,
+    setDisableSubmit,
   } = useProfile();
 
   return (
@@ -213,6 +215,8 @@ const Dashboard = () => {
         setIdPhotoBackPreview={setIdPhotoBackPreview}
         setPassportPreview={setPassportPreview}
         passportPreview={passportPreview}
+        disableSubmit={disableSubmit}
+        setDisableSubmit={setDisableSubmit}
       />
 
       <VerifyAccountTermsModal

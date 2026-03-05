@@ -19,6 +19,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import FundDetails from "./pages/FundDetails";
 import "./App.css";
+import { SessionExpiredModal } from "./components/SessionExpireModal";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <SessionExpiredModal />
             <Routes>
               <Route path="/auth" element={<Auth />} />
 

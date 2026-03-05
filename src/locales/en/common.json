@@ -110,7 +110,9 @@
       "valid_name": "A valid name must be longer than 2 characters",
       "fill_all": "Please fill in all the required fields",
       "session_timeout_title": "Session expired",
-      "session_timeout_desc": "Session expired due to inactivity. Please log in again"
+      "session_timeout_desc": "Your session has expired due to inactivity or security timeout.",
+      "pls_login_again": "Please log in again to continue securely.",
+      "return_login": "Return to login"
     }
   },
 
@@ -255,7 +257,9 @@
     "passport_photo": "Passport photo",
     "identity_documents": "Identity documents",
     "click_upload": "Click to upload",
-    "pending_note": "Your request is under review. If your data is accurate and no changes are needed, there is nothing more you need to do. We will notify you if any issues arise."
+    "pending_note": "Your request is under review. If your data is accurate and no changes are needed, there is nothing more you need to do. We will notify you if any issues arise.",
+    "already_uploaded": "Already uploaded",
+    "replacing_notice": "Uploading a new file will replace the existing one"
   },
 
   "notifications": {
