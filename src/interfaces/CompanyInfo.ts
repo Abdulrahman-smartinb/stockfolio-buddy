@@ -18,6 +18,7 @@ export interface BankQr {
 export interface PaymentMethods {
   _id: string;
   method: string;
+  isActive: boolean;
   bank?: Bank;
   shamCash?: ShamCash;
   usdt?: Usdt;

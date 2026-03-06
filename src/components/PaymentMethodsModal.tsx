@@ -3,10 +3,11 @@ import { useState } from "react";
 
 const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
   const [selectedMethodId, setSelectedMethodId] = useState(null);
+  const paymentMethods = data.filter((m) => m.isActive == true);
 
   if (!isOpen) return null;
 
-  const selectedMethod = data.find((m) => m._id === selectedMethodId);
+  const selectedMethod = paymentMethods.find((m) => m._id === selectedMethodId);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
@@ -32,7 +33,7 @@ const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
         <div className="p-8 overflow-y-auto custom-scrollbar">
           {/* Method Selection Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            {data.map((m) => {
+            {paymentMethods.map((m) => {
               const isSelected = selectedMethodId === m._id;
               const info = getMethodInfo(m);
 

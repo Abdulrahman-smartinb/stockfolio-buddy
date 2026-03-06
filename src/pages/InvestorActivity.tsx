@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  RefreshCcw,
-  Wallet,
-  ListOrdered,
-  Clock,
-  ArrowUpFromLine,
-} from "lucide-react";
+import { RefreshCcw, Wallet, ListOrdered, Clock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -13,11 +7,9 @@ import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "react-i18next";
 import { formatCurrency, formatNumber } from "@/hooks/helpers";
-import { MoonLoader } from "react-spinners";
-import PaymentMethodsModal from "@/components/PaymentMethodsModal";
 import PaymentModal from "@/components/PaymentModal";
 
-/* ================= Page ================= */
+/* Page */
 
 const InvestorActivity = () => {
   const navigate = useNavigate();
@@ -184,7 +176,7 @@ const InvestorActivity = () => {
 
 export default InvestorActivity;
 
-/* ================= UI ================= */
+/* UI */
 
 const SectionCard = ({
   title,

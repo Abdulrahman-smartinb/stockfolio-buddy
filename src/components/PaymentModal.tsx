@@ -38,29 +38,31 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
         <div className="p-8 overflow-y-auto">
           {/* Methods */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-            {data?.paymentMethods?.map((m) => {
-              const isSelected = selectedMethodId === m?._id;
+            {data?.paymentMethods
+              ?.filter((m) => m.isActive == true)
+              ?.map((m) => {
+                const isSelected = selectedMethodId === m?._id;
 
-              return (
-                <button
-                  key={m?._id}
-                  onClick={() =>
-                    setSelectedMethodId(isSelected ? null : m?._id)
-                  }
-                  className={`p-4 rounded-2xl border-2 text-left transition
+                return (
+                  <button
+                    key={m?._id}
+                    onClick={() =>
+                      setSelectedMethodId(isSelected ? null : m?._id)
+                    }
+                    className={`p-4 rounded-2xl border-2 text-left transition
                     ${
                       isSelected
                         ? "border-[#042623] bg-[#042623]/5"
                         : "border-gray-200 hover:border-gray-400"
                     }`}
-                >
-                  <p className="font-semibold">{getMethodTitle(m)}</p>
-                  <p className="text-xs text-gray-500 capitalize">
-                    {m?.method}
-                  </p>
-                </button>
-              );
-            })}
+                  >
+                    <p className="font-semibold">{getMethodTitle(m)}</p>
+                    <p className="text-xs text-gray-500 capitalize">
+                      {m?.method}
+                    </p>
+                  </button>
+                );
+              })}
           </div>
 
           {/* Details */}
