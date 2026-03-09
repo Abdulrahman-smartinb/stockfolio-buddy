@@ -231,7 +231,9 @@
       "branch": "Branch",
       "address": "Address",
       "currency": "Currency"
-    }
+    },
+
+    "online_payment": "Online payment"
   },
 
   "verification": {
@@ -383,7 +385,9 @@
     "file_uploaded": "File uploaded",
     "error_while_uploading": "Error while uploading file. Try again in a few minutes",
     "file_too_large": "File too large",
-    "file_too_large_desc": "The file you uploaded is too large. Max 2MB"
+    "file_too_large_desc": "The file you uploaded is too large. Max 2MB",
+    "missing_configuration": "Missing configuration!",
+    "missing_conf_contact_admin": "Some configurations are missing! Please contact the platform admins"
   },
 
   "common": {
@@ -394,6 +398,7 @@
     "no": "No",
     "created_at": "Created at",
     "last_updated": "Last Updated",
-    "uploading": "Uploading"
+    "uploading": "Uploading",
+    "redirect_warn": "You'll be redirected to the payment page"
   }
 }

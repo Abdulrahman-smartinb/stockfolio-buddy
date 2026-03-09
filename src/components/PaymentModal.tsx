@@ -8,7 +8,11 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
 
   if (!isOpen) return null;
 
-  const selectedMethod = data?.paymentMethods?.find(
+  const paymentMethods = data?.paymentMethods?.filter(
+    (m) => m?.isActive == true,
+  );
+
+  const selectedMethod = paymentMethods?.find(
     (m) => m._id === selectedMethodId,
   );
 
@@ -56,9 +60,9 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
                         : "border-gray-200 hover:border-gray-400"
                     }`}
                   >
-                    <p className="font-semibold">{getMethodTitle(m)}</p>
+                    <p className="font-semibold">{getMethodTitle(m, t)}</p>
                     <p className="text-xs text-gray-500 capitalize">
-                      {m?.method}
+                      {m?.method === "onlinePayment" ? "" : m?.method}
                     </p>
                   </button>
                 );
@@ -86,7 +90,6 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
             disabled={!selectedMethodId}
             onClick={() => {
               onConfirm(selectedMethod);
-              onClose();
             }}
             className={`px-6 py-2 rounded-xl text-white
               ${
@@ -103,7 +106,7 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
   );
 };
 
-const getMethodTitle = (m) => {
+const getMethodTitle = (m, t) => {
   switch (m?.method) {
     case "bank":
       return m?.bank?.bankName;
@@ -113,6 +116,8 @@ const getMethodTitle = (m) => {
       return m?.usdt?.transferNetwork;
     case "cash":
       return m?.cash?.locationName;
+    case "onlinePayment":
+      return t("payments.online_payment");
     default:
       return "Unknown";
   }
@@ -177,6 +182,15 @@ const renderDetails = (m, t) => {
           <DetailItem
             label={t("payments.cash.currency")}
             value={m?.cash?.currency}
+          />
+        </>
+      );
+    case "onlinePayment":
+      return (
+        <>
+          <DetailItem
+            label={t("payments.payment_method")}
+            value={t("common.redirect_warn")}
           />
         </>
       );

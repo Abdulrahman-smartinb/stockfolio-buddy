@@ -10,7 +10,6 @@ import { formatCurrency, formatNumber } from "@/hooks/helpers";
 import PaymentModal from "@/components/PaymentModal";
 
 /* Page */
-
 const InvestorActivity = () => {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
@@ -26,7 +25,7 @@ const InvestorActivity = () => {
     setIsPaymentModalOpen,
     setSelectedRequest,
     selectedRequest,
-    setSelectedPaymentMethod,
+    submitPayment,
   } = useInvestorActivity();
 
   return (
@@ -162,9 +161,7 @@ const InvestorActivity = () => {
             isOpen={isPaymentModalOpen}
             onClose={() => setIsPaymentModalOpen(false)}
             t={t}
-            onConfirm={(method) => {
-              setSelectedPaymentMethod(method);
-            }}
+            onConfirm={submitPayment}
           />
         </>
       </main>

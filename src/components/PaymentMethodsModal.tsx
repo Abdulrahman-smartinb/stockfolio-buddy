@@ -3,11 +3,13 @@ import { useState } from "react";
 
 const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
   const [selectedMethodId, setSelectedMethodId] = useState(null);
-  const paymentMethods = data.filter((m) => m.isActive == true);
+  const paymentMethods = data?.filter((m) => m?.isActive == true);
 
   if (!isOpen) return null;
 
-  const selectedMethod = paymentMethods.find((m) => m._id === selectedMethodId);
+  const selectedMethod = paymentMethods?.find(
+    (m) => m._id === selectedMethodId,
+  );
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
@@ -146,6 +148,8 @@ const getMethodInfo = (m) => {
       return { title: m.usdt.transferNetwork };
     case "cash":
       return { title: m.cash.locationName };
+    case "onlinePayment":
+      return { title: m.method };
     default:
       return { title: "Unknown" };
   }
@@ -220,6 +224,15 @@ const renderDetails = (m, t) => {
           <DetailItem
             label={t("payments.cash.currency")}
             value={m.cash.currency}
+          />
+        </>
+      );
+    case "onlinePayment":
+      return (
+        <>
+          <DetailItem
+            label={t("payments.payment_method")}
+            value={t("common.redirect_warn")}
           />
         </>
       );

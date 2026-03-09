@@ -231,7 +231,9 @@
       "branch": "المركز",
       "address": "العنوان",
       "currency": "Currency"
-    }
+    },
+
+    "online_payment": "دفع الكتروني"
   },
 
   "verification": {
@@ -383,7 +385,9 @@
     "file_uploaded": "تم تحميل الملف بنجاح",
     "error_while_uploading": "حدث خطأ أثناء تحميل الملف. يرجى المحاولة مرة أخرى بعد بضع دقائق",
     "file_too_large": "الملف كبير جدا",
-    "file_too_large_desc": "الملف الذي قمت بتحميله كبير جدا. الحد الأقصى 2MB"
+    "file_too_large_desc": "الملف الذي قمت بتحميله كبير جدا. الحد الأقصى 2MB",
+    "missing_configuration": "الإعدادات مفقودة!",
+    "missing_conf_contact_admin": "بعض الإعدادات مفقودة! يرجى الاتصال بمسؤولي المنصة"
   },
 
   "common": {
@@ -394,6 +398,7 @@
     "no": "لا",
     "created_at": "أُنشئ بتاريخ",
     "last_updated": "آخر تحديث",
-    "uploading": "يتم التحميل"
+    "uploading": "يتم التحميل",
+    "redirect_warn": "سيتم إعادة توجيهك لصفحة الدفع"
   }
 }

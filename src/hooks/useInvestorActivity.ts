@@ -7,6 +7,9 @@ import { useUploadReceiptMutation } from "@/store/api/stocksApi";
 import { PendingRequestItem } from "@/interfaces/Stocks";
 import { toast } from "./use-toast";
 import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
+import countries from "@/data/countries.json";
+import { useRequestPaymentUrlMutation } from "@/store/api/paymentApi";
 
 const useInvestorActivity = () => {
   const { resolvedRole } = useResolvedRole();
@@ -15,6 +18,8 @@ const useInvestorActivity = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
+
+  const user = JSON.parse(Cookies.get("profile")) || {};
 
   // Trade Requests
   const tradeRequestsQuery = useGetInvestorShareTradeRequestsQuery(
@@ -142,10 +147,82 @@ const useInvestorActivity = () => {
   };
 
   useEffect(() => {
-    if (selectedPaymentMethod && selectedRequest) {
+    if (
+      selectedPaymentMethod &&
+      selectedRequest &&
+      selectedPaymentMethod?.method !== "onlinePayment"
+    ) {
       document.getElementById("real-upload-input")?.click();
     }
   }, [selectedPaymentMethod]);
+
+  const [requestUrl, { isLoading: loadingPayment }] =
+    useRequestPaymentUrlMutation();
+
+  useEffect(() => {
+    if (loadingPayment) {
+      toast({
+        title: t("common.redirect_warn"),
+        variant: "default",
+      });
+    }
+  }, [loadingPayment]);
+
+  const submitPayment = async (method) => {
+    setSelectedPaymentMethod(method);
+
+    if (method?.method === "onlinePayment") {
+      const curr = method?.onlinePayment?.acceptCurrency;
+      const token = method?.onlinePayment?.xJadwaToken;
+
+      if (!curr || !token) {
+        console.error("Missing currency or token");
+        toast({
+          title: t("toast.missing_configuration"),
+          variant: "destructive",
+          description: t("toast.missing_conf_contact_admin"),
+          duration: 5000,
+        });
+        return;
+      }
+
+      const { numberOfShares, pricePerShare, _id: orderId } = selectedRequest;
+      const { email, phone, address, city, state, zipCode, countryCode } = user;
+
+      const country = countries.find((c) => c.code === countryCode);
+
+      const paymentData = {
+        quantity: numberOfShares,
+        totalAmount: numberOfShares * pricePerShare,
+        email,
+        firstName: user.fullName,
+        lastName: user.slug,
+        phoneNumber: phone,
+        address,
+        city,
+        state,
+        countryName: country.name,
+        countryCode,
+        zipCode,
+        gatewayName: method?.onlinePayment?.gatewayName,
+        jadwaOrderId: orderId,
+      };
+
+      try {
+        const res = await requestUrl({
+          data: paymentData,
+          curr,
+          token,
+        }).unwrap();
+
+        window.open(res?.data?.redirectUrl, "_self");
+      } catch (error) {
+        console.error("payment request failed:", error);
+      }
+    } else {
+      setIsPaymentModalOpen(false);
+    }
+  };
 
   return {
     profileId,
@@ -184,6 +261,7 @@ const useInvestorActivity = () => {
     setSelectedRequest,
     selectedPaymentMethod,
     setSelectedPaymentMethod,
+    submitPayment,
   };
 };
 
