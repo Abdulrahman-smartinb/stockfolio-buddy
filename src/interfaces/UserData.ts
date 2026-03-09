@@ -11,6 +11,10 @@ export interface UserData {
   birthDate?: string;
   reviewStatus?: string;
   rejectionMessage?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
   createdAt?: string;
   role?: string;
 }

@@ -69,7 +69,12 @@
     "request_sent": "Request sent",
     "profile_verify_request": "Profile verification request sent",
     "request_failed": "Request failed",
-    "click_update_request": "Click to update the request"
+    "click_update_request": "Click to update the request",
+    "address_info": "Address info",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zipCode": "Zip Code"
   },
 
   "auth": {

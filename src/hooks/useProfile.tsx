@@ -78,6 +78,10 @@ export const useProfile = () => {
     phone: "",
     countryCode: "SY",
     email: "",
+    address: "",
+    city: "",
+    state: "",
+    zipCode: "",
     profileImageFile: null as File | null,
     profilePreview: "",
   });
@@ -102,6 +106,10 @@ export const useProfile = () => {
       phone: localPhone,
       countryCode: detectedCountry?.code || user.countryCode || "SY",
       email: user.email ?? "",
+      address: user?.address ?? "",
+      city: user?.city ?? "",
+      state: user?.state ?? "",
+      zipCode: user?.zipCode ?? "",
       profileImageFile: null,
       profilePreview: user.profileImage ? String(user.profileImage) : "",
     });
@@ -137,6 +145,11 @@ export const useProfile = () => {
       if (editData.birthDate) formData.append("birthDate", editData.birthDate);
 
       if (editData.email) formData.append("email", editData.email);
+
+      if (editData.address) formData.append("address", editData.address);
+      if (editData.city) formData.append("city", editData.city);
+      if (editData.state) formData.append("state", editData.state);
+      if (editData.zipCode) formData.append("zipCode", editData.zipCode);
 
       if (editData.profileImageFile)
         formData.append("profileImage", editData.profileImageFile);

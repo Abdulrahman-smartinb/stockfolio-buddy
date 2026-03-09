@@ -201,6 +201,37 @@ export const EditProfileModal = ({
                   setEditData((p: any) => ({ ...p, birthDate: v }))
                 }
               />
+
+              <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
+                <FormField
+                  label={t("profile.address")}
+                  value={editData.address}
+                  onChange={(v: string) =>
+                    setEditData((p: any) => ({ ...p, address: v }))
+                  }
+                />
+                <FormField
+                  label={t("profile.city")}
+                  value={editData.city}
+                  onChange={(v: string) =>
+                    setEditData((p: any) => ({ ...p, city: v }))
+                  }
+                />
+                <FormField
+                  label={t("profile.state")}
+                  value={editData.state}
+                  onChange={(v: string) =>
+                    setEditData((p: any) => ({ ...p, state: v }))
+                  }
+                />
+                <FormField
+                  label={t("profile.zipCode")}
+                  value={editData.zipCode}
+                  onChange={(v: string) =>
+                    setEditData((p: any) => ({ ...p, zipCode: v }))
+                  }
+                />
+              </div>
             </div>
 
             {/* Footer Actions */}

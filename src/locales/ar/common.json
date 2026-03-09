@@ -69,7 +69,12 @@
     "request_sent": "تم الإرسال",
     "profile_verify_request": "تم إرسال طلب التحقق من الحساب الشخصي",
     "request_failed": "فشل الإرسال",
-    "click_update_request": "انقر لتحديث الطلب"
+    "click_update_request": "انقر لتحديث الطلب",
+    "address_info": "معلومات العنوان",
+    "address": "العنوان",
+    "city": "المدينة",
+    "state": "المنطقة",
+    "zipCode": "الرمز البريدي"
   },
 
   "auth": {

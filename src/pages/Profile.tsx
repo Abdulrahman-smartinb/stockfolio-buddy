@@ -15,6 +15,11 @@ import {
   CircleCheckBig,
   Clock,
   XCircle,
+  MapPin,
+  Globe2,
+  MapPinHouse,
+  MapPinned,
+  MapPinCheck,
 } from "lucide-react";
 import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
@@ -293,7 +298,6 @@ const Profile = () => {
                       </span>
                     </button>
                   </CardHeader>
-
                   <CardContent className="grid gap-4 sm:grid-cols-3 ">
                     <InfoBlock
                       icon={
@@ -319,6 +323,46 @@ const Profile = () => {
                           ? format(user?.birthDate, "MMM yyyy")
                           : "—"
                       }
+                    />
+                  </CardContent>
+                  <CardHeader className="flex-row items-center justify-between gap-3 pb-4">
+                    {/* LEFT SIDE: Title */}
+                    <CardTitle className="flex items-center gap-3 text-lg md:text-xl font-extrabold">
+                      <div className="h-9 w-9 md:h-10 md:w-10 rounded-xl bg-primary/10 ring-1 ring-primary/20 flex items-center justify-center">
+                        <Globe2 className="w-5 h-5 md:w-6 md:h-6 text-jadwa-gold" />
+                      </div>
+
+                      <span>{t("profile.address_info")}</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="grid gap-4 sm:grid-cols-4">
+                    <InfoBlock
+                      icon={
+                        <MapPinned className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.address")}
+                      value={user?.address}
+                    />
+                    <InfoBlock
+                      icon={
+                        <MapPinHouse className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.city")}
+                      value={user?.city}
+                    />
+                    <InfoBlock
+                      icon={
+                        <MapPin className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.state")}
+                      value={<LtrValue>{user?.state}</LtrValue>}
+                    />
+                    <InfoBlock
+                      icon={
+                        <MapPinCheck className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.zipCode")}
+                      value={user?.zipCode}
                     />
                   </CardContent>
                 </Card>
