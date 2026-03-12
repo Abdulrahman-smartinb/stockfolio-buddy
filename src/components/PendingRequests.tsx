@@ -8,6 +8,7 @@ import { ChangeEvent, useRef } from "react";
 import { useUploadReceiptMutation } from "@/store/api/stocksApi";
 import { toast } from "@/hooks/use-toast";
 import { isMobile } from "@/hooks/helpers";
+import { compressImage } from "@/lib/utils";
 
 interface PendingRequestsProps {
   isLoading: boolean;
@@ -45,11 +46,10 @@ const PendingRequests = ({
       return;
     }
 
-    // Create FormData for the backend
-    const formData = new FormData();
-    formData.append("paymentConfirmationDocument", file);
-
     try {
+      const formData = new FormData();
+      const compressed = await compressImage(file);
+      formData.append("paymentConfirmationDocument", compressed);
       await uploadReceipt({ id: request._id, formData }).unwrap();
       toast({
         title: t("file_uploaded"),

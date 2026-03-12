@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 import countries from "@/data/countries.json";
 import { useRequestPaymentUrlMutation } from "@/store/api/paymentApi";
+import { compressImage } from "@/lib/utils";
 
 const useInvestorActivity = () => {
   const { resolvedRole } = useResolvedRole();
@@ -116,11 +117,14 @@ const useInvestorActivity = () => {
         duration: 5000,
       });
       return;
-    } // Create FormData for the backend
-    const formData = new FormData();
-    formData.append("paymentConfirmationDocument", file);
-    formData.append("paymentMethodId", selectedPaymentMethod._id);
+    }
+
     try {
+      const compressed = await compressImage(file);
+      const formData = new FormData();
+      formData.append("paymentConfirmationDocument", compressed);
+      formData.append("paymentMethodId", selectedPaymentMethod._id);
+
       await uploadReceipt({ id: request._id, formData }).unwrap();
       toast({ title: t("toast.file_uploaded"), variant: "default" });
       tradeRequestsQuery.refetch();
