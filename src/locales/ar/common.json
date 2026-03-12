@@ -206,6 +206,11 @@
     "payment_details": "تفاصيل الدفع",
     "scan_to_pay": "افحص للدفع",
     "select_payment_above": "يرجى اختيار طريقة الدفع أعلاه",
+    "success_title": "تم إتمام الدفع بنجاح",
+    "success_desc": "شكراً لك. تم تأكيد دفعتك والآن يتم معالجة طلبك.",
+    "order_id": "رقم الطلب",
+    "see_details": "عرض تفاصيل الطلب",
+    "continue_browsing": "متابعة التصفح",
 
     "bank": {
       "title": "حوالة بنكية (سورية)",

@@ -206,6 +206,11 @@
     "payment_details": "Payment details",
     "scan_to_pay": "Scan to pay",
     "select_payment_above": "Please select a payment method above",
+    "success_title": "Payment completed successfully",
+    "success_desc": "Thank you. Your payment has been confirmed, and your order is now being processed.",
+    "order_id": "Order ID",
+    "see_details": "See order details",
+    "continue_browsing": "Continue browsing",
 
     "bank": {
       "title": "Bank transfer (Syria)",

@@ -1,10 +1,13 @@
 import { baseApi } from "./baseApi";
 import {
+  // investorEP,
   loginEP,
   logoutEP,
   profileEP,
   registerEP,
+  // resendSmsEP,
   verifyPinEP,
+  // verifySmsEP,
 } from "../../api/GlobalData";
 import { UserData } from "@/interfaces/UserData";
 
@@ -66,6 +69,21 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+    // verifyPhoneOtp: builder.mutation({
+    //   query: ({ userId, code }) => ({
+    //     url: `api/investor/verify-phone-otp`,
+    //     method: "POST",
+    //     body: { userId, code },
+    //   }),
+    // }),
+
+    // resendPhoneOtp: builder.mutation({
+    //   query: ({ userId }) => ({
+    //     url: `api/investor/resend-phone-otp`,
+    //     method: "POST",
+    //     body: { userId },
+    //   }),
+    // }),
   }),
 });
 
@@ -75,4 +93,6 @@ export const {
   useRegisterMutation,
   useResolveRoleQuery,
   useVerifyPinMutation,
+  // useVerifyPhoneOtpMutation,
+  // useResendPhoneOtpMutation,
 } = authApi;

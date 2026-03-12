@@ -20,6 +20,7 @@ import { useTranslation } from "react-i18next";
 import FundDetails from "./pages/FundDetails";
 import "./App.css";
 import { SessionExpiredModal } from "./components/SessionExpireModal";
+import { PaymentComplete } from "./pages/PaymentComplete";
 
 const queryClient = new QueryClient();
 
@@ -60,6 +61,10 @@ const App = () => {
                 />
                 <Route path="/Settings" element={<Settings />} />
                 <Route path="/fund-details/:id" element={<FundDetails />} />
+                <Route
+                  path="/payment-complete/:orderId"
+                  element={<PaymentComplete />}
+                />
               </Route>
 
               <Route path="*" element={<NotFound />} />
