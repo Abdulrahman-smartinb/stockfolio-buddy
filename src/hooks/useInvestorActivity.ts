@@ -120,9 +120,14 @@ const useInvestorActivity = () => {
     }
 
     try {
-      const compressed = await compressImage(file);
+      let finalFile = file;
+
+      if (file.type.startsWith("image/")) {
+        finalFile = await compressImage(file);
+      }
+
       const formData = new FormData();
-      formData.append("paymentConfirmationDocument", compressed);
+      formData.append("paymentConfirmationDocument", finalFile);
       formData.append("paymentMethodId", selectedPaymentMethod._id);
 
       await uploadReceipt({ id: request._id, formData }).unwrap();
@@ -143,7 +148,7 @@ const useInvestorActivity = () => {
         toast({
           title: t("toast.error_while_uploading"),
           variant: "default",
-          description: error?.data?.message || err.message,
+          description: err?.data?.message || err?.message,
           duration: 5000,
         });
       }
