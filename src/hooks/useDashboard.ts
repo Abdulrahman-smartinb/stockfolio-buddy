@@ -4,29 +4,48 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useResolvedRole } from "./useResolveRole";
 import { useGetInvestorPortfolioQuery } from "@/store/api/investorApi";
+import { useGetInvestmentProjectsQuery } from "@/store/api/investmentProjectsApi";
+import { InvestmentProject } from "@/interfaces/investmentProject";
+
 type VerificationMode = "draft" | "pending";
+type DashboardTab = "stocks" | "projects";
 
 const useDashboard = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
-  const [searchQuery, setSearchQuery] = useState("");
+
+  const [activeTab, setActiveTab] = useState<DashboardTab>("stocks");
+  const [stockSearchQuery, setStockSearchQuery] = useState("");
+  const [projectSearchQuery, setProjectSearchQuery] = useState("");
+
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
     null
   );
+  const [selectedProject, setSelectedProject] =
+    useState<InvestmentProject | null>(null);
+
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
   const [verfiyModalOpen, setVerfiyModalOpen] = useState(false);
   const [tradeType, setTradeType] = useState("");
   const [verifyModalMode, setVerifyModalMode] =
     useState<VerificationMode>("draft");
 
-  const { resolvedRole, refetchRole, loadingRole } = useResolvedRole();
+  const { resolvedRole, refetchRole } = useResolvedRole();
 
   const {
     data: stocks = [],
-    isLoading,
-    refetch,
+    isLoading: isStocksLoading,
+    refetch: refetchStocks,
   } = useGetInvestmentEntitiesQuery({
-    keyword: searchQuery,
+    keyword: stockSearchQuery,
+  });
+
+  const {
+    data: projects = [],
+    isLoading: isProjectsLoading,
+    refetch: refetchProjects,
+  } = useGetInvestmentProjectsQuery({
+    keyword: projectSearchQuery,
   });
 
   const { data: portfolio, isLoading: portfolioLoading } =
@@ -40,7 +59,6 @@ const useDashboard = () => {
 
     const { role, reviewStatus } = data;
 
-    // If applicant → always block
     if (role === "applicant") {
       if (reviewStatus === "draft") {
         setVerifyModalMode("draft");
@@ -51,7 +69,7 @@ const useDashboard = () => {
       setVerfiyModalOpen(true);
       return;
     }
-    // Investor + approved → allow trade
+
     setSelectedStock(stock);
     setTradeType(type);
     setIsBuyModalOpen(true);
@@ -61,22 +79,41 @@ const useDashboard = () => {
     t,
     lang: i18n.language,
     isRtl,
-    searchQuery,
-    setSearchQuery,
+
+    activeTab,
+    setActiveTab,
+
+    stockSearchQuery,
+    setStockSearchQuery,
+    projectSearchQuery,
+    setProjectSearchQuery,
+
     selectedStock,
     setSelectedStock,
+    selectedProject,
+    setSelectedProject,
+
     isBuyModalOpen,
     setIsBuyModalOpen,
     verfiyModalOpen,
     setVerfiyModalOpen,
     verifyModalMode,
     tradeType,
+
     stocks,
-    isLoading,
-    refetch,
+    projects,
+
+    isStocksLoading,
+    isProjectsLoading,
+
+    refetchStocks,
+    refetchProjects,
+
     handleStockClick,
+
     portfolio,
     portfolioLoading,
   };
 };
+
 export default useDashboard;

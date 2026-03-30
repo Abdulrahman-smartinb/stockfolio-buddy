@@ -12,6 +12,7 @@ export const baseApi = createApi({
     "InvestmentEntities",
     "Notification",
     "ShareTransaction",
+    "InvestmentProject",
   ],
   endpoints: () => ({}),
 });
