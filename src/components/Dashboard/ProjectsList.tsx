@@ -23,7 +23,7 @@ const ProjectsList = ({
       <section className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold text-foreground">
-            {t("INVESTMENT.INVESTMENT_PROJECTS")}
+            {t("investment.investment_projects")}
           </h2>
         </div>
 
@@ -57,12 +57,12 @@ const ProjectsList = ({
       <section className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold text-foreground">
-            {t("INVESTMENT.INVESTMENT_PROJECTS")}
+            {t("investment.investment_projects")}
           </h2>
         </div>
 
         <div className="rounded-3xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
-          {t("GENERAL.NO_RECORDS_FOUND")}
+          {t("common.no_records")}
         </div>
       </section>
     );
@@ -72,7 +72,7 @@ const ProjectsList = ({
     <section className="space-y-4">
       <div>
         <h2 className="text-lg font-semibold text-foreground">
-          {t("INVESTMENT.INVESTMENT_PROJECTS")}
+          {t("investment.investment_projects")}
         </h2>
       </div>
 

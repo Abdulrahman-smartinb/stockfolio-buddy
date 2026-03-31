@@ -8,11 +8,8 @@ import {
   Download,
   Image as ImageIcon,
   FileText,
-  BadgeDollarSign,
   TrendingUp,
   BarChart3,
-  Clock3,
-  CircleGauge,
   NotebookText,
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -51,7 +48,7 @@ const SectionCard = ({
   <section
     className={cn(
       "rounded-[28px] border border-border/60 bg-card/95 backdrop-blur-sm shadow-sm",
-      className
+      className,
     )}
   >
     <div className="flex items-center gap-2 px-5 md:px-6 pt-5 md:pt-6 pb-3">
@@ -83,7 +80,7 @@ const MetricCard = ({
     <div
       className={cn(
         "mt-2 text-sm md:text-[15px] font-semibold text-foreground",
-        mono && "font-mono"
+        mono && "font-mono",
       )}
     >
       {value || "-"}
@@ -99,7 +96,7 @@ const ProjectDetailsPage = () => {
 
   const { data: project, isLoading } = useGetOneInvestmentProjectQuery(
     { id: id || "" },
-    { skip: !id }
+    { skip: !id },
   );
 
   if (isLoading) {
@@ -138,11 +135,11 @@ const ProjectDetailsPage = () => {
             <ArrowLeft
               className={cn("w-4 h-4", isRtl ? "ml-2 rotate-180" : "mr-2")}
             />
-            {t("GENERAL.BACK")}
+            {t("common.back")}
           </Button>
 
           <div className="rounded-[28px] border border-border bg-card p-8 text-center text-muted-foreground">
-            {t("GENERAL.NO_RECORDS_FOUND")}
+            {t("common.no_records")}
           </div>
         </main>
         <Footer />
@@ -201,7 +198,7 @@ const ProjectDetailsPage = () => {
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">
-                  {t("GENERAL.NO_IMAGE")}
+                  {t("common.no_image")}
                 </div>
               )}
 
@@ -217,15 +214,16 @@ const ProjectDetailsPage = () => {
                     "rounded-full border px-3 py-1.5 text-xs font-medium capitalize backdrop-blur-md",
                     riskClassMap[
                       project.investmentData?.riskLevel || "medium"
-                    ] || riskClassMap.medium
+                    ] || riskClassMap.medium,
                   )}
                 >
                   <span className="inline-flex items-center gap-1">
                     <ShieldAlert className="w-3.5 h-3.5" />
                     {t(
-                      `INVESTMENT.${String(
-                        project.investmentData?.riskLevel || "medium"
-                      ).toUpperCase()}`
+                      `investment.${String(
+                        project.investmentData?.riskLevel?.toLowerCase() ||
+                          "medium",
+                      )}`,
                     )}
                   </span>
                 </span>
@@ -310,7 +308,7 @@ const ProjectDetailsPage = () => {
           {/* Description + quick metrics */}
           <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.85fr] gap-5">
             <SectionCard
-              title={t("GENERAL.DESCRIPTION")}
+              title={t("common.desc")}
               icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
             >
               <div className="text-sm md:text-base text-muted-foreground leading-8 whitespace-pre-wrap">
@@ -357,60 +355,67 @@ const ProjectDetailsPage = () => {
 
           {/* Full metrics */}
           <SectionCard
-            title={t("INVESTMENT.INVESTMENT_DATA")}
+            title={t("investment.investment_data")}
             icon={<BarChart3 className="w-5 h-5 text-muted-foreground" />}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <MetricCard
-                label={t("INVESTMENT.EXPECTED_PROJECT_COST")}
+                label={t("investment.expected_project_cost")}
                 value={`${Number(
-                  project.investmentData?.expectedProjectCost || 0
+                  project.investmentData?.expectedProjectCost || 0,
                 ).toLocaleString()} USD`}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.RETURN_PROFIT_MARGIN")}
+                label={t("investment.return_profit_margin")}
                 value={`${project.investmentData?.returnProfitMargin ?? 0}%`}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.PROFITABILITY_INDEX")}
+                label={t("investment.profitability_index")}
                 value={project.investmentData?.profitabilityIndex ?? 0}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.EXPECTED_IRR")}
+                label={t("investment.expected_irr")}
                 value={`${project.investmentData?.expectedIRR ?? 0}%`}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.EXPECTED_ROI")}
+                label={t("investment.expected_roi")}
                 value={`${project.investmentData?.expectedROI ?? 0}%`}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.PAYBACK_PERIOD")}
+                label={t("investment.paycheck_period")}
                 value={`${project.investmentData?.paybackPeriodYears ?? 0} ${t(
-                  "GENERAL.YEAR"
+                  "common.year",
                 )}`}
                 mono
               />
               <MetricCard
-                label={t("INVESTMENT.PROJECT_STAGE")}
-                value={project.investmentData?.projectStage || "-"}
+                label={t("investment.project_stage")}
+                value={
+                  t(`investment.${project.investmentData?.projectStage}`) || "-"
+                }
               />
               <MetricCard
-                label={t("INVESTMENT.RISK_LEVEL")}
+                label={t("investment.risk_level")}
                 value={
                   <span
                     className={cn(
                       "inline-flex rounded-full border px-2.5 py-1 text-xs font-medium capitalize",
                       riskPlainClassMap[
                         project.investmentData?.riskLevel || "medium"
-                      ] || riskPlainClassMap.medium
+                      ] || riskPlainClassMap.medium,
                     )}
                   >
-                    {project.investmentData?.riskLevel || "-"}
+                    {t(
+                      `investment.${String(
+                        project.investmentData?.riskLevel?.toLowerCase() ||
+                          "medium",
+                      )}`,
+                    )}
                   </span>
                 }
               />
@@ -420,7 +425,7 @@ const ProjectDetailsPage = () => {
           {/* Strategy */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <SectionCard
-              title={t("INVESTMENT.EXIT_PLAN")}
+              title={t("investment.exit_plan")}
               icon={<TrendingUp className="w-5 h-5 text-muted-foreground" />}
             >
               <div className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap">
@@ -429,7 +434,7 @@ const ProjectDetailsPage = () => {
             </SectionCard>
 
             <SectionCard
-              title={t("GENERAL.NOTES")}
+              title={t("common.notes")}
               icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
             >
               <div className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap">
@@ -440,7 +445,7 @@ const ProjectDetailsPage = () => {
 
           {/* Images */}
           <SectionCard
-            title={t("GENERAL.IMAGES")}
+            title={t("common.images")}
             icon={<ImageIcon className="w-5 h-5 text-muted-foreground" />}
           >
             {images.length ? (
@@ -465,7 +470,7 @@ const ProjectDetailsPage = () => {
 
           {/* Attachments */}
           <SectionCard
-            title={t("GENERAL.ATTACHMENTS")}
+            title={t("common.attachments")}
             icon={<FileText className="w-5 h-5 text-muted-foreground" />}
           >
             {attachments.length ? (

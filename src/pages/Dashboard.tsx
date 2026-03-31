@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
-import { Search, RefreshCw, LayoutGrid, BriefcaseBusiness } from "lucide-react";
+import {
+  Search,
+  RefreshCw,
+  LayoutGrid,
+  BriefcaseBusiness,
+  Filter,
+  FilterX,
+} from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Header } from "@/components/Header";
 import { BuyModal } from "@/components/BuyModal";
@@ -15,6 +22,7 @@ import ProjectsList from "@/components/Dashboard/ProjectsList";
 import { cn } from "@/lib/utils";
 import { VerifyAccountTermsModal } from "@/components/VerifyAccountTermsModal";
 import { useNavigate } from "react-router-dom";
+import ProjectsFilters from "@/components/ProjectsFilters";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -31,6 +39,12 @@ const Dashboard = () => {
     setStockSearchQuery,
     projectSearchQuery,
     setProjectSearchQuery,
+
+    selectedProjectCategory,
+    setSelectedProjectCategory,
+    selectedProjectTags,
+    setSelectedProjectTags,
+    clearProjectFilters,
 
     selectedStock,
     setSelectedStock,
@@ -54,6 +68,11 @@ const Dashboard = () => {
     handleStockClick,
     portfolio,
     portfolioLoading,
+    categories,
+    tags,
+    isProjectFiltersLoading,
+    showFilters,
+    setShowFilters,
   } = useDashboard();
 
   const {
@@ -131,11 +150,11 @@ const Dashboard = () => {
                 "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
                 activeTab === "stocks"
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               <BriefcaseBusiness className="w-4 h-4" />
-              {t("dashboard.stocks_tab", "Stocks")}
+              {t("nav.stocks_tab")}
             </button>
 
             <button
@@ -145,11 +164,11 @@ const Dashboard = () => {
                 "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
                 activeTab === "projects"
                   ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
             >
               <LayoutGrid className="w-4 h-4" />
-              {t("dashboard.projects_tab", "Projects")}
+              {t("nav.projects_tab")}
             </button>
           </div>
 
@@ -159,7 +178,7 @@ const Dashboard = () => {
               <Search
                 className={cn(
                   "absolute top-1/2 -translate-y-1/2 w-5 h-5 jadwa-icon-gold",
-                  isRtl ? "right-4" : "left-4"
+                  isRtl ? "right-4" : "left-4",
                 )}
               />
 
@@ -168,7 +187,7 @@ const Dashboard = () => {
                 placeholder={
                   activeTab === "stocks"
                     ? t("home.search_placeholder")
-                    : t("projects.search_placeholder", "Search projects")
+                    : t("investment.search_placeholder")
                 }
                 value={
                   activeTab === "stocks" ? stockSearchQuery : projectSearchQuery
@@ -180,7 +199,7 @@ const Dashboard = () => {
                 }
                 className={cn(
                   "h-12 bg-card text-xs rounded-[999px]",
-                  isRtl ? "pr-12 pl-4" : "pl-12 pr-4"
+                  isRtl ? "pr-12 pl-4" : "pl-12 pr-4",
                 )}
               />
             </div>
@@ -208,6 +227,24 @@ const Dashboard = () => {
                 />
               )}
             </Button>
+
+            {activeTab === "projects" && (
+              <Button
+                onClick={() => setShowFilters(!showFilters)}
+                className="h-12 w-12 md:w-32 rounded-full shrink-0"
+              >
+                {showFilters ? (
+                  <FilterX className="w-5 h-5 md:hidden jadwa-icon-brown" />
+                ) : (
+                  <Filter className="w-5 h-5 md:hidden jadwa-icon-brown" />
+                )}
+                <span className="hidden md:inline">
+                  {showFilters
+                    ? t("filters.hide_filters")
+                    : t("filters.show_filters")}
+                </span>
+              </Button>
+            )}
           </div>
         </motion.div>
 
@@ -220,14 +257,31 @@ const Dashboard = () => {
             onAction={(stock, type) => handleStockClick(stock, type)}
           />
         ) : (
-          <ProjectsList
-            projects={projects}
-            isLoading={isProjectsLoading}
-            t={t}
-            lang={lang}
-            isRtl={isRtl}
-            onView={(project) => navigate(`/project-details/${project._id}`)}
-          />
+          <>
+            {showFilters && (
+              <ProjectsFilters
+                t={t}
+                isRtl={isRtl}
+                projectSearchQuery={projectSearchQuery}
+                setProjectSearchQuery={setProjectSearchQuery}
+                selectedProjectCategory={selectedProjectCategory}
+                setSelectedProjectCategory={setSelectedProjectCategory}
+                selectedProjectTags={selectedProjectTags}
+                setSelectedProjectTags={setSelectedProjectTags}
+                categories={categories}
+                tags={tags}
+                onClear={clearProjectFilters}
+              />
+            )}
+            <ProjectsList
+              projects={projects}
+              isLoading={isProjectsLoading}
+              t={t}
+              lang={lang}
+              isRtl={isRtl}
+              onView={(project) => navigate(`/project-details/${project._id}`)}
+            />
+          </>
         )}
       </main>
 

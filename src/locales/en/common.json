@@ -27,7 +27,9 @@
     "login_register": "Log in / Register",
     "logout": "Logout",
     "settings": "Settings",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "projects_tab": "Projects",
+    "stocks_tab": "Stocks"
   },
 
   "home": {
@@ -380,6 +382,29 @@
     }
   },
 
+  "investment": {
+    "investment_projects": "Investment projects",
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+    "investment_data": "Investment data",
+    "expected_project_cost": "Expected project cost",
+    "return_profit_margin": "Return profit margin",
+    "profitability_index": "Profitability index",
+    "expected_irr": "Expected IRR",
+    "expected_roi": "Expected ROI",
+    "paycheck_period": "Payback period",
+    "project_stage": "Project stage",
+    "risk_level": "Risk level",
+    "exit_plan": "Exit plan",
+    "idea": "Idea",
+    "planned": "Planned",
+    "in_progress": "In progress",
+    "operating": "Operating",
+    "completed": "Completed",
+    "search_placeholder": "Search projects"
+  },
+
   "toast": {
     "file_req": "Payment receipt is required",
     "pls_upload_file": "Please upload the payment receipt",
@@ -395,6 +420,19 @@
     "missing_conf_contact_admin": "Some configurations are missing! Please contact the platform admins"
   },
 
+  "filters": {
+    "filters": "Filters",
+    "show_filters": "Show filters",
+    "hide_filters": "Hide filters",
+    "all_categories": "All categories",
+    "all_tags": "All tags",
+    "clear_filters": "Clear filters",
+    "filter_tags": "Filter by tags",
+    "filter_category": "Filter by category",
+    "filter_projects_desc": "Narrow down projects by category and tags",
+    "selected": "selected"
+  },
+
   "common": {
     "close": "Close",
     "accept": "Accept",
@@ -404,6 +442,14 @@
     "created_at": "Created at",
     "last_updated": "Last Updated",
     "uploading": "Uploading",
-    "redirect_warn": "You'll be redirected to the payment page"
+    "redirect_warn": "You'll be redirected to the payment page",
+    "show": "Show",
+    "back": "Back",
+    "desc": "Description",
+    "no_image": "No image",
+    "year": "Year",
+    "notes": "Notes",
+    "images": "Images",
+    "attachments": "Attachments"
   }
 }

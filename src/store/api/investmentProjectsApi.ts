@@ -39,6 +39,18 @@ export const investmentProjectApi = baseApi.injectEndpoints({
         response.data,
       providesTags: ["InvestmentProject"],
     }),
+    getInvestmentProjectFilters: builder.query<
+      { data: { categories: any[]; tags: any[] } },
+      { status?: string }
+    >({
+      query: ({ status } = {}) => {
+        const params = new URLSearchParams();
+
+        if (status) params.append("status", status);
+
+        return `${investmentProjectEP}/filters?${params.toString()}`;
+      },
+    }),
     getOneInvestmentProject: builder.query<InvestmentProject, { id: string }>({
       query: ({ id }) => `${investmentProjectEP}/${id}`,
       transformResponse: (response: SingleInvestmentProjectResponse) =>
@@ -52,5 +64,6 @@ export const investmentProjectApi = baseApi.injectEndpoints({
 
 export const {
   useGetInvestmentProjectsQuery,
+  useGetInvestmentProjectFiltersQuery,
   useGetOneInvestmentProjectQuery,
 } = investmentProjectApi;

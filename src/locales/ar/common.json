@@ -27,7 +27,9 @@
     "login_register": "تسجيل الدخول / إنشاء حساب",
     "logout": "تسجيل الخروج",
     "settings": "الإعدادات",
-    "transactions": "معاملاتي"
+    "transactions": "معاملاتي",
+    "projects_tab": "المشاريع",
+    "stocks_tab": "الصناديق"
   },
 
   "home": {
@@ -380,6 +382,29 @@
     }
   },
 
+  "investment": {
+    "investment_projects": "مشاريع استثمارية",
+    "low": "منخفض",
+    "medium": "متوسط",
+    "high": "مرتفع",
+    "investment_data": "بيانات الاستثمار",
+    "expected_project_cost": "تكلفة المشروع المتوقعة",
+    "return_profit_margin": "هامش ربح العائد",
+    "profitability_index": "مؤشر الربحية",
+    "expected_irr": "معدل العائد الداخلي المتوقع",
+    "expected_roi": "العائد على الاستثمار المتوقع",
+    "paycheck_period": "فترة الاسترداد",
+    "project_stage": "مرحلة المشروع",
+    "risk_level": "مستوى المخاطر",
+    "exit_plan": "خطة الخروج",
+    "idea": "فكرة",
+    "planned": "تم التخطيط",
+    "in_progress": "في تقدم",
+    "operating": "قيد التشغيل",
+    "completed": "مكتمل",
+    "search_placeholder": "ابحث عن مشاريع"
+  },
+
   "toast": {
     "file_req": "إيصال الدفع مطلوب",
     "pls_upload_file": "يرجى تحميل إيصال الدفع",
@@ -395,6 +420,19 @@
     "missing_conf_contact_admin": "بعض الإعدادات مفقودة! يرجى الاتصال بمسؤولي المنصة"
   },
 
+  "filters": {
+    "filters": "التصفيات",
+    "show_filters": "عرض التصفيات",
+    "hide_filters": "إخفاء التصفيات",
+    "all_categories": "كل التصنيفات",
+    "all_tags": "كل العلامات",
+    "clear_filters": "مسح التصفيات",
+    "filter_tags": "التصفية حسب العلامات",
+    "filter_category": "التصفية حسب التصنيف",
+    "filter_projects_desc": "تضييق نطاق المشاريع حسب الفئة والعلامات",
+    "selected": "محدد"
+  },
+
   "common": {
     "close": "إغلاق",
     "accept": "أوافق",
@@ -404,6 +442,14 @@
     "created_at": "أُنشئ بتاريخ",
     "last_updated": "آخر تحديث",
     "uploading": "يتم التحميل",
-    "redirect_warn": "سيتم إعادة توجيهك لصفحة الدفع"
+    "redirect_warn": "سيتم إعادة توجيهك لصفحة الدفع",
+    "show": "عرض",
+    "back": "رجوع",
+    "desc": "الوصف",
+    "no_image": "لا يوجد صورة",
+    "year": "سنة",
+    "notes": "ملاحظات",
+    "images": "الصور",
+    "attachments": "الملحقات"
   }
 }

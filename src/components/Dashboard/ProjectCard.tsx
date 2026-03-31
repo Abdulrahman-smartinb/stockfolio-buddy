@@ -1,8 +1,7 @@
 import { motion } from "framer-motion";
-import { MapPin, ArrowRight } from "lucide-react";
+import { MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { InvestmentProject } from "@/interfaces/investmentProject";
-import { cn } from "@/lib/utils";
 import { base_url } from "@/api/GlobalData";
 
 type Props = {
@@ -121,7 +120,7 @@ const ProjectCard = ({
         </div> */}
 
         <Button onClick={() => onView(project)} className="w-full rounded-full">
-          {t("GENERAL.SHOW")}
+          {t("common.show")}
         </Button>
       </div>
     </motion.div>

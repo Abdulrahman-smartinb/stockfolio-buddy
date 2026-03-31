@@ -4,8 +4,12 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useResolvedRole } from "./useResolveRole";
 import { useGetInvestorPortfolioQuery } from "@/store/api/investorApi";
-import { useGetInvestmentProjectsQuery } from "@/store/api/investmentProjectsApi";
+import {
+  useGetInvestmentProjectFiltersQuery,
+  useGetInvestmentProjectsQuery,
+} from "@/store/api/investmentProjectsApi";
 import { InvestmentProject } from "@/interfaces/investmentProject";
+import { Option } from "@/components/ProjectsFilters";
 
 type VerificationMode = "draft" | "pending";
 type DashboardTab = "stocks" | "projects";
@@ -18,8 +22,13 @@ const useDashboard = () => {
   const [stockSearchQuery, setStockSearchQuery] = useState("");
   const [projectSearchQuery, setProjectSearchQuery] = useState("");
 
+  // projects-only filters
+  const [selectedProjectCategory, setSelectedProjectCategory] = useState("");
+  const [selectedProjectTags, setSelectedProjectTags] = useState<Option[]>([]);
+  const selectedProjectTagIds = selectedProjectTags.map((tag) => tag._id);
+
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
-    null
+    null,
   );
   const [selectedProject, setSelectedProject] =
     useState<InvestmentProject | null>(null);
@@ -29,6 +38,7 @@ const useDashboard = () => {
   const [tradeType, setTradeType] = useState("");
   const [verifyModalMode, setVerifyModalMode] =
     useState<VerificationMode>("draft");
+  const [showFilters, setShowFilters] = useState(false);
 
   const { resolvedRole, refetchRole } = useResolvedRole();
 
@@ -40,13 +50,25 @@ const useDashboard = () => {
     keyword: stockSearchQuery,
   });
 
+  const { data: projectFiltersResponse, isLoading: isProjectFiltersLoading } =
+    useGetInvestmentProjectFiltersQuery({
+      status: "published",
+    });
+
+  const categories = projectFiltersResponse?.data?.categories || [];
+  const tags = projectFiltersResponse?.data?.tags || [];
+
   const {
-    data: projects = [],
+    data: projectsResponse,
     isLoading: isProjectsLoading,
     refetch: refetchProjects,
   } = useGetInvestmentProjectsQuery({
     keyword: projectSearchQuery,
+    category: selectedProjectCategory || undefined,
+    tags: selectedProjectTagIds,
   });
+
+  const projects = projectsResponse || [];
 
   const { data: portfolio, isLoading: portfolioLoading } =
     useGetInvestorPortfolioQuery({
@@ -75,6 +97,12 @@ const useDashboard = () => {
     setIsBuyModalOpen(true);
   };
 
+  const clearProjectFilters = () => {
+    setProjectSearchQuery("");
+    setSelectedProjectCategory("");
+    setSelectedProjectTags([]);
+  };
+
   return {
     t,
     lang: i18n.language,
@@ -87,6 +115,12 @@ const useDashboard = () => {
     setStockSearchQuery,
     projectSearchQuery,
     setProjectSearchQuery,
+
+    selectedProjectCategory,
+    setSelectedProjectCategory,
+    selectedProjectTags,
+    setSelectedProjectTags,
+    clearProjectFilters,
 
     selectedStock,
     setSelectedStock,
@@ -113,6 +147,11 @@ const useDashboard = () => {
 
     portfolio,
     portfolioLoading,
+    categories,
+    tags,
+    isProjectFiltersLoading,
+    showFilters,
+    setShowFilters,
   };
 };
 
