@@ -24,7 +24,7 @@ export const investmentProjectApi = baseApi.injectEndpoints({
         if (limit !== undefined) params.append("limit", String(limit));
         if (sort) params.append("sort", sort);
         if (category) params.append("category", category);
-        if (status) params.append("status", status);
+        params.append("status", "published");
         if (tags?.length) params.append("tags", JSON.stringify(tags));
 
         const queryString = params.toString();
