@@ -428,6 +428,7 @@
     "all_tags": "All tags",
     "clear_filters": "Clear filters",
     "filter_tags": "Filter by tags",
+    "search_tags": "Search for tags",
     "filter_category": "Filter by category",
     "filter_projects_desc": "Narrow down projects by category and tags",
     "selected": "selected"
