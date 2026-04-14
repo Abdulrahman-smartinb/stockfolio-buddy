@@ -148,7 +148,13 @@ const Profile = () => {
                         onClick={refetchRole}
                         className="h-8 w-8 sm:h-9 sm:w-auto sm:px-3 rounded-xl ring-1 ring-border/60 bg-muted/30 hover:bg-muted/50 transition flex items-center justify-center"
                       >
-                        <RefreshCcw className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                        <RefreshCcw
+                          className={`w-4 h-4 md:w-5 md:h-5 text-jadwa-gold ${
+                            loadingUser
+                              ? "animate-spin [animation-duration:1.2s]"
+                              : ""
+                          }`}
+                        />
                       </button>
                     </CustomTooltip>
 
@@ -315,14 +321,21 @@ const Profile = () => {
                     />
                     <InfoBlock
                       icon={
+                        <Phone className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.secondary_phone")}
+                      value={
+                        user?.secondaryPhone ? (
+                          <LtrValue>{user.secondaryPhone}</LtrValue>
+                        ) : undefined
+                      }
+                    />
+                    <InfoBlock
+                      icon={
                         <Calendar className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
                       }
                       label={t("profile.birth_date")}
-                      value={
-                        user?.birthDate
-                          ? format(user?.birthDate, "MMM yyyy")
-                          : "—"
-                      }
+                      value={user?.birthDate ? user?.birthDate : "—"}
                     />
                   </CardContent>
                   <CardHeader className="flex-row items-center justify-between gap-3 pb-4">
@@ -335,7 +348,14 @@ const Profile = () => {
                       <span>{t("profile.address_info")}</span>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="grid gap-4 sm:grid-cols-4">
+                  <CardContent className="grid gap-4 sm:grid-cols-3">
+                    <InfoBlock
+                      icon={
+                        <MapPinCheck className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
+                      }
+                      label={t("profile.country")}
+                      value={user?.country}
+                    />
                     <InfoBlock
                       icon={
                         <MapPinned className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
@@ -349,20 +369,6 @@ const Profile = () => {
                       }
                       label={t("profile.city")}
                       value={user?.city}
-                    />
-                    <InfoBlock
-                      icon={
-                        <MapPin className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
-                      }
-                      label={t("profile.state")}
-                      value={<LtrValue>{user?.state}</LtrValue>}
-                    />
-                    <InfoBlock
-                      icon={
-                        <MapPinCheck className="w-4 h-4 md:w-5 md:h-5 text-jadwa-gold" />
-                      }
-                      label={t("profile.zipCode")}
-                      value={user?.zipCode}
                     />
                   </CardContent>
                 </Card>

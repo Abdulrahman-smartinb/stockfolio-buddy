@@ -1,6 +1,6 @@
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { useGetInvestmentEntitiesQuery } from "@/store/api/investmentEntityApi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useResolvedRole } from "./useResolveRole";
 import { useGetInvestorPortfolioQuery } from "@/store/api/investorApi";
@@ -12,19 +12,42 @@ import { InvestmentProject } from "@/interfaces/investmentProject";
 import { Option } from "@/components/ProjectsFilters";
 
 type VerificationMode = "draft" | "pending";
-type DashboardTab = "stocks" | "projects";
+type DashboardTab = "funds" | "projects" | "companies";
+const DASHBOARD_STATE_KEY = "dashboardState";
+
+const getStoredDashboardState = () => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = sessionStorage.getItem(DASHBOARD_STATE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
 
 const useDashboard = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+  const storedState = getStoredDashboardState();
 
-  const [activeTab, setActiveTab] = useState<DashboardTab>("stocks");
-  const [stockSearchQuery, setStockSearchQuery] = useState("");
-  const [projectSearchQuery, setProjectSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<DashboardTab>(
+    storedState?.activeTab || "funds",
+  );
+  const [stockSearchQuery, setStockSearchQuery] = useState(
+    storedState?.stockSearchQuery || "",
+  );
+  const [projectSearchQuery, setProjectSearchQuery] = useState(
+    storedState?.projectSearchQuery || "",
+  );
 
   // projects-only filters
-  const [selectedProjectCategory, setSelectedProjectCategory] = useState("");
-  const [selectedProjectTags, setSelectedProjectTags] = useState<Option[]>([]);
+  const [selectedProjectCategory, setSelectedProjectCategory] = useState(
+    storedState?.selectedProjectCategory || "",
+  );
+  const [selectedProjectTags, setSelectedProjectTags] = useState<Option[]>(
+    storedState?.selectedProjectTags || [],
+  );
   const selectedProjectTagIds = selectedProjectTags.map((tag) => tag._id);
 
   const [selectedStock, setSelectedStock] = useState<InvestmentEntity | null>(
@@ -38,12 +61,14 @@ const useDashboard = () => {
   const [tradeType, setTradeType] = useState("");
   const [verifyModalMode, setVerifyModalMode] =
     useState<VerificationMode>("draft");
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(
+    !!storedState?.showFilters,
+  );
 
   const { resolvedRole, refetchRole } = useResolvedRole();
 
   const {
-    data: stocks = [],
+    data: entities = [],
     isLoading: isStocksLoading,
     refetch: refetchStocks,
   } = useGetInvestmentEntitiesQuery({
@@ -69,6 +94,33 @@ const useDashboard = () => {
   });
 
   const projects = projectsResponse || [];
+  const funds = entities.filter((item) => item.entityType === "InvestmentFund");
+  const companies = entities.filter(
+    (item) => item.entityType === "ClientCompany",
+  );
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    sessionStorage.setItem(
+      DASHBOARD_STATE_KEY,
+      JSON.stringify({
+        activeTab,
+        stockSearchQuery,
+        projectSearchQuery,
+        selectedProjectCategory,
+        selectedProjectTags,
+        showFilters,
+      }),
+    );
+  }, [
+    activeTab,
+    stockSearchQuery,
+    projectSearchQuery,
+    selectedProjectCategory,
+    selectedProjectTags,
+    showFilters,
+  ]);
 
   const { data: portfolio, isLoading: portfolioLoading } =
     useGetInvestorPortfolioQuery({
@@ -134,7 +186,8 @@ const useDashboard = () => {
     verifyModalMode,
     tradeType,
 
-    stocks,
+    stocks: funds,
+    companies,
     projects,
 
     isStocksLoading,

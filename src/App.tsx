@@ -22,6 +22,7 @@ import "./App.css";
 import { SessionExpiredModal } from "./components/SessionExpireModal";
 import { PaymentComplete } from "./pages/PaymentComplete";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
+import CompanyDetails from "./pages/CompanyDetails";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +63,10 @@ const App = () => {
                 />
                 <Route path="/Settings" element={<Settings />} />
                 <Route path="/fund-details/:id" element={<FundDetails />} />
+                <Route
+                  path="/company-details/:id"
+                  element={<CompanyDetails />}
+                />
                 <Route
                   path="/project-details/:id"
                   element={<ProjectDetailsPage />}

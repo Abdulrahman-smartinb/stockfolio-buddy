@@ -76,8 +76,10 @@ export const useProfile = () => {
     fullName: "",
     birthDate: "",
     phone: "",
+    secondaryPhone: "",
     countryCode: "SY",
     email: "",
+    country: "",
     address: "",
     city: "",
     state: "",
@@ -95,17 +97,24 @@ export const useProfile = () => {
     );
 
     let localPhone = user.phone || "";
+    let localSecondaryPhone = user.secondaryPhone || "";
 
     if (detectedCountry) {
       localPhone = user.phone.replace(detectedCountry.dialCode, "");
+      localSecondaryPhone = localSecondaryPhone.replace(
+        detectedCountry.dialCode,
+        "",
+      );
     }
 
     setEditData({
       fullName: user.fullName ?? "",
       birthDate: user.birthDate ?? "",
       phone: localPhone,
+      secondaryPhone: localSecondaryPhone,
       countryCode: detectedCountry?.code || user.countryCode || "SY",
       email: user.email ?? "",
+      country: user?.country ?? "",
       address: user?.address ?? "",
       city: user?.city ?? "",
       state: user?.state ?? "",
@@ -146,6 +155,7 @@ export const useProfile = () => {
 
       if (editData.email) formData.append("email", editData.email);
 
+      if (editData.country) formData.append("country", editData.country);
       if (editData.address) formData.append("address", editData.address);
       if (editData.city) formData.append("city", editData.city);
       if (editData.state) formData.append("state", editData.state);
@@ -165,6 +175,13 @@ export const useProfile = () => {
 
           formData.append("phone", fullPhone);
           formData.append("countryCode", editData.countryCode);
+
+          if (editData.secondaryPhone) {
+            formData.append(
+              "secondaryPhone",
+              `${selectedCountry.dialCode}${editData.secondaryPhone}`,
+            );
+          }
         }
       }
 

@@ -29,7 +29,9 @@
     "settings": "Settings",
     "transactions": "Transactions",
     "projects_tab": "Projects",
-    "stocks_tab": "Stocks"
+    "stocks_tab": "Stocks",
+    "funds_tab": "Funds",
+    "companies_tab": "Companies"
   },
 
   "home": {
@@ -52,6 +54,7 @@
     "member_since": "Member Since",
     "email": "Email",
     "phone": "Phone",
+    "secondary_phone": "Secondary Phone",
     "birth_date": "Birth Date",
     "full_name": "Full Name",
     "edit": "Edit",
@@ -73,6 +76,7 @@
     "request_failed": "Request failed",
     "click_update_request": "Click to update the request",
     "address_info": "Address info",
+    "country": "Country",
     "address": "Address",
     "city": "City",
     "state": "State",
@@ -207,6 +211,9 @@
     "select_view_details": "Select a method to view payment details",
     "payment_details": "Payment details",
     "scan_to_pay": "Scan to pay",
+    "tap_to_expand": "Tap the image to view it full screen",
+    "copy": "Copy",
+    "accept_currency": "Accepted currency",
     "select_payment_above": "Please select a payment method above",
     "success_title": "Payment completed successfully",
     "success_desc": "Thank you. Your payment has been confirmed, and your order is now being processed.",
@@ -219,7 +226,10 @@
       "beneficiary_name": "Beneficiary full name",
       "beneficiary_address": "Beneficiary address",
       "bank_name": "Bank name",
-      "account_number": "Account number"
+      "account_number": "Account number",
+      "branch": "Branch",
+      "iban": "IBAN",
+      "swift_code": "SWIFT code"
     },
 
     "sham_cash": {
@@ -240,7 +250,14 @@
       "currency": "Currency"
     },
 
-    "online_payment": "Online payment"
+    "online_payment": "Online payment",
+    "method_names": {
+      "bank": "Bank transfer",
+      "shamCash": "Sham Cash",
+      "usdt": "USDT Wallet",
+      "cash": "Cash payment",
+      "onlinePayment": "Online payment"
+    }
   },
 
   "verification": {
@@ -397,12 +414,48 @@
     "project_stage": "Project stage",
     "risk_level": "Risk level",
     "exit_plan": "Exit plan",
+    "exit_duration": "Exit duration",
+    "interested": "I'm interested",
+    "interested_active": "Interested",
     "idea": "Idea",
     "planned": "Planned",
     "in_progress": "In progress",
     "operating": "Operating",
     "completed": "Completed",
     "search_placeholder": "Search projects"
+  },
+
+  "companies": {
+    "search_placeholder": "Search companies",
+    "company_info": "Company information",
+    "investment_info": "Investment information",
+    "trade_name": "Trade name",
+    "legal_structure": "Legal structure",
+    "crn": "Commercial registration number",
+    "governorate": "Governorate",
+    "address": "Registered address",
+    "website": "Website",
+    "sector": "Economic sector",
+    "target_markets": "Target markets",
+    "required_investment": "Required investment",
+    "exit_strategy": "Exit strategy",
+    "use_of_proceeds": "Use of proceeds",
+    "owners": "Owners",
+    "board_members": "Board members",
+    "nationality": "Nationality",
+    "ownership_percentage": "Ownership percentage",
+    "share_price": "Share price",
+    "initial_shares": "Initial shares",
+    "min_invest_share": "Minimum investment shares",
+    "max_invest_share": "Maximum investment shares",
+    "documents": {
+      "commercial_registration": "Commercial registration",
+      "legal_rep_authority": "Legal representative authority",
+      "memorandum": "Memorandum of incorporation",
+      "bylaws": "Association and bylaws",
+      "financial_statements": "Financial statements",
+      "legal_disclosure": "Legal disclosure document"
+    }
   },
 
   "toast": {

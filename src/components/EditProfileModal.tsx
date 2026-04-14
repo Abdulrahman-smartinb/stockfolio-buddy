@@ -191,6 +191,29 @@ export const EditProfileModal = ({
                     }
                   />
                 </div>
+
+                <div>
+                  <label className="text-xs font-medium text-jadwa-muted mb-1 block">
+                    {t("profile.secondary_phone")}
+                  </label>
+
+                  <PhoneInput
+                    countries={COUNTRIES}
+                    country={editData.countryCode}
+                    phone={editData.secondaryPhone}
+                    isRtl={isRtl}
+                    isMobile={isMobile}
+                    onCountryChange={(c) =>
+                      setEditData((p: any) => ({
+                        ...p,
+                        countryCode: c.code,
+                      }))
+                    }
+                    onPhoneChange={(secondaryPhone) =>
+                      setEditData((p: any) => ({ ...p, secondaryPhone }))
+                    }
+                  />
+                </div>
               </div>
 
               <FormField
@@ -204,6 +227,13 @@ export const EditProfileModal = ({
 
               <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
                 <FormField
+                  label={t("profile.country")}
+                  value={editData.country}
+                  onChange={(v: string) =>
+                    setEditData((p: any) => ({ ...p, country: v }))
+                  }
+                />
+                <FormField
                   label={t("profile.address")}
                   value={editData.address}
                   onChange={(v: string) =>
@@ -215,20 +245,6 @@ export const EditProfileModal = ({
                   value={editData.city}
                   onChange={(v: string) =>
                     setEditData((p: any) => ({ ...p, city: v }))
-                  }
-                />
-                <FormField
-                  label={t("profile.state")}
-                  value={editData.state}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, state: v }))
-                  }
-                />
-                <FormField
-                  label={t("profile.zipCode")}
-                  value={editData.zipCode}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, zipCode: v }))
                   }
                 />
               </div>

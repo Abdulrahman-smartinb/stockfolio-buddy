@@ -38,8 +38,10 @@ export interface InvestmentProjectTag {
 export interface InvestmentProject {
   _id: string;
   name: string;
+  nameAr?: string;
   slug?: string;
   logo?: string | null;
+  coverImage?: string | null;
   brief?: string;
   briefAr?: string;
   fullDescription?: string;
@@ -48,8 +50,11 @@ export interface InvestmentProject {
   currency?: string;
   status: "draft" | "published" | "archived";
   category?: InvestmentProjectCategory | string | null;
+  sector?: InvestmentProjectCategory | string | null;
   tags?: InvestmentProjectTag[] | string[];
   investmentData?: InvestmentProjectInvestmentData;
+  exitDuration?: number;
+  interestedUsers?: string[];
   images?: InvestmentProjectImage[];
   attachments?: InvestmentProjectAttachment[];
   highlights?: string[];

@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   MapPin,
   CalendarDays,
   ShieldAlert,
@@ -12,11 +11,15 @@ import {
   BarChart3,
   NotebookText,
 } from "lucide-react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Cookies from "js-cookie";
 
 import { Button } from "@/components/ui/button";
-import { useGetOneInvestmentProjectQuery } from "@/store/api/investmentProjectsApi";
+import {
+  useGetOneInvestmentProjectQuery,
+  useToggleProjectInterestMutation,
+} from "@/store/api/investmentProjectsApi";
 import { cn } from "@/lib/utils";
 import { base_url } from "@/api/GlobalData";
 import { Header } from "@/components/Header";
@@ -38,19 +41,12 @@ const SectionCard = ({
   title,
   icon,
   children,
-  className = "",
 }: {
   title: string;
   icon?: React.ReactNode;
   children: React.ReactNode;
-  className?: string;
 }) => (
-  <section
-    className={cn(
-      "rounded-[28px] border border-border/60 bg-card/95 backdrop-blur-sm shadow-sm",
-      className,
-    )}
-  >
+  <section className="rounded-[28px] border border-border/60 bg-card/95 backdrop-blur-sm shadow-sm">
     <div className="flex items-center gap-2 px-5 md:px-6 pt-5 md:pt-6 pb-3">
       {icon}
       <h2 className="text-base md:text-lg font-semibold text-foreground">
@@ -64,19 +60,14 @@ const SectionCard = ({
 const MetricCard = ({
   label,
   value,
-  icon,
   mono = false,
 }: {
   label: string;
   value: React.ReactNode;
-  icon?: React.ReactNode;
   mono?: boolean;
 }) => (
   <div className="rounded-2xl border border-border/60 bg-background/70 px-4 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-      {icon}
-      <span>{label}</span>
-    </div>
+    <div className="text-xs text-muted-foreground">{label}</div>
     <div
       className={cn(
         "mt-2 text-sm md:text-[15px] font-semibold text-foreground",
@@ -90,14 +81,26 @@ const MetricCard = ({
 
 const ProjectDetailsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { id } = useParams();
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+  const profileCookie = Cookies.get("profile");
+  const profile = profileCookie ? JSON.parse(profileCookie) : null;
 
   const { data: project, isLoading } = useGetOneInvestmentProjectQuery(
     { id: id || "" },
     { skip: !id },
   );
+  const [toggleProjectInterest, { isLoading: isUpdatingInterest }] =
+    useToggleProjectInterestMutation();
+
+  const handleBack = () => {
+    navigate(location.state?.from || "/", {
+      replace: true,
+      state: { restoreScrollY: location.state?.restoreScrollY ?? 0 },
+    });
+  };
 
   if (isLoading) {
     return (
@@ -127,17 +130,6 @@ const ProjectDetailsPage = () => {
       <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
         <Header />
         <main className="container mx-auto p-4 pb-[120px] max-w-6xl">
-          <Button
-            variant="outline"
-            onClick={() => navigate(-1)}
-            className="rounded-full mb-4"
-          >
-            <ArrowLeft
-              className={cn("w-4 h-4", isRtl ? "ml-2 rotate-180" : "mr-2")}
-            />
-            {t("common.back")}
-          </Button>
-
           <div className="rounded-[28px] border border-border bg-card p-8 text-center text-muted-foreground">
             {t("common.no_records")}
           </div>
@@ -146,6 +138,11 @@ const ProjectDetailsPage = () => {
       </div>
     );
   }
+
+  const projectName =
+    i18n.language === "ar"
+      ? project.nameAr || project.name || ""
+      : project.name || project.nameAr || "";
 
   const displayBrief =
     i18n.language === "ar"
@@ -164,17 +161,36 @@ const ProjectDetailsPage = () => {
         : project.category.name || project.category.nameAr || "-"
       : "-";
 
+  const sectorName =
+    typeof project.sector === "object" && project.sector
+      ? i18n.language === "ar"
+        ? project.sector.nameAr || project.sector.name || "-"
+        : project.sector.name || project.sector.nameAr || "-"
+      : "-";
+
   const logoSrc = project.logo
     ? `${base_url}/investmentProjects/${project.logo}`
     : null;
 
-  const heroSrc = project.images?.[0]?.url
-    ? `${base_url}/investmentProjects/${project.images[0].url}`
-    : logoSrc;
+  const heroSrc = project.coverImage
+    ? `${base_url}/investmentProjects/${project.coverImage}`
+    : project.images?.[0]?.url
+      ? `${base_url}/investmentProjects/${project.images[0].url}`
+      : logoSrc;
 
   const images = project.images || [];
   const attachments = project.attachments || [];
-  const tags = Array.isArray(project.tags) ? project.tags : [];
+  const interestedUsers = project.interestedUsers || [];
+  const isInterested = profile?.authUserId
+    ? interestedUsers.some(
+        (userId: string) => String(userId) === String(profile.authUserId),
+      )
+    : false;
+
+  const handleInterestToggle = async () => {
+    if (!project?._id) return;
+    await toggleProjectInterest({ id: project._id }).unwrap();
+  };
 
   return (
     <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
@@ -187,13 +203,32 @@ const ProjectDetailsPage = () => {
           transition={{ duration: 0.25 }}
           className="space-y-5"
         >
-          {/* Hero */}
+          <div className="hidden md:block">
+            <Button
+              variant="outline"
+              onClick={handleBack}
+              className="rounded-full"
+            >
+              <span
+                className={cn(
+                  "inline-flex items-center gap-2",
+                  isRtl && "flex-row-reverse",
+                )}
+              >
+                <span className={cn("inline-flex", isRtl && "rotate-180")}>
+                  ←
+                </span>
+                {t("common.back")}
+              </span>
+            </Button>
+          </div>
+
           <section className="overflow-hidden rounded-[32px] border border-border/60 bg-card shadow-sm">
             <div className="relative h-[260px] md:h-[340px] lg:h-[380px] bg-muted">
               {heroSrc ? (
                 <img
                   src={heroSrc}
-                  alt={project.name}
+                  alt={projectName}
                   className="w-full h-full object-cover"
                 />
               ) : (
@@ -206,7 +241,7 @@ const ProjectDetailsPage = () => {
 
               <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
                 <span className="rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white">
-                  {categoryName}
+                  {sectorName}
                 </span>
 
                 <span
@@ -235,19 +270,19 @@ const ProjectDetailsPage = () => {
                     {logoSrc ? (
                       <img
                         src={logoSrc}
-                        alt={project.name}
+                        alt={projectName}
                         className="w-full h-full object-cover"
                       />
                     ) : (
                       <span className="text-lg md:text-xl font-semibold text-white">
-                        {project.name?.charAt(0)?.toUpperCase() || "P"}
+                        {projectName?.charAt(0)?.toUpperCase() || "P"}
                       </span>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <h1 className="text-xl md:text-3xl font-semibold text-white line-clamp-2">
-                      {project.name}
+                      {projectName}
                     </h1>
 
                     <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/85">
@@ -269,10 +304,21 @@ const ProjectDetailsPage = () => {
 
                       <span className="inline-flex items-center gap-1 capitalize">
                         <FolderOpen className="w-4 h-4" />
-                        {project.status}
+                        {categoryName}
                       </span>
                     </div>
                   </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleInterestToggle}
+                    disabled={isUpdatingInterest}
+                    className="rounded-full bg-white/15 px-5 text-white backdrop-blur-md hover:bg-white/25"
+                  >
+                    {isInterested
+                      ? t("investment.interested_active")
+                      : t("investment.interested")}
+                  </Button>
                 </div>
               </div>
             </div>
@@ -284,76 +330,22 @@ const ProjectDetailsPage = () => {
                 </p>
               </div>
             ) : null}
-
-            {/* {tags.length ? (
-              <div className="px-5 md:px-6 py-3 pt-2 border-border/50 bg-card">
-                <div className="flex flex-wrap gap-2">
-                  {tags.map((tag: any) => (
-                    <span
-                      key={tag._id || tag.id || tag}
-                      className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground/80"
-                    >
-                      {i18n.language === "ar"
-                        ? tag?.nameAr || tag?.name || tag
-                        : tag?.name || tag?.nameAr || tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <div className="text-sm text-muted-foreground">-</div>
-            )} */}
           </section>
 
-          {/* Description + quick metrics */}
           <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.85fr] gap-5">
             <SectionCard
               title={t("common.desc")}
               icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
             >
-              <div className="text-sm md:text-base text-muted-foreground leading-8 whitespace-pre-wrap">
+              <div
+                className="text-sm md:text-base text-muted-foreground leading-8 whitespace-pre-wrap"
+                style={{ fontWeight: "500" }}
+              >
                 {displayDescription || "-"}
               </div>
             </SectionCard>
-
-            {/* <SectionCard
-              title={t("INVESTMENT.INVESTMENT_DATA")}
-              icon={<BarChart3 className="w-5 h-5 text-muted-foreground" />}
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3">
-                <MetricCard
-                  label={t("INVESTMENT.EXPECTED_PROJECT_COST")}
-                  value={`${Number(
-                    project.investmentData?.expectedProjectCost || 0
-                  ).toLocaleString()} USD`}
-                  mono
-                  icon={<BadgeDollarSign className="w-4 h-4" />}
-                />
-                <MetricCard
-                  label={t("INVESTMENT.EXPECTED_ROI")}
-                  value={`${project.investmentData?.expectedROI ?? 0}%`}
-                  mono
-                  icon={<TrendingUp className="w-4 h-4" />}
-                />
-                <MetricCard
-                  label={t("INVESTMENT.EXPECTED_IRR")}
-                  value={`${project.investmentData?.expectedIRR ?? 0}%`}
-                  mono
-                  icon={<CircleGauge className="w-4 h-4" />}
-                />
-                <MetricCard
-                  label={t("INVESTMENT.PAYBACK_PERIOD")}
-                  value={`${
-                    project.investmentData?.paybackPeriodYears ?? 0
-                  } ${t("GENERAL.YEAR")}`}
-                  mono
-                  icon={<Clock3 className="w-4 h-4" />}
-                />
-              </div>
-            </SectionCard> */}
           </div>
 
-          {/* Full metrics */}
           <SectionCard
             title={t("investment.investment_data")}
             icon={<BarChart3 className="w-5 h-5 text-muted-foreground" />}
@@ -422,7 +414,6 @@ const ProjectDetailsPage = () => {
             </div>
           </SectionCard>
 
-          {/* Strategy */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <SectionCard
               title={t("investment.exit_plan")}
@@ -431,19 +422,30 @@ const ProjectDetailsPage = () => {
               <div className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap">
                 {project.investmentData?.exitPlan || "-"}
               </div>
+
+              <div className="mt-4 rounded-2xl border border-border bg-background/70 px-4 py-3">
+                <div className="text-xs text-muted-foreground">
+                  {t("investment.exit_duration")}
+                </div>
+                <div className="mt-1 text-sm font-semibold text-foreground">
+                  {project.exitDuration ?? 0} {t("common.year")}
+                </div>
+              </div>
             </SectionCard>
 
             <SectionCard
               title={t("common.notes")}
               icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
             >
-              <div className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap">
+              <div
+                className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap"
+                style={{ fontWeight: "500" }}
+              >
                 {project.investmentData?.notes || "-"}
               </div>
             </SectionCard>
           </div>
 
-          {/* Images */}
           <SectionCard
             title={t("common.images")}
             icon={<ImageIcon className="w-5 h-5 text-muted-foreground" />}
@@ -468,7 +470,6 @@ const ProjectDetailsPage = () => {
             )}
           </SectionCard>
 
-          {/* Attachments */}
           <SectionCard
             title={t("common.attachments")}
             icon={<FileText className="w-5 h-5 text-muted-foreground" />}

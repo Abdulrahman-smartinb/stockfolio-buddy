@@ -29,7 +29,9 @@
     "settings": "الإعدادات",
     "transactions": "معاملاتي",
     "projects_tab": "المشاريع",
-    "stocks_tab": "الصناديق"
+    "stocks_tab": "الصناديق",
+    "funds_tab": "الصناديق",
+    "companies_tab": "الشركات"
   },
 
   "home": {
@@ -52,6 +54,7 @@
     "member_since": "عضو منذ",
     "email": "البريد الإلكتروني",
     "phone": "رقم الهاتف",
+    "secondary_phone": "رقم هاتف ثانوي",
     "birth_date": "تاريخ الميلاد",
     "full_name": "الاسم الثلاثي",
     "edit": "تعديل",
@@ -73,6 +76,7 @@
     "request_failed": "فشل الإرسال",
     "click_update_request": "انقر لتحديث الطلب",
     "address_info": "معلومات العنوان",
+    "country": "الدولة",
     "address": "العنوان",
     "city": "المدينة",
     "state": "المنطقة",
@@ -207,6 +211,9 @@
     "select_view_details": "حدد طريقة لعرض تفاصيل الدفع",
     "payment_details": "تفاصيل الدفع",
     "scan_to_pay": "افحص للدفع",
+    "tap_to_expand": "اضغط على الصورة لعرضها بكامل الشاشة",
+    "copy": "نسخ",
+    "accept_currency": "العملة المقبولة",
     "select_payment_above": "يرجى اختيار طريقة الدفع أعلاه",
     "success_title": "تم إتمام الدفع بنجاح",
     "success_desc": "شكراً لك. تم تأكيد دفعتك والآن يتم معالجة طلبك.",
@@ -219,7 +226,10 @@
       "beneficiary_name": "الاسم الثلاثي للمستفيد",
       "beneficiary_address": "عنوان المستفيد",
       "bank_name": "اسم المصرف",
-      "account_number": "رقم الحساب"
+      "account_number": "رقم الحساب",
+      "branch": "الفرع",
+      "iban": "رقم الآيبان",
+      "swift_code": "رمز السويفت"
     },
 
     "sham_cash": {
@@ -240,7 +250,14 @@
       "currency": "Currency"
     },
 
-    "online_payment": "دفع الكتروني"
+    "online_payment": "دفع إلكتروني",
+    "method_names": {
+      "bank": "حوالة مصرفية",
+      "shamCash": "شام كاش",
+      "usdt": "محفظة USDT",
+      "cash": "دفع نقدي",
+      "onlinePayment": "دفع إلكتروني"
+    }
   },
 
   "verification": {
@@ -397,12 +414,48 @@
     "project_stage": "مرحلة المشروع",
     "risk_level": "مستوى المخاطر",
     "exit_plan": "خطة الخروج",
-    "idea": "فكرة",
-    "planned": "تم التخطيط",
-    "in_progress": "في تقدم",
-    "operating": "قيد التشغيل",
-    "completed": "مكتمل",
+    "exit_duration": "مدة التخارج",
+    "interested": "أنا مهتم",
+    "interested_active": "تم إبداء الاهتمام",
+    "idea": "مرحلة الفكرة الاستثمارية",
+    "planned": "مرحلة الإعداد للاستثمار",
+    "in_progress": "مرحلة التنفيذ والتطوير",
+    "operating": "مرحلة التشغيل وتحقيق العوائد",
+    "completed": "مرحلة التخارج أو الإغلاق",
     "search_placeholder": "ابحث عن مشاريع"
+  },
+
+  "companies": {
+    "search_placeholder": "ابحث عن الشركات",
+    "company_info": "معلومات الشركة",
+    "investment_info": "المعلومات الاستثمارية",
+    "trade_name": "الاسم التجاري",
+    "legal_structure": "الشكل القانوني",
+    "crn": "رقم السجل التجاري",
+    "governorate": "المحافظة",
+    "address": "العنوان المسجل",
+    "website": "الموقع الإلكتروني",
+    "sector": "القطاع الاقتصادي",
+    "target_markets": "الأسواق المستهدفة",
+    "required_investment": "الاستثمار المطلوب",
+    "exit_strategy": "استراتيجية التخارج",
+    "use_of_proceeds": "استخدام حصيلة الاستثمار",
+    "owners": "المالكون",
+    "board_members": "أعضاء مجلس الإدارة",
+    "nationality": "الجنسية",
+    "ownership_percentage": "نسبة الملكية",
+    "share_price": "سعر السهم",
+    "initial_shares": "عدد الأسهم الأولية",
+    "min_invest_share": "الحد الأدنى لأسهم الاستثمار",
+    "max_invest_share": "الحد الأقصى لأسهم الاستثمار",
+    "documents": {
+      "commercial_registration": "السجل التجاري",
+      "legal_rep_authority": "تفويض الممثل القانوني",
+      "memorandum": "عقد التأسيس",
+      "bylaws": "النظام الأساسي",
+      "financial_statements": "البيانات المالية",
+      "legal_disclosure": "مستند الإفصاح القانوني"
+    }
   },
 
   "toast": {

@@ -6,10 +6,10 @@ import {
   Settings,
   ArrowLeftRight,
   Globe,
+  ArrowLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logoAr from "../assets/images/JadwaAR.png";
-import logoEn from "../assets/images/JadwaEN.png";
+import logo from "../assets/images/investment-logo-large.png";
 import avatar from "../assets/images/user.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
@@ -17,6 +17,7 @@ import { isMobile } from "@/hooks/helpers";
 import { base_url } from "@/api/GlobalData";
 import { useProfile } from "@/hooks/useProfile";
 import { useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 
 export const Header = () => {
   const {
@@ -37,7 +38,10 @@ export const Header = () => {
   } = useHeader();
 
   const { user } = useProfile();
+  const location = useLocation();
   const isRtl = i18n.language === "ar";
+  const isProjectDetailsMobile =
+    isMobile && /^\/project-details\/[^/]+$/.test(location.pathname);
   const notifButtonRef = useRef<HTMLButtonElement | null>(null);
   const notifPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -90,7 +94,7 @@ export const Header = () => {
               )}
             >
               <img
-                src={isRtl ? logoAr : logoEn}
+                src={logo}
                 alt="Jadwa Logo"
                 className="w-full h-full object-contain"
               />
@@ -207,11 +211,13 @@ export const Header = () => {
                   <div
                     ref={notifPanelRef}
                     className={cn(
-                      "absolute mt-3 z-50",
+                      "absolute mt-3 z-50 max-w-[calc(100vw-5rem)]",
                       !isRtl ? "right-0" : "left-0",
                       "rounded-2xl border border-border bg-background shadow-xl",
                       "overflow-hidden",
-                      isMobile ? "w-[20rem]" : "w-[24rem]",
+                      isMobile
+                        ? "w-[min(20rem,calc(100vw-2rem))]"
+                        : "w-[24rem]",
                     )}
                   >
                     {/* Header */}
@@ -265,7 +271,19 @@ export const Header = () => {
 
               {/* Avatar */}
               <button
-                onClick={() => navigate("/profile")}
+                onClick={() => {
+                  if (isProjectDetailsMobile) {
+                    navigate(location.state?.from || "/", {
+                      replace: true,
+                      state: {
+                        restoreScrollY: location.state?.restoreScrollY ?? 0,
+                      },
+                    });
+                    return;
+                  }
+
+                  navigate("/profile");
+                }}
                 className={cn(
                   "inline-flex items-center justify-center",
                   "h-9 w-9 rounded-xl",
@@ -275,17 +293,26 @@ export const Header = () => {
                   "transition",
                   "focus:outline-none focus:ring-2 focus:ring-primary/30",
                 )}
-                aria-label="Profile"
+                aria-label={isProjectDetailsMobile ? "Back" : "Profile"}
               >
-                <img
-                  src={
-                    user?.profileImage
-                      ? `${base_url}/Investor/${user.profileImage}`
-                      : avatar
-                  }
-                  alt="User Avatar"
-                  className="h-8 w-8 rounded-lg object-cover"
-                />
+                {isProjectDetailsMobile ? (
+                  <ArrowLeft
+                    className={cn(
+                      "h-5 w-5 jadwa-icon-gold",
+                      isRtl && "rotate-180",
+                    )}
+                  />
+                ) : (
+                  <img
+                    src={
+                      user?.profileImage
+                        ? `${base_url}/Investor/${user.profileImage}`
+                        : avatar
+                    }
+                    alt="User Avatar"
+                    className="h-8 w-8 rounded-lg object-cover"
+                  />
+                )}
               </button>
             </div>
           </div>

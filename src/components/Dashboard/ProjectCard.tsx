@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { ArrowUpRight, Building2 } from "lucide-react";
 import { InvestmentProject } from "@/interfaces/investmentProject";
 import { base_url } from "@/api/GlobalData";
 
@@ -13,24 +12,11 @@ type Props = {
   index?: number;
 };
 
-const riskClassMap: Record<string, string> = {
-  low: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  medium: "bg-amber-50 text-amber-700 border-amber-200",
-  high: "bg-red-50 text-red-700 border-red-200",
-};
-
-const ProjectCard = ({
-  project,
-  lang,
-  isRtl = false,
-  t,
-  onView,
-  index = 0,
-}: Props) => {
-  const brief =
+const ProjectCard = ({ project, lang, onView, index = 0 }: Props) => {
+  const projectName =
     lang === "ar"
-      ? project.briefAr || project.brief || ""
-      : project.brief || project.briefAr || "";
+      ? project.nameAr || project.name || ""
+      : project.name || project.nameAr || "";
 
   const categoryName =
     typeof project.category === "object" && project.category
@@ -43,85 +29,45 @@ const ProjectCard = ({
     ? `${base_url}/investmentProjects/${project.logo}`
     : null;
 
-  const expectedCost = Number(project.investmentData?.expectedProjectCost || 0);
-  const expectedROI = Number(project.investmentData?.expectedROI || 0);
-  const riskLevel = project.investmentData?.riskLevel || "medium";
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.05 }}
-      className="group rounded-3xl border border-border bg-card p-4 shadow-sm hover:shadow-md transition-all"
+      className="group cursor-pointer overflow-hidden rounded-[28px] border border-border/70 bg-card shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-lg"
+      onClick={() => onView(project)}
     >
-      <div className="space-y-4">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3 min-w-0">
-            <div className="w-11 h-11 rounded-2xl border border-border bg-muted flex items-center justify-center shrink-0 overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-br from-background via-card to-muted/30 p-5">
+        <div className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-gradient-to-br from-primary/5 via-transparent to-primary/10" />
+
+        <div className="relative flex items-center justify-between gap-4">
+          <div className="flex items-center gap-4 min-w-0">
+            <div className="h-14 w-14 rounded-2xl border border-border/80 bg-background flex items-center justify-center overflow-hidden shrink-0 shadow-sm">
               {logoSrc ? (
                 <img
                   src={logoSrc}
-                  alt={project.name}
+                  alt={projectName}
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <span className="text-sm font-semibold text-foreground">
-                  {project.name?.charAt(0)?.toUpperCase() || "P"}
-                </span>
+                <Building2 className="w-6 h-6 text-muted-foreground" />
               )}
             </div>
 
             <div className="min-w-0">
-              <h3 className="text-sm sm:text-base font-semibold text-foreground line-clamp-1">
-                {project.name}
+              <h3 className="text-base sm:text-lg font-semibold text-foreground line-clamp-1">
+                {projectName}
               </h3>
-
-              <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
-                <span className="line-clamp-1">{categoryName}</span>
+              <div className="mt-1 text-sm text-muted-foreground line-clamp-1">
+                {categoryName}
               </div>
             </div>
           </div>
 
-          {/* <span
-            className={cn(
-              "rounded-full border px-3 py-1 text-[11px] font-medium capitalize shrink-0",
-              riskClassMap[riskLevel] || riskClassMap.medium
-            )}
-          >
-            {t(`INVESTMENT.${riskLevel.toUpperCase()}`)}
-          </span> */}
-        </div>
-
-        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <MapPin className="w-3.5 h-3.5 shrink-0" />
-          <span className="line-clamp-1">{project.location || "-"}</span>
-        </div>
-
-        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 min-h-[2.5rem]">
-          {brief || "-"}
-        </p>
-
-        {/* <div className="grid grid-cols-2 gap-2">
-          <div className="rounded-2xl border border-border bg-muted/30 px-3 py-2">
-            <div className="text-[10px] text-muted-foreground">
-              {t("INVESTMENT.EXPECTED_ROI")}
-            </div>
-            <div className="mt-1 text-sm font-semibold">{expectedROI}%</div>
+          <div className="h-10 w-10 rounded-full border border-border/70 bg-background/80 flex items-center justify-center shrink-0">
+            <ArrowUpRight className="w-4 h-4 text-muted-foreground transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </div>
-
-          <div className="rounded-2xl border border-border bg-muted/30 px-3 py-2">
-            <div className="text-[10px] text-muted-foreground">
-              {t("INVESTMENT.EXPECTED_PROJECT_COST")}
-            </div>
-            <div className="mt-1 text-sm font-semibold font-mono truncate">
-              {expectedCost.toLocaleString()} USD
-            </div>
-          </div>
-        </div> */}
-
-        <Button onClick={() => onView(project)} className="w-full rounded-full">
-          {t("common.show")}
-        </Button>
+        </div>
       </div>
     </motion.div>
   );

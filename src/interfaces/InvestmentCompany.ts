@@ -9,6 +9,7 @@ export interface InvestmentCompany {
   governorate?: string;
   registeredLegalAddress?: string;
   phone?: string;
+  phoneNumber?: string;
   email?: string;
   website?: string;
   owners?: [Owner];
@@ -41,6 +42,9 @@ export interface InvestmentCompany {
   financialStatements?: [string];
   approvedBy?: string;
   active?: boolean;
+  minInvestShare?: number;
+  maxInvestShare?: number;
+  logo?: string;
 }
 
 export interface LegalDisclosures {

@@ -17,12 +17,14 @@ export interface BankQr {
 
 export interface PaymentMethods {
   _id: string;
+  name?: string;
   method: string;
   isActive: boolean;
   bank?: Bank;
   shamCash?: ShamCash;
   usdt?: Usdt;
   cash?: Cash;
+  onlinePayment?: OnlinePayment;
 }
 
 export interface Bank {
@@ -30,6 +32,10 @@ export interface Bank {
   beneficiaryAddress?: string;
   bankName?: string;
   accountNumber?: string;
+  branch?: string;
+  currency?: string;
+  iban?: string;
+  swiftCode?: string;
   qrCode?: string;
 }
 export interface ShamCash {
@@ -48,4 +54,10 @@ export interface Cash {
   locationAddress?: string;
   city?: string;
   country?: string;
+}
+
+export interface OnlinePayment {
+  xJadwaToken?: string;
+  acceptCurrency?: string;
+  gatewayName?: string;
 }

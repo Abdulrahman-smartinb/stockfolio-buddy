@@ -1,244 +1,237 @@
 import { base_url } from "@/api/GlobalData";
-import { useState } from "react";
+import { Copy, Expand, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
-const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
-  const [selectedMethodId, setSelectedMethodId] = useState(null);
-  const paymentMethods = data?.filter((m) => m?.isActive == true);
+export const getMethodTitle = (method, t) =>
+  method?.name || t(`payments.method_names.${method?.method}`) || method?.method;
 
-  if (!isOpen) return null;
+const getQrImage = (method) =>
+  method?.bank?.qrCode || method?.shamCash?.qrCode || method?.usdt?.walletQr || null;
 
-  const selectedMethod = paymentMethods?.find(
-    (m) => m._id === selectedMethodId,
-  );
+const buildDetails = (method, t) => {
+  switch (method?.method) {
+    case "bank":
+      return [
+        { label: t("payments.bank.beneficiary_name"), value: method?.bank?.beneficiaryFullName },
+        { label: t("payments.bank.bank_name"), value: method?.bank?.bankName },
+        { label: t("payments.bank.account_number"), value: method?.bank?.accountNumber, copyable: true },
+        { label: t("payments.bank.iban"), value: method?.bank?.iban, copyable: true },
+        { label: t("payments.bank.swift_code"), value: method?.bank?.swiftCode, copyable: true },
+        { label: t("payments.bank.branch"), value: method?.bank?.branch },
+        { label: t("payments.cash.currency"), value: method?.bank?.currency },
+      ].filter((item) => item.value);
+    case "shamCash":
+      return [
+        { label: t("payments.bank.beneficiary_name"), value: method?.shamCash?.beneficiaryName },
+        { label: t("payments.bank.account_number"), value: method?.shamCash?.accountNumber, copyable: true },
+        { label: t("payments.bank.beneficiary_address"), value: method?.shamCash?.beneficiaryAddress },
+      ].filter((item) => item.value);
+    case "usdt":
+      return [
+        { label: t("payments.usdt.network"), value: method?.usdt?.transferNetwork },
+        { label: t("payments.usdt.wallet_address"), value: method?.usdt?.walletAddress, copyable: true, ltr: true },
+      ].filter((item) => item.value);
+    case "cash":
+      return [
+        { label: t("payments.cash.branch"), value: method?.cash?.locationName },
+        {
+          label: t("payments.cash.address"),
+          value: [method?.cash?.country, method?.cash?.city, method?.cash?.locationAddress]
+            .filter(Boolean)
+            .join(", "),
+          copyable: true,
+        },
+      ].filter((item) => item.value);
+    case "onlinePayment":
+      return [
+        { label: t("payments.payment_method"), value: method?.onlinePayment?.gatewayName || t("payments.online_payment") },
+        { label: t("payments.accept_currency"), value: method?.onlinePayment?.acceptCurrency },
+      ].filter((item) => item.value);
+    default:
+      return [];
+  }
+};
+
+export const DetailItem = ({
+  label,
+  value,
+  copyable = false,
+  ltr = false,
+  t,
+}) => {
+  const handleCopy = async () => {
+    if (!value) return;
+    await navigator.clipboard.writeText(String(value));
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 capitalize">
-              {t("payments.payment_method")}
-            </h2>
-            <p className="text-sm text-gray-500 mt-1">
-              {t("payments.select_view_details")}
-            </p>
-          </div>
+    <div className="rounded-2xl border border-border/70 bg-background/70 px-4 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-xs text-muted-foreground mb-1">{label}</p>
+          <p dir={ltr ? "ltr" : "auto"} className="text-sm font-medium text-foreground break-all">
+            {value}
+          </p>
+        </div>
+
+        {copyable ? (
           <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600"
+            type="button"
+            onClick={handleCopy}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card hover:bg-muted/50 shrink-0"
+            aria-label={t("payments.copy")}
           >
-            ✕
+            <Copy className="w-4 h-4" />
           </button>
-        </div>
-
-        <div className="p-8 overflow-y-auto custom-scrollbar">
-          {/* Method Selection Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            {paymentMethods.map((m) => {
-              const isSelected = selectedMethodId === m._id;
-              const info = getMethodInfo(m);
-
-              return (
-                <button
-                  key={m?._id}
-                  onClick={() =>
-                    setSelectedMethodId(isSelected ? null : m?._id)
-                  }
-                  className={`relative flex items-center gap-4 p-4 rounded-2xl border-2 transition-all duration-200 text-left
-                    ${
-                      isSelected
-                        ? "border-[#988662] bg-[#988662]/5 ring-1 ring-[#988662]/20"
-                        : "border-gray-100 hover:border-gray-200 bg-white hover:bg-gray-50"
-                    }`}
-                >
-                  <div
-                    className={`p-3 rounded-xl ${isSelected ? "bg-[#988662] text-white" : "bg-gray-100 text-gray-500"}`}
-                  >
-                    {/* Placeholder for Icons */}
-                    <div className="w-5 h-5 flex items-center justify-center font-bold text-xs">
-                      {m?.method[0].toUpperCase()}
-                    </div>
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className={`font-semibold truncate ${isSelected ? "jadwa-icon-gold" : "text-gray-700"}`}
-                    >
-                      {info.title}
-                    </p>
-                    <p className="text-xs text-gray-500 capitalize">
-                      {m?.method}
-                    </p>
-                  </div>
-
-                  {isSelected && (
-                    <div className="jadwa-icon-gold">
-                      <span className="text-xl">✓</span>
-                    </div>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Details Section */}
-          <div className="min-h-[200px]">
-            {selectedMethod ? (
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-                <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                  <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">
-                    {t("payments.payment_details")}
-                  </h3>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      {renderDetails(selectedMethod, t)}
-                    </div>
-
-                    {/* QR Code Area */}
-                    {getQR(selectedMethod) && (
-                      <div className="flex flex-col items-center justify-center bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
-                        <img
-                          src={`${base_url}/companyinfo/payment-methods/${getQR(selectedMethod)}`}
-                          alt="Payment QR"
-                          className="w-32 h-32 object-cover"
-                        />
-                        <p className="text-[10px] text-gray-400 mt-2 uppercase">
-                          {t("payments.scan_to_pay")}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="h-40 flex flex-col items-center justify-center border-2 border-dashed border-gray-100 rounded-2xl">
-                <p className="text-gray-400">
-                  {t("payments.select_payment_above")}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="px-8 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
-          <button
-            className="px-6 py-2.5 rounded-xl bg-gray-800 text-white font-medium hover:bg-gray-900 transition-colors shadow-lg shadow-gray-200"
-            onClick={onClose}
-          >
-            {t("common.close")}
-          </button>
-        </div>
+        ) : null}
       </div>
     </div>
   );
 };
 
-// --- Helper Functions for Cleaner JSX ---
+const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
+  const { i18n } = useTranslation();
+  const isRtl = i18n.language === "ar";
+  const paymentMethods = useMemo(
+    () => data?.filter((m) => m?.isActive == true) || [],
+    [data],
+  );
+  const [selectedMethodId, setSelectedMethodId] = useState(null);
+  const [fullscreenImage, setFullscreenImage] = useState(null);
 
-const getMethodInfo = (m) => {
-  switch (m.method) {
-    case "bank":
-      return { title: m.bank.bankName };
-    case "shamCash":
-      return { title: m.shamCash.beneficiaryName };
-    case "usdt":
-      return { title: m.usdt.transferNetwork };
-    case "cash":
-      return { title: m.cash.locationName };
-    case "onlinePayment":
-      return { title: m.method };
-    default:
-      return { title: "Unknown" };
-  }
-};
+  if (!isOpen) return null;
 
-const getQR = (m) =>
-  m.bank?.qrCode || m.shamCash?.qrCode || m.usdt?.walletQr || null;
+  const selectedMethod =
+    paymentMethods.find((m) => m._id === selectedMethodId) || paymentMethods[0];
+  const qrImage = getQrImage(selectedMethod);
+  const details = buildDetails(selectedMethod, t);
 
-export const DetailItem = ({ label, value }) => (
-  <div>
-    <p className="text-xs text-gray-500 mb-0.5">{label}</p>
-    <p className="text-sm font-medium text-gray-800 break-all">{value}</p>
-  </div>
-);
+  return (
+    <>
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4"
+        dir={isRtl ? "rtl" : "ltr"}
+      >
+        <div className="w-full max-w-4xl overflow-hidden rounded-3xl border border-border/70 bg-background shadow-2xl flex max-h-[90vh] flex-col">
+          <div className="px-6 py-5 border-b border-border/60 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-foreground">
+                {t("payments.payment_method")}
+              </h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {t("payments.select_view_details")}
+              </p>
+            </div>
 
-const renderDetails = (m, t) => {
-  switch (m.method) {
-    case "bank":
-      return (
-        <>
-          <DetailItem
-            label={t("payments.bank.beneficiary_name")}
-            value={m.bank.beneficiaryFullName}
+            <button
+              onClick={onClose}
+              className="h-10 w-10 rounded-xl hover:bg-muted/50 inline-flex items-center justify-center"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          <div className="overflow-y-auto p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {paymentMethods.map((method) => {
+                const isSelected = selectedMethod?._id === method._id;
+
+                return (
+                  <button
+                    key={method._id}
+                    type="button"
+                    onClick={() => setSelectedMethodId(method._id)}
+                    className={`rounded-2xl border p-4 text-start transition-all ${
+                      isSelected
+                        ? "border-primary bg-primary/5 shadow-sm"
+                        : "border-border/70 bg-card hover:border-primary/40"
+                    }`}
+                  >
+                    <div className="text-sm font-semibold text-foreground">
+                      {getMethodTitle(method, t)}
+                    </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      {t(`payments.method_names.${method.method}`)}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedMethod ? (
+              <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.8fr] gap-5">
+                <div className="rounded-3xl border border-border/70 bg-card p-5">
+                  <h3 className="text-sm font-semibold text-muted-foreground mb-4">
+                    {t("payments.payment_details")}
+                  </h3>
+                  <div className="space-y-3">
+                    {details.map((detail) => (
+                      <DetailItem
+                        key={`${detail.label}-${detail.value}`}
+                        {...detail}
+                        t={t}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {qrImage ? (
+                  <div className="rounded-3xl border border-border/70 bg-card p-5 flex flex-col items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setFullscreenImage(
+                          `${base_url}/companyinfo/payment-methods/${qrImage}`,
+                        )
+                      }
+                      className="relative overflow-hidden rounded-2xl border border-border bg-background"
+                    >
+                      <img
+                        src={`${base_url}/companyinfo/payment-methods/${qrImage}`}
+                        alt="Payment QR"
+                        className="h-56 w-56 object-contain"
+                      />
+                      <span className="absolute top-3 right-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-background/90">
+                        <Expand className="w-4 h-4" />
+                      </span>
+                    </button>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      {t("payments.tap_to_expand")}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-border bg-card p-10 text-center text-muted-foreground">
+                {t("payments.select_payment_above")}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {fullscreenImage ? (
+        <div
+          className="fixed inset-0 z-[60] bg-black/90 p-4 flex items-center justify-center"
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            type="button"
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-4 right-4 h-10 w-10 rounded-full bg-white/10 text-white inline-flex items-center justify-center"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img
+            src={fullscreenImage}
+            alt="Payment method"
+            className="max-h-full max-w-full object-contain"
           />
-          <DetailItem
-            label={t("payments.bank.bank_name")}
-            value={m.bank.bankName}
-          />
-          <DetailItem
-            label={t("payments.bank.account_number")}
-            value={m.bank.accountNumber}
-          />
-        </>
-      );
-    case "shamCash":
-      return (
-        <>
-          <DetailItem
-            label={t("payments.bank.beneficiary_name")}
-            value={m.shamCash.beneficiaryName}
-          />
-          <DetailItem
-            label={t("payments.bank.account_number")}
-            value={m.shamCash.accountNumber}
-          />
-        </>
-      );
-    case "usdt":
-      return (
-        <>
-          <DetailItem
-            label={t("payments.usdt.network")}
-            value={m.usdt.transferNetwork}
-          />
-          <DetailItem
-            label={t("payments.usdt.wallet_address")}
-            value={m.usdt.walletAddress}
-          />
-        </>
-      );
-    case "cash":
-      return (
-        <>
-          <DetailItem
-            label={t("payments.cash.branch")}
-            value={m.cash.locationName}
-          />
-          <DetailItem
-            label={t("payments.cash.address")}
-            value={`${m.cash.locationAddress}, ${m.cash.city}`}
-          />
-          <DetailItem
-            label={t("payments.cash.currency")}
-            value={m.cash.currency}
-          />
-        </>
-      );
-    case "onlinePayment":
-      return (
-        <>
-          <DetailItem
-            label={t("payments.payment_method")}
-            value={t("common.redirect_warn")}
-          />
-        </>
-      );
-    default:
-      return null;
-  }
+        </div>
+      ) : null}
+    </>
+  );
 };
 
 export default PaymentMethodsModal;

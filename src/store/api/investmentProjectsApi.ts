@@ -59,6 +59,18 @@ export const investmentProjectApi = baseApi.injectEndpoints({
         { type: "InvestmentProject", id },
       ],
     }),
+    toggleProjectInterest: builder.mutation<InvestmentProject, { id: string }>({
+      query: ({ id }) => ({
+        url: `${investmentProjectEP}/${id}/interest`,
+        method: "PATCH",
+      }),
+      transformResponse: (response: SingleInvestmentProjectResponse) =>
+        response.data,
+      invalidatesTags: (result, error, { id }) => [
+        { type: "InvestmentProject", id },
+        "InvestmentProject",
+      ],
+    }),
   }),
 });
 
@@ -66,4 +78,5 @@ export const {
   useGetInvestmentProjectsQuery,
   useGetInvestmentProjectFiltersQuery,
   useGetOneInvestmentProjectQuery,
+  useToggleProjectInterestMutation,
 } = investmentProjectApi;

@@ -2,6 +2,7 @@ import { investmentEntityEP, investmentFundsEP } from "@/api/GlobalData";
 import { baseApi } from "./baseApi";
 import { InvestmentEntity } from "@/interfaces/InvestmentEntity";
 import { ApiResponse } from "@/interfaces/Global";
+import { InvestmentCompany } from "@/interfaces/InvestmentCompany";
 
 export const investmentEntityApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -38,8 +39,17 @@ export const investmentEntityApi = baseApi.injectEndpoints({
     getOneEntity: builder.query({
       query: ({ id }) => `${investmentFundsEP}/${id}`,
     }),
+    getOneCompany: builder.query<InvestmentCompany, { id: string }>({
+      query: ({ id }) => `api/clientCompany/company/${id}`,
+      transformResponse: (response: ApiResponse<InvestmentCompany>) =>
+        response.data,
+      providesTags: (result, error, { id }) => [{ type: "InvestmentEntity", id }],
+    }),
   }),
 });
 
-export const { useGetInvestmentEntitiesQuery, useGetOneEntityQuery } =
-  investmentEntityApi;
+export const {
+  useGetInvestmentEntitiesQuery,
+  useGetOneEntityQuery,
+  useGetOneCompanyQuery,
+} = investmentEntityApi;

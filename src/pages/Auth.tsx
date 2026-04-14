@@ -6,8 +6,7 @@ import { useTranslation } from "react-i18next";
 import { PhoneInput } from "@/components/PhoneInput";
 import { isMobile } from "@/hooks/helpers";
 import { cn } from "@/lib/utils";
-import logoAR from "../assets/images/JadwaAR.png";
-import logoEN from "../assets/images/JadwaEN.png";
+import logo from "../assets/images/investment-logo-large.png";
 import { PlatformTermsModal } from "@/components/PlatformTermsModal";
 import { useSearchParams } from "react-router-dom";
 import LanguageSwitch from "@/components/LanguageSwitch";
@@ -66,11 +65,7 @@ const Auth = () => {
             className="space-y-6"
           >
             <div className="flex items-center gap-3">
-              <img
-                src={isRtl ? logoAR : logoEN}
-                alt="Jadwa"
-                className="w-full"
-              />
+              <img src={logo} alt="Jadwa" className="w-full" />
               {/* <h1
                 className="text-4xl font-extrabold tracking-tight"
                 style={{ color: PRIMARY }}
@@ -101,11 +96,7 @@ const Auth = () => {
         >
           {/* Mobile Logo */}
           <div className="lg:hidden flex justify-center items-center gap-2 mb-6">
-            <img
-              src={isRtl ? logoAR : logoEN}
-              alt="Jadwa Logo"
-              className="w-[63%]"
-            />
+            <img src={logo} alt="Jadwa Logo" className="w-[63%]" />
           </div>
 
           <div className="rounded-2xl border border-border/60 bg-white p-6 sm:p-8 shadow-sm">

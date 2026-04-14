@@ -19,13 +19,16 @@ import { useProfile } from "@/hooks/useProfile";
 import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
 import ProjectsList from "@/components/Dashboard/ProjectsList";
+import CompaniesList from "@/components/Dashboard/CompaniesList";
 import { cn } from "@/lib/utils";
 import { VerifyAccountTermsModal } from "@/components/VerifyAccountTermsModal";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ProjectsFilters from "@/components/ProjectsFilters";
+import { useEffect } from "react";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const {
     t,
@@ -57,6 +60,7 @@ const Dashboard = () => {
     tradeType,
 
     stocks,
+    companies,
     projects,
 
     isStocksLoading,
@@ -113,13 +117,23 @@ const Dashboard = () => {
   } = useProfile();
 
   const isLoading =
-    activeTab === "stocks" ? isStocksLoading : isProjectsLoading;
+    activeTab === "projects" ? isProjectsLoading : isStocksLoading;
+
+  useEffect(() => {
+    if (typeof location.state?.restoreScrollY !== "number") return;
+
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: location.state.restoreScrollY, behavior: "auto" });
+    });
+
+    navigate(location.pathname, { replace: true, state: {} });
+  }, [location.pathname, location.state, navigate]);
 
   const handleRefresh = () => {
-    if (activeTab === "stocks") {
-      refetchStocks();
-    } else {
+    if (activeTab === "projects") {
       refetchProjects();
+    } else {
+      refetchStocks();
     }
   };
 
@@ -145,16 +159,16 @@ const Dashboard = () => {
           <div className="inline-flex items-center rounded-full border bg-card p-1">
             <button
               type="button"
-              onClick={() => setActiveTab("stocks")}
+              onClick={() => setActiveTab("funds")}
               className={cn(
                 "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
-                activeTab === "stocks"
+                activeTab === "funds"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
               <BriefcaseBusiness className="w-4 h-4" />
-              {t("nav.stocks_tab")}
+              {t("nav.funds_tab")}
             </button>
 
             <button
@@ -169,6 +183,20 @@ const Dashboard = () => {
             >
               <LayoutGrid className="w-4 h-4" />
               {t("nav.projects_tab")}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab("companies")}
+              className={cn(
+                "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
+                activeTab === "companies"
+                  ? "bg-primary text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground",
+              )}
+            >
+              <BriefcaseBusiness className="w-4 h-4" />
+              {t("nav.companies_tab")}
             </button>
           </div>
 
@@ -185,17 +213,21 @@ const Dashboard = () => {
               <Input
                 type="text"
                 placeholder={
-                  activeTab === "stocks"
+                  activeTab === "funds"
                     ? t("home.search_placeholder")
-                    : t("investment.search_placeholder")
+                    : activeTab === "companies"
+                      ? t("companies.search_placeholder")
+                      : t("investment.search_placeholder")
                 }
                 value={
-                  activeTab === "stocks" ? stockSearchQuery : projectSearchQuery
+                  activeTab === "projects"
+                    ? projectSearchQuery
+                    : stockSearchQuery
                 }
                 onChange={(e) =>
-                  activeTab === "stocks"
-                    ? setStockSearchQuery(e.target.value)
-                    : setProjectSearchQuery(e.target.value)
+                  activeTab === "projects"
+                    ? setProjectSearchQuery(e.target.value)
+                    : setStockSearchQuery(e.target.value)
                 }
                 className={cn(
                   "h-12 bg-card text-xs rounded-[999px]",
@@ -209,23 +241,35 @@ const Dashboard = () => {
               onClick={handleRefresh}
               className="h-12 w-12 md:w-32 rounded-full shrink-0"
             >
-              {!isLoading && (
+              <motion.div
+                animate={isLoading ? "spin" : "stop"}
+                variants={{
+                  spin: {
+                    rotate: 360,
+                    transition: {
+                      repeat: Infinity,
+                      duration: 0.9,
+                      ease: "linear",
+                    },
+                  },
+                  stop: { rotate: 0 },
+                }}
+                className="flex items-center justify-center"
+              >
                 <RefreshCw className="w-5 h-5 md:hidden jadwa-icon-brown" />
-              )}
+              </motion.div>
 
-              <span className="hidden md:inline">{t("app.refresh")}</span>
-
-              {isLoading && (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "linear",
-                  }}
-                  className="w-4 h-4 border-2 border-success-foreground/30 border-t-success-foreground rounded-full"
-                />
-              )}
+              <motion.span
+                animate={
+                  isLoading ? { opacity: [0.6, 1, 0.6] } : { opacity: 1 }
+                }
+                transition={
+                  isLoading ? { repeat: Infinity, duration: 1.1 } : {}
+                }
+                className="hidden md:inline"
+              >
+                {t("app.refresh")}
+              </motion.span>
             </Button>
 
             {activeTab === "projects" && (
@@ -248,13 +292,20 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {activeTab === "stocks" ? (
+        {activeTab === "funds" ? (
           <StocksList
             stocks={stocks}
             isLoading={isStocksLoading}
             t={t}
             lang={lang}
             onAction={(stock, type) => handleStockClick(stock, type)}
+          />
+        ) : activeTab === "companies" ? (
+          <CompaniesList
+            companies={companies}
+            isLoading={isStocksLoading}
+            t={t}
+            lang={lang}
           />
         ) : (
           <>
@@ -279,7 +330,14 @@ const Dashboard = () => {
               t={t}
               lang={lang}
               isRtl={isRtl}
-              onView={(project) => navigate(`/project-details/${project._id}`)}
+              onView={(project) =>
+                navigate(`/project-details/${project._id}`, {
+                  state: {
+                    from: location.pathname,
+                    restoreScrollY: window.scrollY,
+                  },
+                })
+              }
             />
           </>
         )}
