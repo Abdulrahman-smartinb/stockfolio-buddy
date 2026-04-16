@@ -14,6 +14,7 @@ import InvestorActivity from "./pages/InvestorActivity";
 import MyShares from "./pages/Activity/MyShares";
 import MyTransactions from "./pages/Activity/MyTransactions";
 import MyTradeRequest from "./pages/Activity/MyTradeRequest";
+import MyFundTransactions from "./pages/Activity/MyFundTransactions";
 import Settings from "./pages/Settings";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -53,6 +54,10 @@ const App = () => {
                   element={<InvestorActivity />}
                 />
                 <Route path="/Activity/MyShares" element={<MyShares />} />
+                <Route
+                  path="/Activity/MyShares/:id"
+                  element={<MyFundTransactions />}
+                />
                 <Route
                   path="/Activity/MyTransactions"
                   element={<MyTransactions />}

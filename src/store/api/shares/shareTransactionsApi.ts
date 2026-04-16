@@ -19,6 +19,20 @@ export interface ShareTransaction {
   createdAt: string;
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPrevPage: boolean;
+}
+
+export interface PaginatedShareTransactionsResponse {
+  data: ShareTransaction[];
+  pagination: PaginationMeta;
+}
+
 export interface GetShareTransactionsParams {
   page?: number;
   limit?: number;
@@ -26,6 +40,14 @@ export interface GetShareTransactionsParams {
   assetId?: string;
   holderId?: string;
   side?: ShareSide;
+}
+
+export interface GetFundTransactionsParams extends GetShareTransactionsParams {
+  assetType?: string;
+  holderType?: string;
+  type?: string;
+  startDate?: string;
+  endDate?: string;
 }
 
 export interface ShareNetTimelineItem {
@@ -45,7 +67,7 @@ export interface GetShareNetParams {
 export const shareTransactionApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getShareTransactions: builder.query<
-      { data: ShareTransaction[] },
+      PaginatedShareTransactionsResponse,
       GetShareTransactionsParams
     >({
       query: ({
@@ -71,7 +93,10 @@ export const shareTransactionApi = baseApi.injectEndpoints({
       providesTags: ["ShareTransaction"],
     }),
 
-    getFundTransactions: builder.query({
+    getFundTransactions: builder.query<
+      PaginatedShareTransactionsResponse,
+      GetFundTransactionsParams
+    >({
       query: ({
         page = 1,
         limit = 10,

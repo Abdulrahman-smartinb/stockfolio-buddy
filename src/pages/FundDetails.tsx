@@ -436,7 +436,6 @@ const InfoCard = ({ label, value }) => (
       </span>
     </div>
 
-    {/* Subtle bottom accent line */}
     <div
       className="
       absolute

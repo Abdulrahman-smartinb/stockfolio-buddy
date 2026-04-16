@@ -185,7 +185,12 @@
     "treasury_shares": "Treasury shares",
     "total_fund_value": "Total fund value",
     "allocated_amount": "Allocated amount",
-    "unallocated_amount": "Unallocated amount"
+    "unallocated_amount": "Unallocated amount",
+    "your_shares": "Your shares",
+    "my_transactions": "My transactions",
+    "transaction_count": "transactions",
+    "no_transactions_for_fund": "No transactions found for this fund yet",
+    "pagination_summary": "Page {{page}} of {{totalPages}} • {{totalItems}} transactions"
   },
 
   "portfolio": {

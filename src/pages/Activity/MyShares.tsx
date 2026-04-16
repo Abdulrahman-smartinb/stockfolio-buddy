@@ -5,12 +5,15 @@ import { cn } from "@/lib/utils";
 import useInvestorActivity from "@/hooks/useInvestorActivity";
 import { useTranslation } from "react-i18next";
 import { formatCurrency, formatNumber } from "@/hooks/helpers";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const PRIMARY = "#042623";
 
 const MyShares = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const { portfolioAssets, portfolioSummary, loading, refetch } =
     useInvestorActivity();
@@ -97,19 +100,37 @@ const MyShares = () => {
           <div className="space-y-3 md:space-y-4">
             {portfolioAssets.map((asset) => {
               const pnlPositive = asset.pnl >= 0;
+              const fundId = asset.fund?._id || asset.assetId;
 
               const fundName = isRtl
                 ? asset.fund?.nameAr || asset.fund?.fullLegalName
                 : asset.fund?.fullLegalName;
+              const canNavigate = Boolean(fundId);
 
               return (
-                <div
+                <button
                   key={asset.assetId}
+                  type="button"
+                  disabled={!canNavigate}
+                  onClick={() =>
+                    canNavigate
+                      ? navigate(`/Activity/MyShares/${fundId}`, {
+                          state: {
+                            asset,
+                            from: location.pathname,
+                            restoreScrollY: window.scrollY,
+                          },
+                        })
+                      : undefined
+                  }
                   className="
+                    w-full text-left
                     rounded-xl md:rounded-2xl
                     p-4 md:p-6
                     border bg-white shadow-sm md:shadow-md
                     hover:shadow-lg
+                    hover:-translate-y-0.5
+                    disabled:cursor-default disabled:hover:translate-y-0
                     transition
                   "
                   style={{ borderColor: `${PRIMARY}1a` }}
@@ -165,7 +186,7 @@ const MyShares = () => {
                       </span>
                     </span>
                   </div>
-                </div>
+                </button>
               );
             })}
           </div>

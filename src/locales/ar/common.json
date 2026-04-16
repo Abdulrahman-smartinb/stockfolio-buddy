@@ -185,7 +185,12 @@
     "treasury_shares": "أسهم الخزينة",
     "total_fund_value": "القيمة الإجمالية للصندوق",
     "allocated_amount": "المبلغ المخصص",
-    "unallocated_amount": "المبلغ غير المخصص"
+    "unallocated_amount": "المبلغ غير المخصص",
+    "your_shares": "أسهمك",
+    "my_transactions": "معاملاتك",
+    "transaction_count": "معاملة",
+    "no_transactions_for_fund": "لا توجد معاملات لهذا الصندوق حتى الآن",
+    "pagination_summary": "الصفحة {{page}} من {{totalPages}} • {{totalItems}} معاملة"
   },
 
   "portfolio": {
