@@ -65,6 +65,7 @@ const Dashboard = () => {
 
     isStocksLoading,
     isProjectsLoading,
+    isFetching,
 
     refetchStocks,
     refetchProjects,
@@ -74,7 +75,6 @@ const Dashboard = () => {
     portfolioLoading,
     categories,
     tags,
-    isProjectFiltersLoading,
     showFilters,
     setShowFilters,
   } = useDashboard();
@@ -115,9 +115,6 @@ const Dashboard = () => {
     disableSubmit,
     setDisableSubmit,
   } = useProfile();
-
-  const isLoading =
-    activeTab === "projects" ? isProjectsLoading : isStocksLoading;
 
   useEffect(() => {
     if (typeof location.state?.restoreScrollY !== "number") return;
@@ -237,12 +234,12 @@ const Dashboard = () => {
             </div>
 
             <Button
-              disabled={isLoading}
+              disabled={isFetching}
               onClick={handleRefresh}
               className="h-12 w-12 md:w-32 rounded-full shrink-0"
             >
               <motion.div
-                animate={isLoading ? "spin" : "stop"}
+                animate={isFetching ? "spin" : "stop"}
                 variants={{
                   spin: {
                     rotate: 360,
@@ -261,10 +258,10 @@ const Dashboard = () => {
 
               <motion.span
                 animate={
-                  isLoading ? { opacity: [0.6, 1, 0.6] } : { opacity: 1 }
+                  isFetching ? { opacity: [0.6, 1, 0.6] } : { opacity: 1 }
                 }
                 transition={
-                  isLoading ? { repeat: Infinity, duration: 1.1 } : {}
+                  isFetching ? { repeat: Infinity, duration: 1.1 } : {}
                 }
                 className="hidden md:inline"
               >

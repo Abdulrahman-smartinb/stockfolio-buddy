@@ -61,9 +61,7 @@ const useDashboard = () => {
   const [tradeType, setTradeType] = useState("");
   const [verifyModalMode, setVerifyModalMode] =
     useState<VerificationMode>("draft");
-  const [showFilters, setShowFilters] = useState(
-    !!storedState?.showFilters,
-  );
+  const [showFilters, setShowFilters] = useState(!!storedState?.showFilters);
 
   const { resolvedRole, refetchRole } = useResolvedRole();
 
@@ -71,6 +69,7 @@ const useDashboard = () => {
     data: entities = [],
     isLoading: isStocksLoading,
     refetch: refetchStocks,
+    isFetching: isFetchingEntities,
   } = useGetInvestmentEntitiesQuery({
     keyword: stockSearchQuery,
   });
@@ -87,6 +86,7 @@ const useDashboard = () => {
     data: projectsResponse,
     isLoading: isProjectsLoading,
     refetch: refetchProjects,
+    isFetching: isFetchingProjects,
   } = useGetInvestmentProjectsQuery({
     keyword: projectSearchQuery,
     category: selectedProjectCategory || undefined,
@@ -192,6 +192,7 @@ const useDashboard = () => {
 
     isStocksLoading,
     isProjectsLoading,
+    isFetching: isFetchingEntities || isFetchingProjects,
 
     refetchStocks,
     refetchProjects,

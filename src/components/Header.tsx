@@ -40,8 +40,11 @@ export const Header = () => {
   const { user } = useProfile();
   const location = useLocation();
   const isRtl = i18n.language === "ar";
-  const isProjectDetailsMobile =
-    isMobile && /^\/project-details\/[^/]+$/.test(location.pathname);
+  const isMobileDetailPage =
+    isMobile &&
+    /^\/(project-details|company-details|fund-details)\/[^/]+$/.test(
+      location.pathname,
+    );
   const notifButtonRef = useRef<HTMLButtonElement | null>(null);
   const notifPanelRef = useRef<HTMLDivElement | null>(null);
 
@@ -211,8 +214,8 @@ export const Header = () => {
                   <div
                     ref={notifPanelRef}
                     className={cn(
-                      "absolute mt-3 z-50 max-w-[calc(100vw-5rem)]",
-                      !isRtl ? "right-0" : "left-0",
+                      "absolute mt-3 z-50 max-w-[calc(100vw-2rem)]",
+                      !isRtl ? "right-[-33px]" : "left-[-33px]",
                       "rounded-2xl border border-border bg-background shadow-xl",
                       "overflow-hidden",
                       isMobile
@@ -272,7 +275,7 @@ export const Header = () => {
               {/* Avatar */}
               <button
                 onClick={() => {
-                  if (isProjectDetailsMobile) {
+                  if (isMobileDetailPage) {
                     navigate(location.state?.from || "/", {
                       replace: true,
                       state: {
@@ -293,9 +296,9 @@ export const Header = () => {
                   "transition",
                   "focus:outline-none focus:ring-2 focus:ring-primary/30",
                 )}
-                aria-label={isProjectDetailsMobile ? "Back" : "Profile"}
+                aria-label={isMobileDetailPage ? "Back" : "Profile"}
               >
-                {isProjectDetailsMobile ? (
+                {isMobileDetailPage ? (
                   <ArrowLeft
                     className={cn(
                       "h-5 w-5 jadwa-icon-gold",
@@ -321,6 +324,3 @@ export const Header = () => {
     </motion.header>
   );
 };
-
-{
-}

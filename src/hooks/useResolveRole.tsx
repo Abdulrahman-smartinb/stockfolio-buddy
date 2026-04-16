@@ -13,9 +13,9 @@ export const useResolvedRole = () => {
   }, []);
 
   const authUserId = profile?.authUserId;
-  const { data, isLoading, error, refetch } = useResolveRoleQuery(
+  const { data, isLoading, error, refetch, isFetching } = useResolveRoleQuery(
     { authUserId },
-    { skip: !authUserId }
+    { skip: !authUserId },
   );
 
   const resolved = useMemo(() => {
@@ -33,6 +33,7 @@ export const useResolvedRole = () => {
   return {
     resolvedRole: resolved,
     loadingRole: isLoading,
+    fetchingRole: isFetching,
     roleError: error,
     refetchRole: refetch,
   };

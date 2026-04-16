@@ -42,36 +42,43 @@ const PaymentModal = ({ isOpen, onClose, t, onConfirm }) => {
         </div>
 
         <div className="p-8 overflow-y-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {paymentMethods?.map((method) => {
               const isSelected = selectedMethodId === method?._id;
 
               return (
-                <button
-                  key={method?._id}
-                  onClick={() =>
-                    setSelectedMethodId(isSelected ? null : method?._id)
-                  }
-                  className={`p-4 rounded-2xl border-2 text-start transition ${
-                    isSelected
-                      ? "border-[#042623] bg-[#042623]/5"
-                      : "border-gray-200 hover:border-gray-400"
-                  }`}
-                >
-                  <p className="font-semibold">{getMethodTitle(method, t)}</p>
-                  <p className="text-xs text-gray-500">
-                    {t(`payments.method_names.${method?.method}`)}
-                  </p>
-                </button>
+                <div key={method?._id} className="space-y-3">
+                  <button
+                    onClick={() =>
+                      setSelectedMethodId(isSelected ? null : method?._id)
+                    }
+                    className={`w-full rounded-2xl border-2 p-4 text-start transition ${
+                      isSelected
+                        ? "border-[#042623] bg-[#042623]/5"
+                        : "border-gray-200 hover:border-gray-400"
+                    }`}
+                  >
+                    <p className="font-semibold">{getMethodTitle(method, t)}</p>
+                    <p className="text-xs text-gray-500">
+                      {t(`payments.method_names.${method?.method}`)}
+                    </p>
+                  </button>
+
+                  {isSelected ? (
+                    <div className="rounded-2xl border bg-gray-50 p-6 space-y-3 sm:hidden">
+                      {renderDetails(method, t)}
+                    </div>
+                  ) : null}
+                </div>
               );
             })}
           </div>
 
-          {selectedMethod && (
-            <div className="bg-gray-50 p-6 rounded-2xl border space-y-3">
+          {selectedMethod ? (
+            <div className="mt-6 hidden rounded-2xl border bg-gray-50 p-6 space-y-3 sm:block">
               {renderDetails(selectedMethod, t)}
             </div>
-          )}
+          ) : null}
         </div>
 
         <div className="px-8 py-4 bg-gray-50 border-t flex justify-end gap-3">

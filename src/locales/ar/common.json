@@ -77,6 +77,8 @@
     "click_update_request": "انقر لتحديث الطلب",
     "address_info": "معلومات العنوان",
     "country": "الدولة",
+    "select_country": "اختر الدولة",
+    "select_city": "اختر المدينة",
     "address": "العنوان",
     "city": "المدينة",
     "state": "المنطقة",
@@ -175,7 +177,11 @@
     "click_view_document": "انقر لعرض المستند",
     "view_only_no_download": "للعرض فقط. التنزيل والنسخ مقيدان",
     "overview": "نظرة عامة",
-    "files": "الملفات"
+    "files": "الملفات",
+    "category": "التصنيف",
+    "tag": "العلامة",
+    "associated_companies": "الشركات المرتبطة",
+    "associated_projects": "المشاريع المرتبطة"
   },
 
   "portfolio": {

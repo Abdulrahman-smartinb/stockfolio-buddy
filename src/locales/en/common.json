@@ -77,6 +77,8 @@
     "click_update_request": "Click to update the request",
     "address_info": "Address info",
     "country": "Country",
+    "select_country": "Select country",
+    "select_city": "Select city",
     "address": "Address",
     "city": "City",
     "state": "State",
@@ -175,7 +177,11 @@
     "click_view_document": "Click to preview document",
     "view_only_no_download": "Viewing only. Downloading and copying are restricted.",
     "overview": "Overview",
-    "files": "Files"
+    "files": "Files",
+    "category": "Category",
+    "tag": "Tag",
+    "associated_companies": "Associated companies",
+    "associated_projects": "Associated projects"
   },
 
   "portfolio": {

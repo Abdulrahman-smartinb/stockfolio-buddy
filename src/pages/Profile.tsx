@@ -52,6 +52,7 @@ const Profile = () => {
 
   const {
     loadingUser,
+    isFetching,
     user,
     containerVariants,
     itemVariants,
@@ -150,7 +151,7 @@ const Profile = () => {
                       >
                         <RefreshCcw
                           className={`w-4 h-4 md:w-5 md:h-5 text-jadwa-gold ${
-                            loadingUser
+                            isFetching
                               ? "animate-spin [animation-duration:1.2s]"
                               : ""
                           }`}

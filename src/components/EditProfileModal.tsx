@@ -9,6 +9,7 @@ import COUNTRIES from "@/data/countries.json";
 import { isMobile } from "@/hooks/helpers";
 import { base_url } from "@/api/GlobalData";
 import { useMemo } from "react";
+import CountryCitySelect from "./CountryCitySelect";
 
 interface Props {
   isOpen: boolean;
@@ -70,6 +71,7 @@ export const EditProfileModal = ({
 
     onClose();
   };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -134,12 +136,9 @@ export const EditProfileModal = ({
                       accept="image/*"
                       onChange={(e) => {
                         if (!e.target.files?.[0]) return;
-
                         const file = e.target.files[0];
                         const previewUrl = URL.createObjectURL(file);
-
                         handleProfileImageChange(file);
-
                         setEditData((prev: any) => ({
                           ...prev,
                           profilePreview: previewUrl,
@@ -225,28 +224,27 @@ export const EditProfileModal = ({
                 }
               />
 
-              <div className="grid gap-4 grid-cols-2 sm:grid-cols-2">
-                <FormField
-                  label={t("profile.country")}
-                  value={editData.country}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, country: v }))
+              <div className="space-y-4">
+                <CountryCitySelect
+                  country={editData.country}
+                  city={editData.city}
+                  onCountryChange={(country) =>
+                    setEditData((p: any) => ({ ...p, country, city: "" }))
+                  }
+                  onCityChange={(city) =>
+                    setEditData((p: any) => ({ ...p, city }))
                   }
                 />
-                <FormField
-                  label={t("profile.address")}
-                  value={editData.address}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, address: v }))
-                  }
-                />
-                <FormField
-                  label={t("profile.city")}
-                  value={editData.city}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, city: v }))
-                  }
-                />
+
+                <div className="grid gap-4 grid-cols-1">
+                  <FormField
+                    label={t("profile.address")}
+                    value={editData.address}
+                    onChange={(v: string) =>
+                      setEditData((p: any) => ({ ...p, address: v }))
+                    }
+                  />
+                </div>
               </div>
             </div>
 
@@ -281,8 +279,6 @@ export const EditProfileModal = ({
     </AnimatePresence>
   );
 };
-
-/* ================= Helpers ================= */
 
 const FormField = ({
   label,

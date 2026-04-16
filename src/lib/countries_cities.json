@@ -1,0 +1,229 @@
+[
+  {
+    "code": "SY",
+    "name": "Syria",
+    "nameAr": "سوريا",
+    "cities": [
+      { "name": "Damascus", "nameAr": "دمشق" },
+      { "name": "Aleppo", "nameAr": "حلب" },
+      { "name": "Homs", "nameAr": "حمص" },
+      { "name": "Hama", "nameAr": "حماة" },
+      { "name": "Latakia", "nameAr": "اللاذقية" },
+      { "name": "Tartus", "nameAr": "طرطوس" },
+      { "name": "Idlib", "nameAr": "إدلب" },
+      { "name": "Daraa", "nameAr": "درعا" },
+      { "name": "As-Suwayda", "nameAr": "السويداء" },
+      { "name": "Deir ez-Zor", "nameAr": "دير الزور" },
+      { "name": "Raqqa", "nameAr": "الرقة" },
+      { "name": "Hasakah", "nameAr": "الحسكة" },
+      { "name": "Qamishli", "nameAr": "القامشلي" },
+      { "name": "Palmyra", "nameAr": "تدمر" }
+    ]
+  },
+  {
+    "code": "TR",
+    "name": "Turkey",
+    "nameAr": "تركيا",
+    "cities": [
+      { "name": "Istanbul", "nameAr": "إسطنبول" },
+      { "name": "Ankara", "nameAr": "أنقرة" },
+      { "name": "Izmir", "nameAr": "إزمير" },
+      { "name": "Bursa", "nameAr": "بورصة" },
+      { "name": "Antalya", "nameAr": "أنطاليا" },
+      { "name": "Adana", "nameAr": "أضنة" },
+      { "name": "Gaziantep", "nameAr": "غازي عنتاب" },
+      { "name": "Konya", "nameAr": "قونية" },
+      { "name": "Mersin", "nameAr": "مرسين" },
+      { "name": "Kayseri", "nameAr": "قيصري" },
+      { "name": "Samsun", "nameAr": "سامسون" },
+      { "name": "Trabzon", "nameAr": "طرابزون" },
+      { "name": "Sanliurfa", "nameAr": "شانلي أورفا" },
+      { "name": "Diyarbakir", "nameAr": "ديار بكر" }
+    ]
+  },
+  {
+    "code": "SA",
+    "name": "Saudi Arabia",
+    "nameAr": "السعودية",
+    "cities": [
+      { "name": "Riyadh", "nameAr": "الرياض" },
+      { "name": "Jeddah", "nameAr": "جدة" },
+      { "name": "Mecca", "nameAr": "مكة المكرمة" },
+      { "name": "Medina", "nameAr": "المدينة المنورة" },
+      { "name": "Dammam", "nameAr": "الدمام" },
+      { "name": "Khobar", "nameAr": "الخبر" },
+      { "name": "Dhahran", "nameAr": "الظهران" },
+      { "name": "Taif", "nameAr": "الطائف" },
+      { "name": "Tabuk", "nameAr": "تبوك" },
+      { "name": "Abha", "nameAr": "أبها" },
+      { "name": "Khamis Mushait", "nameAr": "خميس مشيط" },
+      { "name": "Buraidah", "nameAr": "بريدة" },
+      { "name": "Hail", "nameAr": "حائل" },
+      { "name": "Jubail", "nameAr": "الجبيل" }
+    ]
+  },
+  {
+    "code": "AE",
+    "name": "United Arab Emirates",
+    "nameAr": "الإمارات العربية المتحدة",
+    "cities": [
+      { "name": "Abu Dhabi", "nameAr": "أبوظبي" },
+      { "name": "Dubai", "nameAr": "دبي" },
+      { "name": "Sharjah", "nameAr": "الشارقة" },
+      { "name": "Ajman", "nameAr": "عجمان" },
+      { "name": "Ras Al Khaimah", "nameAr": "رأس الخيمة" },
+      { "name": "Fujairah", "nameAr": "الفجيرة" },
+      { "name": "Umm Al Quwain", "nameAr": "أم القيوين" },
+      { "name": "Al Ain", "nameAr": "العين" },
+      { "name": "Khor Fakkan", "nameAr": "خورفكان" },
+      { "name": "Dibba Al Fujairah", "nameAr": "دبا الفجيرة" }
+    ]
+  },
+  {
+    "code": "QA",
+    "name": "Qatar",
+    "nameAr": "قطر",
+    "cities": [
+      { "name": "Doha", "nameAr": "الدوحة" },
+      { "name": "Al Rayyan", "nameAr": "الريان" },
+      { "name": "Al Wakrah", "nameAr": "الوكرة" },
+      { "name": "Al Khor", "nameAr": "الخور" },
+      { "name": "Lusail", "nameAr": "لوسيل" },
+      { "name": "Umm Salal", "nameAr": "أم صلال" },
+      { "name": "Madinat ash Shamal", "nameAr": "مدينة الشمال" },
+      { "name": "Dukhan", "nameAr": "دخان" }
+    ]
+  },
+  {
+    "code": "KW",
+    "name": "Kuwait",
+    "nameAr": "الكويت",
+    "cities": [
+      { "name": "Kuwait City", "nameAr": "مدينة الكويت" },
+      { "name": "Hawalli", "nameAr": "حولي" },
+      { "name": "Salmiya", "nameAr": "السالمية" },
+      { "name": "Farwaniya", "nameAr": "الفروانية" },
+      { "name": "Jahra", "nameAr": "الجهراء" },
+      { "name": "Ahmadi", "nameAr": "الأحمدي" },
+      { "name": "Mubarak Al-Kabeer", "nameAr": "مبارك الكبير" },
+      { "name": "Sabah Al Salem", "nameAr": "صباح السالم" }
+    ]
+  },
+  {
+    "code": "BH",
+    "name": "Bahrain",
+    "nameAr": "البحرين",
+    "cities": [
+      { "name": "Manama", "nameAr": "المنامة" },
+      { "name": "Muharraq", "nameAr": "المحرق" },
+      { "name": "Riffa", "nameAr": "الرفاع" },
+      { "name": "Isa Town", "nameAr": "مدينة عيسى" },
+      { "name": "Hamad Town", "nameAr": "مدينة حمد" },
+      { "name": "Sitra", "nameAr": "سترة" },
+      { "name": "Budaiya", "nameAr": "البديع" },
+      { "name": "Jidhafs", "nameAr": "جدحفص" }
+    ]
+  },
+  {
+    "code": "OM",
+    "name": "Oman",
+    "nameAr": "عُمان",
+    "cities": [
+      { "name": "Muscat", "nameAr": "مسقط" },
+      { "name": "Salalah", "nameAr": "صلالة" },
+      { "name": "Sohar", "nameAr": "صحار" },
+      { "name": "Nizwa", "nameAr": "نزوى" },
+      { "name": "Sur", "nameAr": "صور" },
+      { "name": "Barka", "nameAr": "بركاء" },
+      { "name": "Rustaq", "nameAr": "الرستاق" },
+      { "name": "Ibri", "nameAr": "عبري" },
+      { "name": "Khasab", "nameAr": "خصب" },
+      { "name": "Duqm", "nameAr": "الدقم" }
+    ]
+  },
+  {
+    "code": "DE",
+    "name": "Germany",
+    "nameAr": "ألمانيا",
+    "cities": [
+      { "name": "Berlin", "nameAr": "برلين" },
+      { "name": "Hamburg", "nameAr": "هامبورغ" },
+      { "name": "Munich", "nameAr": "ميونخ" },
+      { "name": "Cologne", "nameAr": "كولونيا" },
+      { "name": "Frankfurt", "nameAr": "فرانكفورت" },
+      { "name": "Stuttgart", "nameAr": "شتوتغارت" },
+      { "name": "Dusseldorf", "nameAr": "دوسلدورف" },
+      { "name": "Dortmund", "nameAr": "دورتموند" },
+      { "name": "Essen", "nameAr": "إيسن" },
+      { "name": "Leipzig", "nameAr": "لايبزيغ" }
+    ]
+  },
+  {
+    "code": "FR",
+    "name": "France",
+    "nameAr": "فرنسا",
+    "cities": [
+      { "name": "Paris", "nameAr": "باريس" },
+      { "name": "Marseille", "nameAr": "مرسيليا" },
+      { "name": "Lyon", "nameAr": "ليون" },
+      { "name": "Toulouse", "nameAr": "تولوز" },
+      { "name": "Nice", "nameAr": "نيس" },
+      { "name": "Nantes", "nameAr": "نانت" },
+      { "name": "Strasbourg", "nameAr": "ستراسبورغ" },
+      { "name": "Montpellier", "nameAr": "مونبلييه" },
+      { "name": "Bordeaux", "nameAr": "بوردو" },
+      { "name": "Lille", "nameAr": "ليل" }
+    ]
+  },
+  {
+    "code": "IT",
+    "name": "Italy",
+    "nameAr": "إيطاليا",
+    "cities": [
+      { "name": "Rome", "nameAr": "روما" },
+      { "name": "Milan", "nameAr": "ميلانو" },
+      { "name": "Naples", "nameAr": "نابولي" },
+      { "name": "Turin", "nameAr": "تورينو" },
+      { "name": "Palermo", "nameAr": "باليرمو" },
+      { "name": "Genoa", "nameAr": "جنوة" },
+      { "name": "Bologna", "nameAr": "بولونيا" },
+      { "name": "Florence", "nameAr": "فلورنسا" },
+      { "name": "Venice", "nameAr": "البندقية" },
+      { "name": "Bari", "nameAr": "باري" }
+    ]
+  },
+  {
+    "code": "ES",
+    "name": "Spain",
+    "nameAr": "إسبانيا",
+    "cities": [
+      { "name": "Madrid", "nameAr": "مدريد" },
+      { "name": "Barcelona", "nameAr": "برشلونة" },
+      { "name": "Valencia", "nameAr": "فالنسيا" },
+      { "name": "Seville", "nameAr": "إشبيلية" },
+      { "name": "Zaragoza", "nameAr": "سرقسطة" },
+      { "name": "Malaga", "nameAr": "مالقة" },
+      { "name": "Murcia", "nameAr": "مرسية" },
+      { "name": "Palma", "nameAr": "بالما" },
+      { "name": "Las Palmas", "nameAr": "لاس بالماس" },
+      { "name": "Bilbao", "nameAr": "بلباو" }
+    ]
+  },
+  {
+    "code": "NL",
+    "name": "Netherlands",
+    "nameAr": "هولندا",
+    "cities": [
+      { "name": "Amsterdam", "nameAr": "أمستردام" },
+      { "name": "Rotterdam", "nameAr": "روتردام" },
+      { "name": "The Hague", "nameAr": "لاهاي" },
+      { "name": "Utrecht", "nameAr": "أوترخت" },
+      { "name": "Eindhoven", "nameAr": "آيندهوفن" },
+      { "name": "Tilburg", "nameAr": "تيلبورخ" },
+      { "name": "Groningen", "nameAr": "خرونينغن" },
+      { "name": "Almere", "nameAr": "ألميره" },
+      { "name": "Breda", "nameAr": "بريدا" },
+      { "name": "Nijmegen", "nameAr": "نيميخن" }
+    ]
+  }
+]

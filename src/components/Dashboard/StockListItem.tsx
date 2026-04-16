@@ -3,13 +3,23 @@ import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { base_url } from "@/api/GlobalData";
 import { formatCurrency } from "@/hooks/helpers";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
   const name = stock?.name || stock?.fullLegalName || "—";
   const symbol = stock?.symbol || stock?.code || "";
   const price = stock?.price ?? stock?.currentPrice ?? stock?.sharePrice;
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const openFundDetails = () => {
+    navigate(`/fund-details/${stock?._id}`, {
+      state: {
+        from: location.pathname,
+        restoreScrollY: window.scrollY,
+      },
+    });
+  };
 
   return (
     <motion.div
@@ -53,7 +63,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
             {symbol && (
               <p
                 className="text-base md:text-xl font-bold font-google text-jadwa tracking-wide cursor-pointer"
-                onClick={() => navigate(`fund-details/${stock?._id}`)}
+                onClick={openFundDetails}
               >
                 {symbol}
               </p>
@@ -61,7 +71,7 @@ const StockListItem = ({ t, lang, stock, index = 0, onAction }) => {
 
             <p
               className="text-sm md:text-xl font-semibold text-jadwa-muted truncate cursor-pointer"
-              onClick={() => navigate(`fund-details/${stock?._id}`)}
+              onClick={openFundDetails}
             >
               {lang === "ar" && stock?.nameAr ? stock.nameAr : name}
             </p>

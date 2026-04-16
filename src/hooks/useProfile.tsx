@@ -18,6 +18,10 @@ import {
 import { compressImage } from "@/lib/utils";
 import { UserData } from "@/interfaces/UserData";
 import COUNTRIES from "@/data/countries.json";
+import {
+  findCityByValue,
+  findCountryByValue,
+} from "@/lib/countryCityUtils";
 
 export const useProfile = () => {
   const { t } = useTranslation();
@@ -30,7 +34,8 @@ export const useProfile = () => {
   const [openInstructions, setOpenInstructions] = useState(false);
 
   // Resolve role
-  const { resolvedRole, loadingRole, refetchRole } = useResolvedRole();
+  const { resolvedRole, loadingRole, fetchingRole, refetchRole } =
+    useResolvedRole();
 
   const isInvestor = !!resolvedRole?.isInvestor;
   const isApplicant = !!resolvedRole?.isApplicant;
@@ -43,6 +48,7 @@ export const useProfile = () => {
     data: applicant,
     isLoading: isLoadingApplicant,
     refetch: refetchApplicant,
+    isFetching: isFetchingApplicant,
   } = useGetOneApplicantQuery(
     { id: profileId },
     { skip: !isApplicant || !profileId },
@@ -52,6 +58,7 @@ export const useProfile = () => {
     data: investor,
     isLoading: isLoadingInvestor,
     refetch: refetchInvestor,
+    isFetching: isFetchingInvestor,
   } = useGetOneInvestorQuery(
     { id: profileId },
     { skip: !isInvestor || !profileId },
@@ -98,6 +105,8 @@ export const useProfile = () => {
 
     let localPhone = user.phone || "";
     let localSecondaryPhone = user.secondaryPhone || "";
+    const normalizedCountry = findCountryByValue(user.country);
+    const normalizedCity = findCityByValue(user.country, user.city);
 
     if (detectedCountry) {
       localPhone = user.phone.replace(detectedCountry.dialCode, "");
@@ -114,9 +123,9 @@ export const useProfile = () => {
       secondaryPhone: localSecondaryPhone,
       countryCode: detectedCountry?.code || user.countryCode || "SY",
       email: user.email ?? "",
-      country: user?.country ?? "",
+      country: normalizedCountry?.name || user?.country || "",
       address: user?.address ?? "",
-      city: user?.city ?? "",
+      city: normalizedCity?.name || user?.city || "",
       state: user?.state ?? "",
       zipCode: user?.zipCode ?? "",
       profileImageFile: null,
@@ -310,6 +319,7 @@ export const useProfile = () => {
 
   return {
     loadingUser: loadingRole || isLoadingApplicant || isLoadingInvestor,
+    isFetching: isFetchingApplicant || isFetchingInvestor || fetchingRole,
 
     user,
 

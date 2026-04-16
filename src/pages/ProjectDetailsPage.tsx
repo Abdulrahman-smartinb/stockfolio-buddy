@@ -308,24 +308,16 @@ const ProjectDetailsPage = () => {
                       </span>
                     </div>
                   </div>
-
-                  <Button
-                    type="button"
-                    onClick={handleInterestToggle}
-                    disabled={isUpdatingInterest}
-                    className="rounded-full bg-white/15 px-5 text-white backdrop-blur-md hover:bg-white/25"
-                  >
-                    {isInterested
-                      ? t("investment.interested_active")
-                      : t("investment.interested")}
-                  </Button>
                 </div>
               </div>
             </div>
 
             {displayBrief ? (
               <div className="px-5 md:px-6 py-5 pb-2 border-t border-border/50 bg-card">
-                <p className="text-sm md:text-base leading-7 text-foreground/90">
+                <p
+                  className="text-sm md:text-base leading-7"
+                  style={{ fontWeight: "500", color: "#505050" }}
+                >
                   {displayBrief}
                 </p>
               </div>
@@ -338,8 +330,8 @@ const ProjectDetailsPage = () => {
               icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
             >
               <div
-                className="text-sm md:text-base text-muted-foreground leading-8 whitespace-pre-wrap"
-                style={{ fontWeight: "500" }}
+                className="text-sm md:text-base leading-8 whitespace-pre-wrap"
+                style={{ fontWeight: "500", color: "#505050" }}
               >
                 {displayDescription || "-"}
               </div>
@@ -419,7 +411,10 @@ const ProjectDetailsPage = () => {
               title={t("investment.exit_plan")}
               icon={<TrendingUp className="w-5 h-5 text-muted-foreground" />}
             >
-              <div className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap">
+              <div
+                className="text-sm leading-7 whitespace-pre-wrap"
+                style={{ fontWeight: "500", color: "#505050" }}
+              >
                 {project.investmentData?.exitPlan || "-"}
               </div>
 
@@ -427,7 +422,10 @@ const ProjectDetailsPage = () => {
                 <div className="text-xs text-muted-foreground">
                   {t("investment.exit_duration")}
                 </div>
-                <div className="mt-1 text-sm font-semibold text-foreground">
+                <div
+                  className="mt-1 text-sm font-semibold"
+                  style={{ fontWeight: "500", color: "#505050" }}
+                >
                   {project.exitDuration ?? 0} {t("common.year")}
                 </div>
               </div>
@@ -505,6 +503,23 @@ const ProjectDetailsPage = () => {
           </SectionCard>
         </motion.div>
       </main>
+
+      <div className="fixed top-20 md:top-auto md:bottom-4 left-0 right-0 z-30 px-4">
+        <div className="container mx-auto flex max-w-6xl justify-end">
+          <div className="rounded-full border border-border/70 bg-background/92 p-2 shadow-lg backdrop-blur-md">
+            <Button
+              type="button"
+              onClick={handleInterestToggle}
+              disabled={isUpdatingInterest}
+              className="rounded-full px-5"
+            >
+              {isInterested
+                ? t("investment.interested_active")
+                : t("investment.interested")}
+            </Button>
+          </div>
+        </div>
+      </div>
 
       <Footer />
     </div>
