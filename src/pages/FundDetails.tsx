@@ -81,8 +81,10 @@ const FundDetails = () => {
   const fundTags = normalizeItems(fund?.tags).map((tag) =>
     typeof tag === "string" ? tag : normalizeDisplayName(tag, i18n.language),
   );
-  const associatedCompanies = normalizeItems(fund?.linkedCompanies);
-  const associatedProjects = normalizeItems(fund?.linkedProjects);
+
+  const linkedCompanies = normalizeItems(fund?.linkedCompanies);
+  const linkedProjects = normalizeItems(fund?.linkedProjects);
+  const allocationSummary = fund?.allocationSummary;
 
   return (
     <div className="min-h-screen bg-background">
@@ -178,6 +180,26 @@ const FundDetails = () => {
                   value={fund?.shareIssued ? t("common.yes") : t("common.no")}
                 />
                 <InfoCard
+                  label={t("fund.treasury_shares")}
+                  value={fund?.treasuryShares ?? 0}
+                />
+                <InfoCard
+                  label={t("fund.total_fund_value")}
+                  value={formatCurrency(allocationSummary?.totalFundValue ?? 0)}
+                />
+                <InfoCard
+                  label={t("fund.allocated_amount")}
+                  value={formatCurrency(
+                    allocationSummary?.totalAllocatedAmount ?? 0,
+                  )}
+                />
+                <InfoCard
+                  label={t("fund.unallocated_amount")}
+                  value={formatCurrency(
+                    allocationSummary?.remainingUnallocatedAmount ?? 0,
+                  )}
+                />
+                <InfoCard
                   label={t("common.created_at")}
                   value={new Date(fund?.createdAt).toLocaleDateString()}
                 />
@@ -212,17 +234,17 @@ const FundDetails = () => {
                 </section>
               )}
 
-              {(associatedCompanies.length > 0 ||
-                associatedProjects.length > 0) && (
+              {(linkedCompanies.length > 0 || linkedProjects.length > 0) && (
                 <div className="grid gap-5 xl:grid-cols-2">
                   <AssociationSection
                     title={t("fund.associated_companies")}
                     emptyLabel={t("common.no_records")}
                     icon={<Building2 className="h-5 w-5 text-emerald-500" />}
                   >
-                    {associatedCompanies.length ? (
+                    {linkedCompanies.length ? (
                       <div className="grid gap-3">
-                        {associatedCompanies.map((company, index) => {
+                        {linkedCompanies.map((linkedCompany, index) => {
+                          const company = linkedCompany?.company;
                           const companyName = normalizeDisplayName(
                             company,
                             i18n.language,
@@ -243,6 +265,9 @@ const FundDetails = () => {
                                   : `${base_url}/ClientCompany/${company.logo}`
                               }
                               fallbackLabel={companyName}
+                              badgeValue={formatCurrency(
+                                linkedCompany?.allocatedAmount ?? 0,
+                              )}
                               onClick={
                                 typeof company === "string" || !company?._id
                                   ? undefined
@@ -271,9 +296,10 @@ const FundDetails = () => {
                     emptyLabel={t("common.no_records")}
                     icon={<FolderOpen className="h-5 w-5 text-emerald-500" />}
                   >
-                    {associatedProjects.length ? (
+                    {linkedProjects.length ? (
                       <div className="grid gap-3">
-                        {associatedProjects.map((project, index) => {
+                        {linkedProjects.map((linkedProject, index) => {
+                          const project = linkedProject?.project;
                           const projectName = normalizeDisplayName(
                             project,
                             i18n.language,
@@ -303,6 +329,9 @@ const FundDetails = () => {
                                   : `${base_url}/investmentProjects/${project.logo}`
                               }
                               fallbackLabel={projectName}
+                              badgeValue={formatCurrency(
+                                linkedProject?.allocatedAmount ?? 0,
+                              )}
                               onClick={
                                 typeof project === "string" || !project?._id
                                   ? undefined
@@ -445,6 +474,7 @@ const AssociationCard = ({
   subtitle,
   imageSrc,
   fallbackLabel,
+  badgeValue,
   onClick,
   children,
 }) => (
@@ -485,6 +515,11 @@ const AssociationCard = ({
             {subtitle ? (
               <div className="mt-1 text-xs text-muted-foreground">
                 {subtitle}
+              </div>
+            ) : null}
+            {badgeValue ? (
+              <div className="mt-2 inline-flex rounded-full border border-emerald-500/15 bg-emerald-500/8 px-2.5 py-1 text-xs font-medium text-emerald-700">
+                {badgeValue}
               </div>
             ) : null}
           </div>

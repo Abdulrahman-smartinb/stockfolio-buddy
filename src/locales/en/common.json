@@ -181,7 +181,11 @@
     "category": "Category",
     "tag": "Tag",
     "associated_companies": "Associated companies",
-    "associated_projects": "Associated projects"
+    "associated_projects": "Associated projects",
+    "treasury_shares": "Treasury shares",
+    "total_fund_value": "Total fund value",
+    "allocated_amount": "Allocated amount",
+    "unallocated_amount": "Unallocated amount"
   },
 
   "portfolio": {

@@ -161,13 +161,6 @@ const ProjectDetailsPage = () => {
         : project.category.name || project.category.nameAr || "-"
       : "-";
 
-  const sectorName =
-    typeof project.sector === "object" && project.sector
-      ? i18n.language === "ar"
-        ? project.sector.nameAr || project.sector.name || "-"
-        : project.sector.name || project.sector.nameAr || "-"
-      : "-";
-
   const logoSrc = project.logo
     ? `${base_url}/investmentProjects/${project.logo}`
     : null;
@@ -241,7 +234,7 @@ const ProjectDetailsPage = () => {
 
               <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
                 <span className="rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white">
-                  {sectorName}
+                  {categoryName}
                 </span>
 
                 <span
@@ -300,12 +293,12 @@ const ProjectDetailsPage = () => {
                           : "-"}
                       </span>
 
-                      <span className="hidden md:inline text-white/50">•</span>
+                      {/* <span className="hidden md:inline text-white/50">•</span>
 
                       <span className="inline-flex items-center gap-1 capitalize">
                         <FolderOpen className="w-4 h-4" />
                         {categoryName}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </div>

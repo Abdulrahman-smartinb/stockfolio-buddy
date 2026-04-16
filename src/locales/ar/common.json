@@ -181,7 +181,11 @@
     "category": "التصنيف",
     "tag": "العلامة",
     "associated_companies": "الشركات المرتبطة",
-    "associated_projects": "المشاريع المرتبطة"
+    "associated_projects": "المشاريع المرتبطة",
+    "treasury_shares": "أسهم الخزينة",
+    "total_fund_value": "القيمة الإجمالية للصندوق",
+    "allocated_amount": "المبلغ المخصص",
+    "unallocated_amount": "المبلغ غير المخصص"
   },
 
   "portfolio": {

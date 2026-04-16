@@ -20,6 +20,14 @@ export interface InvestmentEntity {
   investingStepsFile?: string;
   investingRequestFile?: string;
   userAgreementFile?: string;
+  treasuryShares?: number;
+  allocationSummary?: {
+    totalFundValue?: number;
+    allocatedCompaniesAmount?: number;
+    allocatedProjectsAmount?: number;
+    totalAllocatedAmount?: number;
+    remainingUnallocatedAmount?: number;
+  };
   category?:
     | string
     | {
@@ -38,34 +46,36 @@ export interface InvestmentEntity {
           }
       >
     | null;
-  companies?:
-    | Array<
-        | string
-        | {
-            _id?: string;
-            fullLegalName?: string;
-            tradeName?: string;
-            nameAr?: string;
-            logo?: string;
-            economicSector?: string;
-          }
-      >
+  linkedCompanies?:
+    | Array<{
+        company?:
+          | string
+          | {
+              _id?: string;
+              fullLegalName?: string;
+              tradeName?: string;
+              nameAr?: string;
+              logo?: string;
+              economicSector?: string;
+            }
+          | null;
+        allocatedAmount?: number;
+      }>
     | null;
-  associatedCompanies?: InvestmentEntity["companies"];
-  clientCompanies?: InvestmentEntity["companies"];
-  projects?:
-    | Array<
-        | string
-        | {
-            _id?: string;
-            name?: string;
-            nameAr?: string;
-            logo?: string;
-            category?: string | { name?: string; nameAr?: string } | null;
-            location?: string;
-          }
-      >
+  linkedProjects?:
+    | Array<{
+        project?:
+          | string
+          | {
+              _id?: string;
+              name?: string;
+              nameAr?: string;
+              logo?: string;
+              category?: string | { name?: string; nameAr?: string } | null;
+              location?: string;
+            }
+          | null;
+        allocatedAmount?: number;
+      }>
     | null;
-  associatedProjects?: InvestmentEntity["projects"];
-  investmentProjects?: InvestmentEntity["projects"];
 }
