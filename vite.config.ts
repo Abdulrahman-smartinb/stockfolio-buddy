@@ -16,9 +16,10 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["jadwa.ico", "pwa-192x192.png", "pwa-512x512.png"],
       manifest: {
-        name: "SmartInvest - Trade Smarter",
-        short_name: "SmartInvest",
-        description: "Modern stock trading platform",
+        name: "Jadwa Share Market",
+        short_name: "Jadwa",
+        description:
+          "Modern stock trading platform. Track real-time prices and trade smarter.",
         theme_color: "#0a1628",
         background_color: "#0a1628",
         display: "standalone",
@@ -46,6 +47,9 @@ export default defineConfig(({ mode }) => ({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+      },
+      devOptions: {
+        enabled: true,
       },
     }),
   ].filter(Boolean),

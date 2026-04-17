@@ -520,5 +520,13 @@
     "notes": "Notes",
     "images": "Images",
     "attachments": "Attachments"
+  },
+
+  "install_prompt": {
+    "title": "Install this app",
+    "description": "Install the app for a faster, full-screen experience and easier access from your device.",
+    "install_ready": "You can install it now using the button below.",
+    "manual_hint": "If your browser does not show the install button, use the browser menu and choose Add to Home Screen or Install App.",
+    "install_button": "Install app"
   }
 }

@@ -24,6 +24,7 @@ import { SessionExpiredModal } from "./components/SessionExpireModal";
 import { PaymentComplete } from "./pages/PaymentComplete";
 import ProjectDetailsPage from "./pages/ProjectDetailsPage";
 import CompanyDetails from "./pages/CompanyDetails";
+import { AppInstallPrompt } from "./components/AppInstallPrompt";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
+            <AppInstallPrompt />
             <SessionExpiredModal />
             <Routes>
               <Route path="/auth" element={<Auth />} />
