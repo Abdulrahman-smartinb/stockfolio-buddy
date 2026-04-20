@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { User } from "lucide-react";
+import { MessageCircleMore, ShieldCheck, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -119,6 +119,35 @@ const Auth = () => {
                 </div>
               </div>
             )}
+            <div className="mb-6 rounded-2xl border border-emerald-700/20 bg-emerald-900/[0.05] p-5 shadow-sm">
+              <div className="space-y-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-900/10 text-emerald-700">
+                    <ShieldCheck className="h-4.5 w-4.5" />
+                  </div>
+
+                  <h3 className="text-sm font-semibold text-emerald-900">
+                    {isRtl
+                      ? "نعمل حالياً على تعزيز أمان الحسابات"
+                      : "We’re enhancing account security"}
+                  </h3>
+                </div>
+
+                <div className="text-[11px] sm:text-xs md:text-sm leading-6 text-emerald-800 space-y-2">
+                  <p>
+                    {isRtl
+                      ? "نعمل حالياً على تطوير مستوى الحماية والأمان في المنصة لتوفير تجربة أكثر أماناً وموثوقية لجميع المستخدمين."
+                      : "We are currently improving our platform’s security measures to provide a safer and more secure experience for all users."}
+                  </p>
+
+                  <p>
+                    {isRtl
+                      ? "إذا واجهت أي مشكلة في تسجيل الدخول أو الوصول إلى حسابك، فلا داعي للقلق. تواصل معنا مباشرة وسيساعدك فريق الدعم بأسرع وقت."
+                      : "If you experience any issue while signing in or accessing your account, there is no need to worry. Please contact us and our support team will assist you as quickly as possible."}
+                  </p>
+                </div>
+              </div>
+            </div>
             {/* Mode Switch */}
             <div className="flex bg-muted rounded-xl p-1 mb-6">
               {(["login", "register"] as const).map((tab) => (
@@ -277,7 +306,7 @@ const Auth = () => {
                 "relative",
                 termsError
                   ? "bg-destructive/10 border-destructive"
-                  : "bg-muted/30 border-border/40",
+                  : "bg-muted/30 border-border/40"
               )}
             >
               {/* Left accent bar */}
@@ -324,6 +353,22 @@ const Auth = () => {
           isOpen={openTerms}
           onClose={() => setOpenTerms(false)}
         />
+        <a
+          href="https://wa.me/963965886012"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={isRtl ? "تواصل معنا" : "Contact us"}
+          className={cn(
+            "fixed bottom-5 z-50 inline-flex items-center gap-2 rounded-full shadow-lg",
+            "bg-emerald-600 px-4 py-3 text-white transition hover:bg-emerald-700 hover:shadow-xl",
+            isRtl ? "left-4 sm:left-6" : "right-4 sm:right-6"
+          )}
+        >
+          <MessageCircleMore className="h-5 w-5" />
+          <span className="text-sm font-semibold">
+            {isRtl ? "تواصل معنا" : "Contact Us"}
+          </span>
+        </a>
       </div>
     </div>
   );
