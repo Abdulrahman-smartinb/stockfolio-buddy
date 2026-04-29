@@ -10,6 +10,7 @@ import {
 } from "@/store/api/investmentProjectsApi";
 import { InvestmentProject } from "@/interfaces/investmentProject";
 import { Option } from "@/components/ProjectsFilters";
+import { useGetShareTransactionsQuery } from "@/store/api/shares/shareTransactionsApi";
 
 type VerificationMode = "draft" | "pending";
 type DashboardTab = "funds" | "projects" | "companies";
@@ -127,6 +128,19 @@ const useDashboard = () => {
       id: resolvedRole?.profileId,
     });
 
+  const {
+    data: transactionsResponse,
+    isLoading: transactionsLoading,
+    refetch: refetchTransactions,
+  } = useGetShareTransactionsQuery(
+    {
+      holderId: resolvedRole?.profileId,
+      limit: 100,
+      sort: "-createdAt",
+    },
+    { skip: !resolvedRole?.profileId },
+  );
+
   const handleStockClick = async (stock: InvestmentEntity, type: string) => {
     const { data } = await refetchRole();
     if (!data) return;
@@ -196,11 +210,15 @@ const useDashboard = () => {
 
     refetchStocks,
     refetchProjects,
+    refetchTransactions,
 
     handleStockClick,
 
     portfolio,
     portfolioLoading,
+    latestTransactions: transactionsResponse?.data?.slice(0, 6) || [],
+    transactions: transactionsResponse?.data || [],
+    transactionsLoading,
     categories,
     tags,
     isProjectFiltersLoading,

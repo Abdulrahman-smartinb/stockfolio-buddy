@@ -27,7 +27,7 @@ const ProjectsList = ({
           </h2> */}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -76,7 +76,7 @@ const ProjectsList = ({
         </h2> */}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
         {projects.map((project, index) => (
           <ProjectCard
             key={project._id}
@@ -86,6 +86,7 @@ const ProjectsList = ({
             t={t}
             onView={onView}
             index={index}
+            // featured={index === 0}
           />
         ))}
       </div>

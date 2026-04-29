@@ -190,6 +190,10 @@
     "my_transactions": "معاملاتك",
     "transaction_count": "معاملة",
     "no_transactions_for_fund": "لا توجد معاملات لهذا الصندوق حتى الآن",
+    "active_funds": "الصناديق الفعالة",
+    "invested_amount": "الكمية المستثمرة",
+    "portfolio_performance": "أداء المحفظة",
+    "monthly_value": "قيمة الاستثمار الشهرية",
     "pagination_summary": "الصفحة {{page}} من {{totalPages}} • {{totalItems}} معاملة"
   },
 
@@ -214,7 +218,8 @@
     "approved": "تمت الموافقة",
     "check_payment": "التحقق من الدفعة",
     "rejection_reason": "سبب الرفض",
-    "pending_payment_doc": "بانتظار إيصال الدفع"
+    "pending_payment_doc": "بانتظار إيصال الدفع",
+    "last_transactions": "آخر العمليات"
   },
 
   "payments": {
@@ -235,6 +240,7 @@
     "order_id": "رقم الطلب",
     "see_details": "عرض تفاصيل الطلب",
     "continue_browsing": "متابعة التصفح",
+    "no_details_available": "طريقة الدفع هذه ليس لها تفاصيل",
 
     "bank": {
       "title": "حوالة بنكية (سورية)",
@@ -519,7 +525,8 @@
     "year": "سنة",
     "notes": "ملاحظات",
     "images": "الصور",
-    "attachments": "الملحقات"
+    "attachments": "الملحقات",
+    "soon": "قريبا"
   },
 
   "install_prompt": {

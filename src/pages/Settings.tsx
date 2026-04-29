@@ -80,7 +80,7 @@ const Settings = () => {
             label={t("settings.theme")}
             right={
               <span className="text-sm text-jadwa-muted">
-                {t("settings.system")}
+                {t("common.soon")}
               </span>
             }
           />

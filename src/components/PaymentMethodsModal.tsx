@@ -158,6 +158,7 @@ const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
 
   const selectedMethod =
     paymentMethods.find((m) => m._id === selectedMethodId) || paymentMethods[0];
+
   const selectedQrImage = getQrImage(selectedMethod);
   const selectedDetails = buildDetails(selectedMethod, t);
 
@@ -192,7 +193,7 @@ const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
                 const isSelected = selectedMethod?._id === method._id;
                 const qrImage = getQrImage(method);
                 const details = buildDetails(method, t);
-                console.log(`method`, method);
+
                 return (
                   <div key={method._id} className="space-y-3">
                     <button
@@ -218,7 +219,11 @@ const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
                           {t("payments.payment_details")}
                         </h3>
 
-                        {details.length ? (
+                        {method?.method === "onlinePayment" ? (
+                          <div className="text-sm text-muted-foreground">
+                            {t("payments.no_details_available")}
+                          </div>
+                        ) : details.length ? (
                           <div className="space-y-3">
                             {details.map((detail) => (
                               <DetailItem
@@ -272,7 +277,11 @@ const PaymentMethodsModal = ({ isOpen, onClose, data, t }) => {
                   <h3 className="mb-4 text-sm font-semibold text-muted-foreground">
                     {t("payments.payment_details")}
                   </h3>
-                  {selectedDetails.length ? (
+                  {selectedMethod?.method === "onlinePayment" ? (
+                    <div className="text-sm text-muted-foreground">
+                      {t("payments.no_details_available")}
+                    </div>
+                  ) : selectedDetails.length ? (
                     <div className="space-y-3">
                       {selectedDetails.map((detail) => (
                         <DetailItem

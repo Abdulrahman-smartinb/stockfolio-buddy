@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "../assets/images/investment-logo-large.png";
+import logoEn from "../assets/images/investment-logo-large-en.png";
 import avatar from "../assets/images/user.png";
 import useHeader from "@/hooks/useHeader";
 import { NotificationItem } from "./ui/NotificationItem";
@@ -97,7 +98,7 @@ export const Header = () => {
               )}
             >
               <img
-                src={logo}
+                src={isRtl ? logo : logoEn}
                 alt="Jadwa Logo"
                 className="w-full h-full object-contain"
               />

@@ -109,7 +109,7 @@ const Profile = () => {
   }, [user?.profileImage]);
 
   return (
-    <div className="min-h-screen bg-background " dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
       <main className="container text-foreground mx-auto px-4 py-8">

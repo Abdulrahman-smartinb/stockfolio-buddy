@@ -25,16 +25,20 @@ import { base_url } from "@/api/GlobalData";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
+const TITLE_CLASS = "font-bold text-[#9B8560]";
+const BODY_CLASS = "font-normal text-[#3F3B38]";
+const ICON_CLASS = "text-[#9B8560]";
+
 const riskClassMap: Record<string, string> = {
-  low: "bg-emerald-500/15 text-emerald-50 border-emerald-300/20",
-  medium: "bg-amber-500/15 text-amber-50 border-amber-300/20",
-  high: "bg-red-500/15 text-red-50 border-red-300/20",
+  low: "bg-white/90 text-[#3F3B38] border-white/60",
+  medium: "bg-white/90 text-[#3F3B38] border-white/60",
+  high: "bg-white/90 text-[#3F3B38] border-white/60",
 };
 
 const riskPlainClassMap: Record<string, string> = {
-  low: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  medium: "bg-amber-50 text-amber-700 border-amber-200",
-  high: "bg-red-50 text-red-700 border-red-200",
+  low: "bg-background text-[#3F3B38] border-border",
+  medium: "bg-background text-[#3F3B38] border-border",
+  high: "bg-background text-[#3F3B38] border-border",
 };
 
 const SectionCard = ({
@@ -48,32 +52,27 @@ const SectionCard = ({
 }) => (
   <section className="rounded-[28px] border border-border/60 bg-card/95 backdrop-blur-sm shadow-sm">
     <div className="flex items-center gap-2 px-5 md:px-6 pt-5 md:pt-6 pb-3">
-      {icon}
-      <h2 className="text-base md:text-lg font-semibold text-foreground">
-        {title}
-      </h2>
+      <span className={cn("inline-flex [&_svg]:text-[#9B8560]", ICON_CLASS)}>
+        {icon}
+      </span>
+      <h2 className={cn("text-base md:text-lg", TITLE_CLASS)}>{title}</h2>
     </div>
-    <div className="px-5 md:px-6 pb-5 md:pb-6">{children}</div>
+    <div className={cn("px-5 md:px-6 pb-5 md:pb-6", BODY_CLASS)}>
+      {children}
+    </div>
   </section>
 );
 
 const MetricCard = ({
   label,
   value,
-  mono = false,
 }: {
   label: string;
   value: React.ReactNode;
-  mono?: boolean;
 }) => (
   <div className="rounded-2xl border border-border/60 bg-background/70 px-4 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
-    <div className="text-xs text-muted-foreground">{label}</div>
-    <div
-      className={cn(
-        "mt-2 text-sm md:text-[15px] font-semibold text-foreground",
-        mono && "font-mono",
-      )}
-    >
+    <div className={cn("text-xs", TITLE_CLASS)}>{label}</div>
+    <div className={cn("mt-2 text-sm md:text-[15px]", BODY_CLASS)}>
       {value || "-"}
     </div>
   </div>
@@ -130,7 +129,12 @@ const ProjectDetailsPage = () => {
       <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
         <Header />
         <main className="container mx-auto p-4 pb-[120px] max-w-6xl">
-          <div className="rounded-[28px] border border-border bg-card p-8 text-center text-muted-foreground">
+          <div
+            className={cn(
+              "rounded-[28px] border border-border bg-card p-8 text-center",
+              BODY_CLASS,
+            )}
+          >
             {t("common.no_records")}
           </div>
         </main>
@@ -200,7 +204,7 @@ const ProjectDetailsPage = () => {
             <Button
               variant="outline"
               onClick={handleBack}
-              className="rounded-full"
+              className={cn("rounded-full", BODY_CLASS)}
             >
               <span
                 className={cn(
@@ -208,10 +212,17 @@ const ProjectDetailsPage = () => {
                   isRtl && "flex-row-reverse",
                 )}
               >
-                <span className={cn("inline-flex", isRtl && "rotate-180")}>
+                {isRtl && t("common.back")}
+                <span
+                  className={cn(
+                    "inline-flex",
+                    ICON_CLASS,
+                    isRtl && "rotate-180",
+                  )}
+                >
                   ←
                 </span>
-                {t("common.back")}
+                {!isRtl && t("common.back")}
               </span>
             </Button>
           </div>
@@ -225,7 +236,12 @@ const ProjectDetailsPage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-sm text-muted-foreground">
+                <div
+                  className={cn(
+                    "w-full h-full flex items-center justify-center text-sm",
+                    BODY_CLASS,
+                  )}
+                >
                   {t("common.no_image")}
                 </div>
               )}
@@ -233,20 +249,25 @@ const ProjectDetailsPage = () => {
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10" />
 
               <div className="absolute top-4 left-4 right-4 flex items-start justify-between gap-3">
-                <span className="rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5 text-xs font-medium text-white">
+                <span
+                  className={cn(
+                    "rounded-full border border-white/60 bg-white/90 backdrop-blur-md px-3 py-1.5 text-xs",
+                    TITLE_CLASS,
+                  )}
+                >
                   {categoryName}
                 </span>
 
                 <span
                   className={cn(
-                    "rounded-full border px-3 py-1.5 text-xs font-medium capitalize backdrop-blur-md",
+                    "rounded-full border px-3 py-1.5 text-xs font-normal capitalize backdrop-blur-md",
                     riskClassMap[
                       project.investmentData?.riskLevel || "medium"
                     ] || riskClassMap.medium,
                   )}
                 >
                   <span className="inline-flex items-center gap-1">
-                    <ShieldAlert className="w-3.5 h-3.5" />
+                    <ShieldAlert className={cn("w-3.5 h-3.5", ICON_CLASS)} />
                     {t(
                       `investment.${String(
                         project.investmentData?.riskLevel?.toLowerCase() ||
@@ -267,27 +288,32 @@ const ProjectDetailsPage = () => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-lg md:text-xl font-semibold text-white">
+                      <span className={cn("text-lg md:text-xl", TITLE_CLASS)}>
                         {projectName?.charAt(0)?.toUpperCase() || "P"}
                       </span>
                     )}
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h1 className="text-xl md:text-3xl font-semibold text-white line-clamp-2">
+                    <h1 className="text-xl md:text-3xl line-clamp-2 font-bold text-white">
                       {projectName}
                     </h1>
 
-                    <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-white/85">
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
+                    <div
+                      className={cn(
+                        "mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm",
+                        BODY_CLASS,
+                      )}
+                    >
+                      <span className="inline-flex items-center gap-1 text-white">
+                        <MapPin className={cn("w-4 h-4", ICON_CLASS)} />
                         {project.location || "-"}
                       </span>
 
-                      <span className="hidden md:inline text-white/50">•</span>
+                      <span className="hidden md:inline text-white">•</span>
 
-                      <span className="inline-flex items-center gap-1">
-                        <CalendarDays className="w-4 h-4" />
+                      <span className="inline-flex items-center gap-1 text-white">
+                        <CalendarDays className={cn("w-4 h-4", ICON_CLASS)} />
                         {project.createdAt
                           ? new Date(project.createdAt).toLocaleDateString()
                           : "-"}
@@ -307,10 +333,7 @@ const ProjectDetailsPage = () => {
 
             {displayBrief ? (
               <div className="px-5 md:px-6 py-5 pb-2 border-t border-border/50 bg-card">
-                <p
-                  className="text-sm md:text-base leading-7"
-                  style={{ fontWeight: "500", color: "#505050" }}
-                >
+                <p className={cn("text-sm md:text-base leading-7", BODY_CLASS)}>
                   {displayBrief}
                 </p>
               </div>
@@ -320,11 +343,13 @@ const ProjectDetailsPage = () => {
           <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.85fr] gap-5">
             <SectionCard
               title={t("common.desc")}
-              icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
+              icon={<NotebookText className="w-5 h-5" />}
             >
               <div
-                className="text-sm md:text-base leading-8 whitespace-pre-wrap"
-                style={{ fontWeight: "500", color: "#505050" }}
+                className={cn(
+                  "text-sm md:text-base leading-8 whitespace-pre-wrap",
+                  BODY_CLASS,
+                )}
               >
                 {displayDescription || "-"}
               </div>
@@ -333,7 +358,7 @@ const ProjectDetailsPage = () => {
 
           <SectionCard
             title={t("investment.investment_data")}
-            icon={<BarChart3 className="w-5 h-5 text-muted-foreground" />}
+            icon={<BarChart3 className="w-5 h-5" />}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               <MetricCard
@@ -341,34 +366,28 @@ const ProjectDetailsPage = () => {
                 value={`${Number(
                   project.investmentData?.expectedProjectCost || 0,
                 ).toLocaleString()} USD`}
-                mono
               />
               <MetricCard
                 label={t("investment.return_profit_margin")}
                 value={`${project.investmentData?.returnProfitMargin ?? 0}%`}
-                mono
               />
               <MetricCard
                 label={t("investment.profitability_index")}
                 value={project.investmentData?.profitabilityIndex ?? 0}
-                mono
               />
               <MetricCard
                 label={t("investment.expected_irr")}
                 value={`${project.investmentData?.expectedIRR ?? 0}%`}
-                mono
               />
               <MetricCard
                 label={t("investment.expected_roi")}
                 value={`${project.investmentData?.expectedROI ?? 0}%`}
-                mono
               />
               <MetricCard
                 label={t("investment.paycheck_period")}
                 value={`${project.investmentData?.paybackPeriodYears ?? 0} ${t(
                   "common.year",
                 )}`}
-                mono
               />
               <MetricCard
                 label={t("investment.project_stage")}
@@ -381,7 +400,7 @@ const ProjectDetailsPage = () => {
                 value={
                   <span
                     className={cn(
-                      "inline-flex rounded-full border px-2.5 py-1 text-xs font-medium capitalize",
+                      "inline-flex rounded-full border px-2.5 py-1 text-xs font-normal capitalize",
                       riskPlainClassMap[
                         project.investmentData?.riskLevel || "medium"
                       ] || riskPlainClassMap.medium,
@@ -402,23 +421,22 @@ const ProjectDetailsPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <SectionCard
               title={t("investment.exit_plan")}
-              icon={<TrendingUp className="w-5 h-5 text-muted-foreground" />}
+              icon={<TrendingUp className="w-5 h-5" />}
             >
               <div
-                className="text-sm leading-7 whitespace-pre-wrap"
-                style={{ fontWeight: "500", color: "#505050" }}
+                className={cn(
+                  "text-sm leading-7 whitespace-pre-wrap",
+                  BODY_CLASS,
+                )}
               >
                 {project.investmentData?.exitPlan || "-"}
               </div>
 
               <div className="mt-4 rounded-2xl border border-border bg-background/70 px-4 py-3">
-                <div className="text-xs text-muted-foreground">
+                <div className={cn("text-xs", TITLE_CLASS)}>
                   {t("investment.exit_duration")}
                 </div>
-                <div
-                  className="mt-1 text-sm font-semibold"
-                  style={{ fontWeight: "500", color: "#505050" }}
-                >
+                <div className={cn("mt-1 text-sm", BODY_CLASS)}>
                   {project.exitDuration ?? 0} {t("common.year")}
                 </div>
               </div>
@@ -426,11 +444,13 @@ const ProjectDetailsPage = () => {
 
             <SectionCard
               title={t("common.notes")}
-              icon={<NotebookText className="w-5 h-5 text-muted-foreground" />}
+              icon={<NotebookText className="w-5 h-5" />}
             >
               <div
-                className="text-sm text-muted-foreground leading-7 whitespace-pre-wrap"
-                style={{ fontWeight: "500" }}
+                className={cn(
+                  "text-sm leading-7 whitespace-pre-wrap",
+                  BODY_CLASS,
+                )}
               >
                 {project.investmentData?.notes || "-"}
               </div>
@@ -439,7 +459,7 @@ const ProjectDetailsPage = () => {
 
           <SectionCard
             title={t("common.images")}
-            icon={<ImageIcon className="w-5 h-5 text-muted-foreground" />}
+            icon={<ImageIcon className="w-5 h-5" />}
           >
             {images.length ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -457,13 +477,13 @@ const ProjectDetailsPage = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-muted-foreground">-</div>
+              <div className={cn("text-sm", BODY_CLASS)}>-</div>
             )}
           </SectionCard>
 
           <SectionCard
             title={t("common.attachments")}
-            icon={<FileText className="w-5 h-5 text-muted-foreground" />}
+            icon={<FileText className="w-5 h-5" />}
           >
             {attachments.length ? (
               <div className="space-y-3">
@@ -476,22 +496,22 @@ const ProjectDetailsPage = () => {
                     className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background/70 px-4 py-3 hover:bg-background transition"
                   >
                     <div className="min-w-0">
-                      <div className="text-sm font-medium text-foreground truncate">
+                      <div className={cn("text-sm truncate", TITLE_CLASS)}>
                         {file.title || file.fileUrl}
                       </div>
-                      <div className="text-xs text-muted-foreground">
+                      <div className={cn("text-xs", BODY_CLASS)}>
                         {file.fileType || "-"}
                       </div>
                     </div>
 
                     <div className="w-9 h-9 rounded-full border border-border bg-card flex items-center justify-center shrink-0">
-                      <Download className="w-4 h-4 text-muted-foreground" />
+                      <Download className={cn("w-4 h-4", ICON_CLASS)} />
                     </div>
                   </a>
                 ))}
               </div>
             ) : (
-              <div className="text-sm text-muted-foreground">-</div>
+              <div className={cn("text-sm", BODY_CLASS)}>-</div>
             )}
           </SectionCard>
         </motion.div>
@@ -504,7 +524,10 @@ const ProjectDetailsPage = () => {
               type="button"
               onClick={handleInterestToggle}
               disabled={isUpdatingInterest}
-              className="rounded-full px-5"
+              className={cn(
+                "rounded-full px-5 border border-border bg-background hover:bg-background/90",
+                BODY_CLASS,
+              )}
             >
               {isInterested
                 ? t("investment.interested_active")

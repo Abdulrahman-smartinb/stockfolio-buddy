@@ -190,6 +190,10 @@
     "my_transactions": "My transactions",
     "transaction_count": "transactions",
     "no_transactions_for_fund": "No transactions found for this fund yet",
+    "active_funds": "Active funds",
+    "invested_amount": "Invested amount",
+    "portfolio_performance": "Portfolio performance",
+    "monthly_value": "Monthly investment value",
     "pagination_summary": "Page {{page}} of {{totalPages}} • {{totalItems}} transactions"
   },
 
@@ -214,7 +218,8 @@
     "approved": "Approved",
     "check_payment": "Checking payment",
     "rejection_reason": "Rejection reason",
-    "pending_payment_doc": "Pending payment document"
+    "pending_payment_doc": "Pending payment document",
+    "last_transactions": "Last transactions"
   },
 
   "payments": {
@@ -235,6 +240,7 @@
     "order_id": "Order ID",
     "see_details": "See order details",
     "continue_browsing": "Continue browsing",
+    "no_details_available": "This method doesn't have details",
 
     "bank": {
       "title": "Bank transfer (Syria)",
@@ -519,7 +525,8 @@
     "year": "Year",
     "notes": "Notes",
     "images": "Images",
-    "attachments": "Attachments"
+    "attachments": "Attachments",
+    "soon": "Soon"
   },
 
   "install_prompt": {

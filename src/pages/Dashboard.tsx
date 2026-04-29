@@ -16,10 +16,13 @@ import useDashboard from "@/hooks/useDashboard";
 import { CheckVerificationModal } from "@/components/CheckVerificationModal";
 import { VerifyAccountModal } from "@/components/VerifyAccountModal";
 import { useProfile } from "@/hooks/useProfile";
-import InvestmentsSlider from "@/components/Dashboard/InvestmentsSlider";
 import StocksList from "@/components/Dashboard/StocksList";
 import ProjectsList from "@/components/Dashboard/ProjectsList";
 import CompaniesList from "@/components/Dashboard/CompaniesList";
+import {
+  DashboardOverview,
+  LatestTransactions,
+} from "@/components/Dashboard/DashboardOverview";
 import { cn } from "@/lib/utils";
 import { VerifyAccountTermsModal } from "@/components/VerifyAccountTermsModal";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -73,6 +76,9 @@ const Dashboard = () => {
     handleStockClick,
     portfolio,
     portfolioLoading,
+    latestTransactions,
+    transactions,
+    transactionsLoading,
     categories,
     tags,
     showFilters,
@@ -135,30 +141,31 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen home-bg" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
-      <main className="container mx-auto p-4 md:px-6 lg:px-8 xl:max-w-8xl pb-[120px]">
-        <InvestmentsSlider
+      <main className="container mx-auto space-y-4 p-3 pb-[120px] sm:p-4 md:space-y-5 md:px-6 lg:px-8 xl:max-w-8xl">
+        <DashboardOverview
           t={t}
-          isRtl={isRtl}
           portfolio={portfolio}
           loading={portfolioLoading}
+          transactions={transactions}
+          activeFundsCount={stocks.length}
         />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-6 space-y-4"
+          className="mb-4 space-y-3 md:mb-6 md:space-y-4"
         >
           {/* Tabs */}
-          <div className="inline-flex items-center rounded-full border bg-card p-1">
+          <div className="flex w-full items-center overflow-x-auto rounded-full border bg-card p-1 scrollbar-hidden sm:inline-flex sm:w-auto">
             <button
               type="button"
               onClick={() => setActiveTab("funds")}
               className={cn(
-                "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
+                "h-10 flex-1 rounded-full px-3 text-xs font-medium transition flex items-center justify-center gap-1.5 whitespace-nowrap sm:flex-none sm:px-4 sm:text-sm sm:gap-2",
                 activeTab === "funds"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
@@ -172,7 +179,7 @@ const Dashboard = () => {
               type="button"
               onClick={() => setActiveTab("projects")}
               className={cn(
-                "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
+                "h-10 flex-1 rounded-full px-3 text-xs font-medium transition flex items-center justify-center gap-1.5 whitespace-nowrap sm:flex-none sm:px-4 sm:text-sm sm:gap-2",
                 activeTab === "projects"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
@@ -186,7 +193,7 @@ const Dashboard = () => {
               type="button"
               onClick={() => setActiveTab("companies")}
               className={cn(
-                "h-10 px-4 rounded-full text-sm font-medium transition flex items-center gap-2",
+                "h-10 flex-1 rounded-full px-3 text-xs font-medium transition flex items-center justify-center gap-1.5 whitespace-nowrap sm:flex-none sm:px-4 sm:text-sm sm:gap-2",
                 activeTab === "companies"
                   ? "bg-primary text-primary-foreground"
                   : "text-muted-foreground hover:text-foreground",
@@ -198,8 +205,8 @@ const Dashboard = () => {
           </div>
 
           {/* Search + Refresh */}
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="relative w-full max-w-md md:max-w-lg lg:max-w-xl">
+          <div className="flex flex-wrap items-center gap-2 md:flex-nowrap md:gap-4">
+            <div className="relative min-w-0 flex-1 md:max-w-lg lg:max-w-xl">
               <Search
                 className={cn(
                   "absolute top-1/2 -translate-y-1/2 w-5 h-5 jadwa-icon-gold",
@@ -227,7 +234,7 @@ const Dashboard = () => {
                     : setStockSearchQuery(e.target.value)
                 }
                 className={cn(
-                  "h-12 bg-card text-xs rounded-[999px]",
+                  "h-11 bg-card text-xs rounded-[999px] md:h-12",
                   isRtl ? "pr-12 pl-4" : "pl-12 pr-4",
                 )}
               />
@@ -236,7 +243,7 @@ const Dashboard = () => {
             <Button
               disabled={isFetching}
               onClick={handleRefresh}
-              className="h-12 w-12 md:w-32 rounded-full shrink-0"
+              className="h-11 w-11 rounded-full shrink-0 md:h-12 md:w-32"
             >
               <motion.div
                 animate={isFetching ? "spin" : "stop"}
@@ -272,7 +279,7 @@ const Dashboard = () => {
             {activeTab === "projects" && (
               <Button
                 onClick={() => setShowFilters(!showFilters)}
-                className="h-12 w-12 md:w-32 rounded-full shrink-0"
+                className="h-11 w-11 rounded-full shrink-0 md:h-12 md:w-32"
               >
                 {showFilters ? (
                   <FilterX className="w-5 h-5 md:hidden jadwa-icon-brown" />
@@ -289,55 +296,67 @@ const Dashboard = () => {
           </div>
         </motion.div>
 
-        {activeTab === "funds" ? (
-          <StocksList
-            stocks={stocks}
-            isLoading={isStocksLoading}
-            t={t}
-            lang={lang}
-            onAction={(stock, type) => handleStockClick(stock, type)}
-          />
-        ) : activeTab === "companies" ? (
-          <CompaniesList
-            companies={companies}
-            isLoading={isStocksLoading}
-            t={t}
-            lang={lang}
-          />
-        ) : (
-          <>
-            {showFilters && (
-              <ProjectsFilters
+        <div className="grid gap-4 lg:grid-cols-5 lg:gap-5">
+          <div className="min-w-0 lg:col-span-3">
+            {activeTab === "funds" ? (
+              <StocksList
+                stocks={stocks}
+                isLoading={isStocksLoading}
                 t={t}
-                isRtl={isRtl}
-                projectSearchQuery={projectSearchQuery}
-                setProjectSearchQuery={setProjectSearchQuery}
-                selectedProjectCategory={selectedProjectCategory}
-                setSelectedProjectCategory={setSelectedProjectCategory}
-                selectedProjectTags={selectedProjectTags}
-                setSelectedProjectTags={setSelectedProjectTags}
-                categories={categories}
-                tags={tags}
-                onClear={clearProjectFilters}
+                lang={lang}
+                portfolioAssets={portfolio?.data?.assets || []}
+                onAction={(stock, type) => handleStockClick(stock, type)}
               />
+            ) : activeTab === "companies" ? (
+              <CompaniesList
+                companies={companies}
+                isLoading={isStocksLoading}
+                t={t}
+                lang={lang}
+              />
+            ) : (
+              <>
+                {showFilters && (
+                  <ProjectsFilters
+                    t={t}
+                    isRtl={isRtl}
+                    projectSearchQuery={projectSearchQuery}
+                    setProjectSearchQuery={setProjectSearchQuery}
+                    selectedProjectCategory={selectedProjectCategory}
+                    setSelectedProjectCategory={setSelectedProjectCategory}
+                    selectedProjectTags={selectedProjectTags}
+                    setSelectedProjectTags={setSelectedProjectTags}
+                    categories={categories}
+                    tags={tags}
+                    onClear={clearProjectFilters}
+                  />
+                )}
+                <ProjectsList
+                  projects={projects}
+                  isLoading={isProjectsLoading}
+                  t={t}
+                  lang={lang}
+                  isRtl={isRtl}
+                  onView={(project) =>
+                    navigate(`/project-details/${project._id}`, {
+                      state: {
+                        from: location.pathname,
+                        restoreScrollY: window.scrollY,
+                      },
+                    })
+                  }
+                />
+              </>
             )}
-            <ProjectsList
-              projects={projects}
-              isLoading={isProjectsLoading}
-              t={t}
-              lang={lang}
-              isRtl={isRtl}
-              onView={(project) =>
-                navigate(`/project-details/${project._id}`, {
-                  state: {
-                    from: location.pathname,
-                    restoreScrollY: window.scrollY,
-                  },
-                })
-              }
-            />
-          </>
-        )}
+          </div>
+
+          <LatestTransactions
+            t={t}
+            transactions={latestTransactions}
+            isLoading={transactionsLoading}
+            className="lg:col-span-2"
+          />
+        </div>
       </main>
 
       <BuyModal
