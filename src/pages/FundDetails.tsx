@@ -85,6 +85,36 @@ const FundDetails = () => {
   const linkedCompanies = normalizeItems(fund?.linkedCompanies);
   const linkedProjects = normalizeItems(fund?.linkedProjects);
   const allocationSummary = fund?.allocationSummary;
+  const legacyFundFiles = [
+    fund?.fundInfoFile
+      ? {
+          title: t("fund.fund_info"),
+          file: fund.fundInfoFile,
+        }
+      : null,
+    fund?.investingStepsFile
+      ? {
+          title: t("fund.investment_steps"),
+          file: fund.investingStepsFile,
+        }
+      : null,
+    fund?.investingRequestFile
+      ? {
+          title: t("fund.investment_req_form"),
+          file: fund.investingRequestFile,
+        }
+      : null,
+    fund?.userAgreementFile
+      ? {
+          title: t("fund.user_agreement"),
+          file: fund.userAgreementFile,
+        }
+      : null,
+  ].filter(Boolean);
+  const fundFiles =
+    Array.isArray(fund?.fundFiles) && fund.fundFiles.length > 0
+      ? fund.fundFiles
+      : legacyFundFiles;
 
   return (
     <div className="min-h-screen bg-background">
@@ -369,29 +399,16 @@ const FundDetails = () => {
 
           {activeTab === "files" && (
             <div className="relative z-10 space-y-4">
-              {fund?.fundInfoFile && (
-                <DocumentRow
-                  title={t("fund.fund_info")}
-                  file={`${base_url}/InvestmentFunds/${fund.fundInfoFile}`}
-                />
-              )}
-              {fund?.investingStepsFile && (
-                <DocumentRow
-                  title={t("fund.investment_steps")}
-                  file={`${base_url}/InvestmentFunds/${fund.investingStepsFile}`}
-                />
-              )}
-              {fund?.investingRequestFile && (
-                <DocumentRow
-                  title={t("fund.investment_req_form")}
-                  file={`${base_url}/InvestmentFunds/${fund.investingRequestFile}`}
-                />
-              )}
-              {fund?.userAgreementFile && (
-                <DocumentRow
-                  title={t("fund.user_agreement")}
-                  file={`${base_url}/InvestmentFunds/${fund.userAgreementFile}`}
-                />
+              {fundFiles.length > 0 ? (
+                fundFiles.map((item, index) => (
+                  <DocumentRow
+                    key={`${item.file}-${index}`}
+                    title={i18n.language == "ar" ? item.titleAr : item.title}
+                    file={`${base_url}/InvestmentFunds/${item.file}`}
+                  />
+                ))
+              ) : (
+                <EmptyState label={t("common.no_records")} />
               )}
             </div>
           )}
