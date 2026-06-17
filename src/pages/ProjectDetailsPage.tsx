@@ -3,7 +3,6 @@ import {
   MapPin,
   CalendarDays,
   ShieldAlert,
-  FolderOpen,
   Download,
   Image as ImageIcon,
   FileText,
@@ -14,7 +13,6 @@ import {
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-
 import { Button } from "@/components/ui/button";
 import {
   useGetOneInvestmentProjectQuery,
@@ -26,7 +24,7 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 
 const TITLE_CLASS = "font-bold text-[#9B8560]";
-const BODY_CLASS = "font-normal text-[#3F3B38]";
+const BODY_CLASS = "text-[#3F3B38]";
 const ICON_CLASS = "text-[#9B8560]";
 
 const riskClassMap: Record<string, string> = {
@@ -66,13 +64,20 @@ const SectionCard = ({
 const MetricCard = ({
   label,
   value,
+  isBold = true,
 }: {
   label: string;
   value: React.ReactNode;
+  isBold?: boolean;
 }) => (
   <div className="rounded-2xl border border-border/60 bg-background/70 px-4 py-4 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
     <div className={cn("text-xs", TITLE_CLASS)}>{label}</div>
-    <div className={cn("mt-2 text-sm md:text-[15px]", BODY_CLASS)}>
+    <div
+      className={cn(
+        "mt-2 text-sm md:text-[15px] text-[#367065]",
+        isBold ? "font-bold" : "font-normal",
+      )}
+    >
       {value || "-"}
     </div>
   </div>
@@ -340,24 +345,24 @@ const ProjectDetailsPage = () => {
             ) : null}
           </section>
 
-          <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.85fr] gap-5">
-            <SectionCard
-              title={t("common.desc")}
-              icon={<NotebookText className="w-5 h-5" />}
+          {/* <div className="grid grid-cols-1 xl:grid-cols-[1.35fr_.85fr] gap-5"> */}
+          <SectionCard
+            title={`${t("common.desc")}:`}
+            icon={<NotebookText className="w-5 h-5" />}
+          >
+            <div
+              className={cn(
+                "text-sm md:text-base leading-8 whitespace-pre-wrap",
+                BODY_CLASS,
+              )}
             >
-              <div
-                className={cn(
-                  "text-sm md:text-base leading-8 whitespace-pre-wrap",
-                  BODY_CLASS,
-                )}
-              >
-                {displayDescription || "-"}
-              </div>
-            </SectionCard>
-          </div>
+              {displayDescription || "-"}
+            </div>
+          </SectionCard>
+          {/* </div> */}
 
           <SectionCard
-            title={t("investment.investment_data")}
+            title={`${t("investment.investment_data")}:`}
             icon={<BarChart3 className="w-5 h-5" />}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -420,7 +425,7 @@ const ProjectDetailsPage = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <SectionCard
-              title={t("investment.exit_plan")}
+              title={`${t("investment.exit_plan")}:`}
               icon={<TrendingUp className="w-5 h-5" />}
             >
               <div
@@ -442,78 +447,84 @@ const ProjectDetailsPage = () => {
               </div>
             </SectionCard>
 
-            <SectionCard
-              title={t("common.notes")}
-              icon={<NotebookText className="w-5 h-5" />}
-            >
-              <div
-                className={cn(
-                  "text-sm leading-7 whitespace-pre-wrap",
-                  BODY_CLASS,
-                )}
+            {project?.investmentData?.notes?.length > 0 && (
+              <SectionCard
+                title={`${t("common.notes")}:`}
+                icon={<NotebookText className="w-5 h-5" />}
               >
-                {project.investmentData?.notes || "-"}
-              </div>
-            </SectionCard>
+                <div
+                  className={cn(
+                    "text-sm leading-7 whitespace-pre-wrap",
+                    BODY_CLASS,
+                  )}
+                >
+                  {project.investmentData?.notes || "-"}
+                </div>
+              </SectionCard>
+            )}
           </div>
 
-          <SectionCard
-            title={t("common.images")}
-            icon={<ImageIcon className="w-5 h-5" />}
-          >
-            {images.length ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {images.map((img, index) => (
-                  <div
-                    key={`${img.url}-${index}`}
-                    className="group overflow-hidden rounded-2xl border border-border bg-muted"
-                  >
-                    <img
-                      src={`${base_url}/investmentProjects/${img.url}`}
-                      alt={img.alt || `project-image-${index}`}
-                      className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                    />
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className={cn("text-sm", BODY_CLASS)}>-</div>
-            )}
-          </SectionCard>
-
-          <SectionCard
-            title={t("common.attachments")}
-            icon={<FileText className="w-5 h-5" />}
-          >
-            {attachments.length ? (
-              <div className="space-y-3">
-                {attachments.map((file, index) => (
-                  <a
-                    key={`${file.fileUrl}-${index}`}
-                    href={`${base_url}/investmentProjects/${file.fileUrl}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background/70 px-4 py-3 hover:bg-background transition"
-                  >
-                    <div className="min-w-0">
-                      <div className={cn("text-sm truncate", TITLE_CLASS)}>
-                        {file.title || file.fileUrl}
-                      </div>
-                      <div className={cn("text-xs", BODY_CLASS)}>
-                        {file.fileType || "-"}
-                      </div>
+          {images?.length > 0 && (
+            <SectionCard
+              title={`${t("common.images")}:`}
+              icon={<ImageIcon className="w-5 h-5" />}
+            >
+              {images?.length ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {images?.map((img, index) => (
+                    <div
+                      key={`${img.url}-${index}`}
+                      className="group overflow-hidden rounded-2xl border border-border bg-muted"
+                    >
+                      <img
+                        src={`${base_url}/investmentProjects/${img.url}`}
+                        alt={img.alt || `project-image-${index}`}
+                        className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                      />
                     </div>
+                  ))}
+                </div>
+              ) : (
+                <div className={cn("text-sm", BODY_CLASS)}>-</div>
+              )}
+            </SectionCard>
+          )}
 
-                    <div className="w-9 h-9 rounded-full border border-border bg-card flex items-center justify-center shrink-0">
-                      <Download className={cn("w-4 h-4", ICON_CLASS)} />
-                    </div>
-                  </a>
-                ))}
-              </div>
-            ) : (
-              <div className={cn("text-sm", BODY_CLASS)}>-</div>
-            )}
-          </SectionCard>
+          {attachments?.length > 0 && (
+            <SectionCard
+              title={`${t("common.attachments")}:`}
+              icon={<FileText className="w-5 h-5" />}
+            >
+              {attachments?.length ? (
+                <div className="space-y-3">
+                  {attachments?.map((file, index) => (
+                    <a
+                      key={`${file.fileUrl}-${index}`}
+                      href={`${base_url}/investmentProjects/${file.fileUrl}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-background/70 px-4 py-3 hover:bg-background transition"
+                    >
+                      <div className="min-w-0">
+                        <div className={cn("text-sm truncate", TITLE_CLASS)}>
+                          {file.title || file.fileUrl}
+                        </div>
+                        <div className={cn("text-xs", BODY_CLASS)}>
+                          {file.fileType || "-"}
+                        </div>
+                      </div>
+
+                      <div className="w-9 h-9 rounded-full border border-border bg-card flex items-center justify-center shrink-0">
+                        <Download className={cn("w-4 h-4", ICON_CLASS)} />
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              ) : (
+                <div className={cn("text-sm", BODY_CLASS)}>-</div>
+              )}
+            </SectionCard>
+          )}
         </motion.div>
       </main>
 

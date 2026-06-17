@@ -29,6 +29,16 @@ const ProjectCard = ({ project, lang, onView, index = 0 }: Props) => {
     ? `${base_url}/investmentProjects/${project.logo}`
     : null;
 
+  const getProjectTitleSize = (name: string) => {
+    const length = name?.length || 0;
+
+    if (length <= 12) return "text-lg sm:text-xl";
+    if (length <= 20) return "text-base sm:text-lg";
+    if (length <= 30) return "text-xs sm:text-base";
+
+    return "text-xs sm:text-sm";
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 14 }}
@@ -55,7 +65,11 @@ const ProjectCard = ({ project, lang, onView, index = 0 }: Props) => {
             </div>
 
             <div className="min-w-0">
-              <h3 className="text-base sm:text-lg font-semibold text-foreground line-clamp-1">
+              <h3
+                className={`${getProjectTitleSize(
+                  projectName,
+                )} font-semibold text-foreground line-clamp-2`}
+              >
                 {projectName}
               </h3>
               <div className="mt-1 text-sm text-muted-foreground line-clamp-1">

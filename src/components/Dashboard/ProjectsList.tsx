@@ -76,7 +76,7 @@ const ProjectsList = ({
         </h2> */}
       </div>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-2">
         {projects.map((project, index) => (
           <ProjectCard
             key={project._id}

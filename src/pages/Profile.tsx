@@ -15,13 +15,11 @@ import {
   CircleCheckBig,
   Clock,
   XCircle,
-  MapPin,
   Globe2,
   MapPinHouse,
   MapPinned,
   MapPinCheck,
 } from "lucide-react";
-import { format } from "date-fns";
 import { useProfile } from "@/hooks/useProfile";
 import { useTranslation } from "react-i18next";
 import { base_url } from "@/api/GlobalData";
@@ -210,7 +208,7 @@ const Profile = () => {
                       onClick={logout}
                       className="h-8 w-8 sm:w-auto sm:px-3 rounded-xl ring-1 ring-rose-500/30 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 transition inline-flex items-center justify-center sm:gap-2"
                     >
-                      <LogOut className="w-4 h-4 text-jadwa-gold" />
+                      <LogOut className="w-4 h-4" />
                       <span className="hidden sm:inline font-bold text-sm">
                         {t("nav.logout")}
                       </span>

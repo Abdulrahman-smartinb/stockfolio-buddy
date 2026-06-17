@@ -141,7 +141,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen home-bg" dir={isRtl ? "rtl" : "ltr"}>
+    <div className="min-h-screen" dir={isRtl ? "rtl" : "ltr"}>
       <Header />
 
       <main className="container mx-auto space-y-4 p-3 pb-[120px] sm:p-4 md:space-y-5 md:px-6 lg:px-8 xl:max-w-8xl">
