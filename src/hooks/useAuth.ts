@@ -2,16 +2,18 @@ import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./use-toast";
 import {
+  useForgotPasswordMutation,
   useLoginMutation,
   useLogoutMutation,
   useRegisterMutation,
+  useResetPasswordMutation,
   useVerifyPinMutation,
 } from "@/store/api/authApi";
 import { useTranslation } from "react-i18next";
 import COUNTRIES from "@/data/countries.json";
 import Cookies from "js-cookie";
 
-type AuthMode = "login" | "register";
+type AuthMode = "login" | "register" | "forgot-password" | "reset-password";
 
 const normalizeDigits = (value: string) => value.replace(/\D/g, "");
 
@@ -41,6 +43,11 @@ export const useAuth = () => {
   const [approveTerms, setApproveTerms] = useState(false);
   const [pinCode, setPinCode] = useState("");
   const [termsError, setTermsError] = useState(false);
+
+  const [resetEmail, setResetEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   // Login challenge state for investor
   const [loginChallenge, setLoginChallenge] = useState<LoginChallenge | null>(
@@ -73,8 +80,17 @@ export const useAuth = () => {
   const [registerApi, { isLoading: registerLoading }] = useRegisterMutation();
   const [verifyApi, { isLoading: verifyPinLoading }] = useVerifyPinMutation();
   const [logoutApi] = useLogoutMutation();
+  const [forgotPasswordApi, { isLoading: forgotLoading }] =
+    useForgotPasswordMutation();
+  const [resetPasswordApi, { isLoading: resetLoading }] =
+    useResetPasswordMutation();
 
-  const isLoading = loginLoading || registerLoading || verifyPinLoading;
+  const isLoading =
+    loginLoading ||
+    registerLoading ||
+    verifyPinLoading ||
+    forgotLoading ||
+    resetLoading;
 
   const selectedCountry = useMemo(
     () => COUNTRIES.find((c) => c.code === formData.country) || defaultCountry,
@@ -110,6 +126,39 @@ export const useAuth = () => {
   const validate = () => {
     let valid = true;
 
+    if (mode === "forgot-password") {
+      if (resetEmail.trim().length < 5 || !resetEmail.includes("@")) {
+        toast({
+          title: t("auth.invalid_email"),
+          description: t("auth.invalid_email_desc"),
+        });
+        return false;
+      }
+
+      return true;
+    }
+
+    if (mode === "reset-password") {
+      if (resetEmail.trim().length < 5 || !resetEmail.includes("@")) {
+        toast({
+          title: t("auth.invalid_email"),
+          description: t("auth.invalid_email_desc"),
+        });
+        return false;
+      }
+
+      if (!otp.trim() || newPassword.trim().length < 6) {
+        toast({
+          title: t("auth.errors.enter_valid_pass"),
+          variant: "destructive",
+          description: t("auth.errors.valid_pass"),
+        });
+        return false;
+      }
+
+      return true;
+    }
+
     if (formData.phone.length < 6) {
       toast({
         title: t("auth.errors.enter_valid_phone"),
@@ -128,7 +177,7 @@ export const useAuth = () => {
       valid = false;
     }
 
-    if (mode === "register" && formData.password.trim().length < 8) {
+    if (mode === "register" && formData.password.trim().length < 6) {
       toast({
         title: t("auth.errors.enter_valid_pass"),
         variant: "destructive",
@@ -169,40 +218,58 @@ export const useAuth = () => {
     if (!validate()) return;
 
     const fullPhone = buildE164Phone(formData.dialCode, formData.phone);
+
     try {
-      const response =
-        mode === "login"
-          ? await loginApi({
-              phone: fullPhone,
-              pinCode: formData.pinCode,
-            }).unwrap()
-          : await registerApi({
-              fullName: formData.fullName,
-              phone: fullPhone,
-              country: formData.country,
-              pinCode: formData.pinCode,
-              password: formData.password,
-            }).unwrap();
+      switch (mode) {
+        case "login": {
+          const response = await loginApi({
+            phone: fullPhone,
+            pinCode: formData.pinCode,
+          }).unwrap();
+          finalizeLogin(response);
+          break;
+        }
 
-      // Investor wait for PIN
-      // if (response.requiresPin) {
-      //   setLoginChallenge({
-      //     userId: response.userId,
-      //     challengeId: response.challengeId,
-      //   });
-      //   setIsPinRequired(true);
-      //   return;
-      // }
+        case "register": {
+          const response = await registerApi({
+            fullName: formData.fullName,
+            phone: fullPhone,
+            country: formData.country,
+            pinCode: formData.pinCode,
+            password: formData.password,
+          }).unwrap();
+          finalizeLogin(response);
+          break;
+        }
 
-      // Applicant
-      finalizeLogin(response);
+        case "forgot-password":
+          await handleForgotPassword();
+          break;
+
+        case "reset-password":
+          await handleResetPassword();
+          break;
+
+        default:
+          break;
+      }
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: t("auth.errors.auth_failed"),
-        description: t("auth.errors.check_credits") || error?.data?.message,
-        duration: 5000,
-      });
+      if (error?.data?.message === "OTP has expired") {
+        toast({
+          variant: "destructive",
+          title: t("auth.errors.otp_expired"),
+          description:
+            t("auth.errors.otp_expired_desc") || error?.data?.message,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: t("auth.errors.auth_failed"),
+          description: t("auth.errors.check_credits") || error?.data?.message,
+          duration: 5000,
+        });
+      }
     }
   };
 
@@ -244,6 +311,57 @@ export const useAuth = () => {
     }
   };
 
+  const handleForgotPassword = async () => {
+    if (resetEmail.trim().length < 5 || !resetEmail.includes("@")) {
+      toast({
+        title: t("auth.errors.invalid_email"),
+        description: t("auth.errors.invalid_email_desc"),
+      });
+      return;
+    }
+    await forgotPasswordApi({
+      email: resetEmail.trim(),
+    }).unwrap();
+
+    setResetEmail(resetEmail.trim());
+
+    toast({
+      title: t("auth.success.code_sent"),
+      description: t("auth.success.check_email"),
+    });
+
+    setMode("reset-password");
+  };
+
+  const handleResetPassword = async () => {
+    if (newPassword !== confirmNewPassword) {
+      toast({
+        title: t(""),
+        description: t(""),
+      });
+      return;
+    }
+    await resetPasswordApi({
+      email: resetEmail.trim(),
+      otp: otp.trim(),
+      newPassword,
+    }).unwrap();
+
+    toast({
+      title: t("auth.success.password_reset"),
+    });
+
+    setMode("login");
+
+    setOtp("");
+    setNewPassword("");
+
+    setFormData((p) => ({
+      ...p,
+      pinCode: "",
+    }));
+  };
+
   return {
     // ui
     mode,
@@ -282,5 +400,15 @@ export const useAuth = () => {
     setApproveTerms,
     termsError,
     setTermsError,
+
+    // pass reset
+    otp,
+    setOtp,
+    newPassword,
+    setNewPassword,
+    resetEmail,
+    setResetEmail,
+    confirmNewPassword,
+    setConfirmNewPassword,
   };
 };

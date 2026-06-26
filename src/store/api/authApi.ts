@@ -1,10 +1,12 @@
 import { baseApi } from "./baseApi";
 import {
+  forgotPassEP,
   // investorEP,
   loginEP,
   logoutEP,
   profileEP,
   registerEP,
+  resetPassEP,
   // resendSmsEP,
   verifyPinEP,
   // verifySmsEP,
@@ -33,6 +35,24 @@ export interface AuthResponse {
 
 export interface LogoutResponse {
   message: string;
+}
+
+export interface ForgotPassRes {
+  status: boolean;
+  message: string;
+}
+export interface ForgotPassReq {
+  email: string;
+}
+
+export interface ResetPassRes {
+  status: boolean;
+  message: string;
+}
+export interface ResetPassReq {
+  email: string;
+  otp: string;
+  newPassword: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -69,21 +89,20 @@ export const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
-    // verifyPhoneOtp: builder.mutation({
-    //   query: ({ userId, code }) => ({
-    //     url: `api/investor/verify-phone-otp`,
-    //     method: "POST",
-    //     body: { userId, code },
-    //   }),
-    // }),
-
-    // resendPhoneOtp: builder.mutation({
-    //   query: ({ userId }) => ({
-    //     url: `api/investor/resend-phone-otp`,
-    //     method: "POST",
-    //     body: { userId },
-    //   }),
-    // }),
+    forgotPassword: builder.mutation<ForgotPassRes, ForgotPassReq>({
+      query: (body) => ({
+        url: forgotPassEP,
+        method: "POST",
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation<ResetPassRes, ResetPassReq>({
+      query: (body) => ({
+        url: resetPassEP,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -93,6 +112,6 @@ export const {
   useRegisterMutation,
   useResolveRoleQuery,
   useVerifyPinMutation,
-  // useVerifyPhoneOtpMutation,
-  // useResendPhoneOtpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
 } = authApi;

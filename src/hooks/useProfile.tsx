@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useToast } from "./use-toast";
 import { useAuth } from "./useAuth";
 import { useResolvedRole } from "./useResolveRole";
+import Cookies from "js-cookie";
 
 import {
   useGetOneInvestorQuery,
@@ -195,10 +196,15 @@ export const useProfile = () => {
       }
 
       if (role) formData.append("role", role);
-      await updateInvestor({
+      const response = await updateInvestor({
         id: user.authUserId,
         data: formData,
       }).unwrap();
+
+      if (response?.data) {
+        setUser(response.data);
+        Cookies.set("profile", JSON.stringify(response.data), { expires: 1 });
+      }
 
       if (isApplicant) refetchApplicant();
       else refetchInvestor();
@@ -274,10 +280,15 @@ export const useProfile = () => {
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
 
-      await submit({
+      const response = await submit({
         id: user.authUserId,
         data: formData,
       }).unwrap();
+
+      if (response?.data) {
+        setUser(response.data);
+        Cookies.set("profile", JSON.stringify(response.data), { expires: 1 });
+      }
 
       handleClose();
 

@@ -7,6 +7,7 @@ import {
   ArrowLeftRight,
   Globe,
   ArrowLeft,
+  AlertTriangle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logo from "../assets/images/investment-logo-large.png";
@@ -75,8 +76,7 @@ export const Header = () => {
       initial={{ opacity: 0, y: -12 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "sticky top-0 z-40 w-full",
-        "border-b border-border/60",
+        "sticky top-0 z-40 w-full border-b border-border/60",
         "bg-background/70 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60",
       )}
     >
@@ -93,7 +93,6 @@ export const Header = () => {
             <div
               className={cn(
                 "w-40 h-20 rounded-xl overflow-hidden",
-
                 "transition group-hover:ring-primary/30",
               )}
             >
@@ -103,21 +102,6 @@ export const Header = () => {
                 className="w-full h-full object-contain"
               />
             </div>
-
-            {/* Brand text */}
-            {/* <div className="leading-none">
-              <div className="flex items-baseline ">
-                <span className="text-[15px] sm:text-base font-extrabold tracking-tight text-pr mx-1 uppercase">
-                  {t("brand.jadwa")}
-                </span>
-                <span className="text-[11px] sm:text-xs font-semibold tracking-wide text-muted-pr px-0 mx-0 uppercase">
-                  {t("brand.invest")}
-                </span>
-              </div>
-              <div className="text-[11px] text-jadwa-muted/80 hidden sm:block">
-                {t("brand.share_market")}
-              </div>
-            </div> */}
           </div>
 
           {/* CENTER — Navigation */}
@@ -289,13 +273,9 @@ export const Header = () => {
                   navigate("/profile");
                 }}
                 className={cn(
-                  "inline-flex items-center justify-center",
-                  "h-9 w-9 rounded-xl",
-                  "ring-1 ring-border/60",
-                  "bg-background/40",
-                  "hover:ring-primary/30",
-                  "transition",
-                  "focus:outline-none focus:ring-2 focus:ring-primary/30",
+                  "inline-flex items-center justify-center h-9 w-9 rounded-xl",
+                  "bg-background/40 hover:ring-primary/30 transition ring-border/60",
+                  "focus:outline-none focus:ring-2 focus:ring-primary/30 ring-1",
                 )}
                 aria-label={isMobileDetailPage ? "Back" : "Profile"}
               >
@@ -321,6 +301,25 @@ export const Header = () => {
             </div>
           </div>
         </div>
+        {!userObj?.email && (
+          <div className="mt-4 mb-2 rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <div className="flex items-start gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100">
+                <AlertTriangle className="h-5 w-5 text-amber-600" />
+              </div>
+
+              <div>
+                <h4 className="text-sm font-semibold text-amber-900">
+                  {t("common.email_not_available")}
+                </h4>
+
+                <p className="mt-1 text-sm leading-6 text-amber-800">
+                  {t("common.no_email_notice")}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </motion.header>
   );

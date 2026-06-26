@@ -1,5 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircleMore, ShieldCheck, User } from "lucide-react";
+import {
+  ArrowLeftCircle,
+  ArrowRightCircle,
+  AtSign,
+  Mail,
+  MessageCircleMore,
+  ShieldCheck,
+  User,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useTranslation } from "react-i18next";
@@ -12,12 +20,21 @@ import { useSearchParams } from "react-router-dom";
 import LanguageSwitch from "@/components/LanguageSwitch";
 import PasswordField from "@/components/PasswordField";
 import Field from "@/components/Field";
+import OtpInput from "@/components/OtpInput";
 
 const Auth = () => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
   const [searchParams] = useSearchParams();
   const reason = searchParams.get("reason");
+
+  const maskEmail = (email: string) => {
+    const [name, domain] = email.split("@");
+
+    if (!name || !domain) return email;
+
+    return `${name.slice(0, 3)}****@${domain}`;
+  };
 
   const {
     mode,
@@ -39,6 +56,14 @@ const Auth = () => {
     setApproveTerms,
     termsError,
     setTermsError,
+    otp,
+    setOtp,
+    newPassword,
+    setNewPassword,
+    resetEmail,
+    setResetEmail,
+    confirmNewPassword,
+    setConfirmNewPassword,
   } = useAuth();
 
   return (
@@ -66,12 +91,6 @@ const Auth = () => {
           >
             <div className="flex items-center gap-3">
               <img src={logo} alt="Jadwa" className="w-full" />
-              {/* <h1
-                className="text-4xl font-extrabold tracking-tight"
-                style={{ color: PRIMARY }}
-              >
-                Jadwa Invest
-              </h1> */}
             </div>
 
             <h2 className="text-4xl font-bold leading-tight">
@@ -119,7 +138,7 @@ const Auth = () => {
                 </div>
               </div>
             )}
-            <div className="mb-6 rounded-2xl border border-emerald-700/20 bg-emerald-900/[0.05] p-5 shadow-sm">
+            {/* <div className="mb-6 rounded-2xl border border-emerald-700/20 bg-emerald-900/[0.05] p-5 shadow-sm">
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-900/10 text-emerald-700">
@@ -147,23 +166,25 @@ const Auth = () => {
                   </p>
                 </div>
               </div>
-            </div>
+            </div> */}
             {/* Mode Switch */}
-            <div className="flex bg-muted rounded-xl p-1 mb-6">
-              {(["login", "register"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setMode(tab)}
-                  className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
-                    mode === tab
-                      ? "bg-[#988662] shadow text-white"
-                      : "text-jadwa-muted"
-                  }`}
-                >
-                  {tab === "login" ? t("auth.sign_in") : t("auth.register")}
-                </button>
-              ))}
-            </div>
+            {mode !== "forgot-password" && mode !== "reset-password" && (
+              <div className="flex bg-muted rounded-xl p-1 mb-6">
+                {(["login", "register"] as const).map((tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setMode(tab)}
+                    className={`flex-1 py-2 rounded-lg text-sm font-semibold transition ${
+                      mode === tab
+                        ? "bg-[#988662] shadow text-white"
+                        : "text-jadwa-muted"
+                    }`}
+                  >
+                    {tab === "login" ? t("auth.sign_in") : t("auth.register")}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <AnimatePresence mode="wait">
               <motion.form
@@ -185,6 +206,59 @@ const Auth = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
               >
+                {(mode === "forgot-password" || mode === "reset-password") && (
+                  <div className="space-y-5">
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setMode("login");
+                          setOtp("");
+                          setNewPassword("");
+                          setResetEmail("");
+                        }}
+                        className="flex items-center text-sm text-muted-foreground transition hover:text-foreground"
+                      >
+                        {isRtl ? (
+                          <ArrowRightCircle className="me-2 h-5 w-5" />
+                        ) : (
+                          <ArrowLeftCircle className="me-2 h-5 w-5" />
+                        )}
+                        {t("common.back")}
+                      </button>
+
+                      <h2 className="border-b-2 border-primary pb-1 text-lg font-bold text-jadwa">
+                        {t("auth.reset_acc_pass")}
+                      </h2>
+                    </div>
+
+                    {mode === "reset-password" && (
+                      <div className="rounded-xl border border-primary/15 bg-primary/5 p-5 text-center">
+                        <div className="flex items-center justify-center gap-2">
+                          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                            <Mail className="h-6 w-6 text-primary" />
+                          </div>
+
+                          <div className="flex flex-col">
+                            <h3 className="text-base font-semibold">
+                              {t("auth.enter_verification_code")}
+                            </h3>
+
+                            <p className="mt-2 text-sm text-muted-foreground">
+                              {t("auth.code_sent_to")}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 inline-flex rounded-full border bg-background px-4 py-2">
+                          <span className="font-medium tracking-wide">
+                            {maskEmail(resetEmail)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {/* Full Name */}
                 {mode === "register" && (
                   <Field
@@ -198,36 +272,47 @@ const Auth = () => {
                 )}
 
                 {/* Phone */}
-                <div>
-                  <label className="text-xs font-medium text-jadwa-muted mb-1 block">
-                    {t("auth.phone_number")}
-                  </label>
-                  <PhoneInput
-                    countries={COUNTRIES}
-                    country={formData.country}
-                    phone={formData.phone}
-                    isRtl={isRtl}
-                    isMobile={isMobile}
-                    onCountryChange={(c) =>
-                      setFormData((p) => ({
-                        ...p,
-                        country: c.code,
-                        dialCode: c.dialCode,
-                      }))
-                    }
-                    onPhoneChange={(phone) =>
-                      setFormData((p) => ({ ...p, phone }))
-                    }
-                  />
+                {mode !== "reset-password" && mode !== "forgot-password" && (
+                  <div>
+                    <label className="text-xs font-medium text-jadwa-muted mb-1 block">
+                      {t("auth.phone_number")}
+                    </label>
+                    <PhoneInput
+                      countries={COUNTRIES}
+                      country={formData.country}
+                      phone={formData.phone}
+                      isRtl={isRtl}
+                      isMobile={isMobile}
+                      onCountryChange={(c) =>
+                        setFormData((p) => ({
+                          ...p,
+                          country: c.code,
+                          dialCode: c.dialCode,
+                        }))
+                      }
+                      onPhoneChange={(phone) =>
+                        setFormData((p) => ({ ...p, phone }))
+                      }
+                    />
 
-                  {(showWarn || showLengthError) && (
-                    <p className="text-xs text-destructive mt-1">
-                      {showWarn
-                        ? t("auth.errors.only_numbers")
-                        : t("auth.errors.phone_length")}
-                    </p>
-                  )}
-                </div>
+                    {(showWarn || showLengthError) && (
+                      <p className="text-xs text-destructive mt-1">
+                        {showWarn
+                          ? t("auth.errors.only_numbers")
+                          : t("auth.errors.phone_length")}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {mode === "forgot-password" && (
+                  <Field
+                    label={t("auth.email")}
+                    icon={<AtSign />}
+                    value={resetEmail}
+                    onChange={(v) => setResetEmail(v)}
+                  />
+                )}
 
                 {/* Password */}
                 {mode === "register" && (
@@ -243,33 +328,57 @@ const Auth = () => {
                     hint={t("auth.password_hint")}
                   />
                 )}
-                <PasswordField
-                  label={t("auth.pin_code")}
-                  value={formData.pinCode}
-                  show={showPin}
-                  toggle={() => setShowPin((v) => !v)}
-                  onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
-                  isRtl={isRtl}
-                  numericOnly
-                  maxLength={6}
-                  hint={t("auth.pin_hint")}
-                />
-
-                {/* PIN */}
-                {/*isPinRequired && (
+                {mode === "login" && (
                   <PasswordField
                     label={t("auth.pin_code")}
-                    value={pinCode}
+                    value={formData.pinCode}
                     show={showPin}
                     toggle={() => setShowPin((v) => !v)}
-                    onChange={setPinCode}
+                    onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
                     isRtl={isRtl}
+                    numericOnly
+                    maxLength={6}
+                    hint={t("auth.pin_hint")}
                   />
-                )*/}
+                )}
+                {mode === "reset-password" && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium text-jadwa-muted">
+                      {t("auth.verification_code")}
+                    </label>
+
+                    <OtpInput value={otp} onChange={setOtp} />
+                  </div>
+                )}
+                {mode === "reset-password" && (
+                  <>
+                    <PasswordField
+                      label={t("auth.new_password")}
+                      value={newPassword}
+                      show={showPassword}
+                      toggle={() => setShowPassword((v) => !v)}
+                      onChange={setNewPassword}
+                      isRtl={isRtl}
+                    />
+                    <PasswordField
+                      label={t("auth.confirm_new_password")}
+                      value={confirmNewPassword}
+                      show={showPassword}
+                      toggle={() => setShowPassword((v) => !v)}
+                      onChange={setConfirmNewPassword}
+                      isRtl={isRtl}
+                    />
+                  </>
+                )}
+
                 {mode === "login" && (
-                  <p className="text-sm cursor-pointer text-jadwa">
+                  <button
+                    type="button"
+                    onClick={() => setMode("forgot-password")}
+                    className="text-sm text-jadwa hover:underline"
+                  >
                     {t("auth.forgot_password")}
-                  </p>
+                  </button>
                 )}
 
                 {/* Submit */}
@@ -277,7 +386,7 @@ const Auth = () => {
                   type="submit"
                   size="lg"
                   className="w-full bg-primary hover:bg-[#988662]"
-                  disabled={isLoading}
+                  disabled={isLoading || newPassword !== confirmNewPassword}
                 >
                   {isLoading ? (
                     <motion.div
@@ -287,9 +396,14 @@ const Auth = () => {
                     />
                   ) : (
                     <>
-                      {mode === "login"
-                        ? t("auth.sign_in")
-                        : t("auth.register")}
+                      {
+                        {
+                          login: t("auth.sign_in"),
+                          register: t("auth.register"),
+                          "forgot-password": t("auth.send_code"),
+                          "reset-password": t("common.confirm"),
+                        }[mode]
+                      }
                     </>
                   )}
                 </Button>
@@ -306,7 +420,7 @@ const Auth = () => {
                 "relative",
                 termsError
                   ? "bg-destructive/10 border-destructive"
-                  : "bg-muted/30 border-border/40"
+                  : "bg-muted/30 border-border/40",
               )}
             >
               {/* Left accent bar */}
@@ -361,7 +475,7 @@ const Auth = () => {
           className={cn(
             "fixed bottom-5 z-50 inline-flex items-center gap-2 rounded-full shadow-lg",
             "bg-emerald-600 px-4 py-3 text-white transition hover:bg-emerald-700 hover:shadow-xl",
-            isRtl ? "left-4 sm:left-6" : "right-4 sm:right-6"
+            isRtl ? "left-4 sm:left-6" : "right-4 sm:right-6",
           )}
         >
           <MessageCircleMore className="h-5 w-5" />

@@ -97,15 +97,25 @@
     "accept_terms_desc": "and confirm that I have read and understood them.",
     "terms_link": "View Terms & Conditions",
     "terms_required": "You must accept the terms before creating an account.",
-    "password_hint": "Must be at least 8 characters.",
+    "password_hint": "Must be at least 6 characters.",
     "pin_hint": "6-digit numeric PIN.",
     "forgot_password": "Forgot password?",
+    "reset_acc_pass": "Reset account password",
+    "send_code": "Send verification code",
+    "email": "Email address",
+    "verification_code": "Verification code",
+    "new_password": "New password",
+    "confirm_new_password": "Confirm new password",
+    "enter_verification_code": "Enter the verification code",
+    "code_sent_to": "The verification code was sent to",
 
     "success": {
       "signed_in": "Signed in",
       "account_created": "Account created!",
       "welcome_back": "Welcome back!",
-      "signed_in_as": "Signed in as"
+      "signed_in_as": "Signed in as",
+      "code_sent": "Code sent",
+      "check_email": "Check your emails"
     },
 
     "errors": {
@@ -118,14 +128,20 @@
       "enter_valid_pass": "Please enter a valid password",
       "enter_valid_pin": "Enter a valid PIN.",
       "valid_phone": "A valid phone number must be between 10 and 14 digits, including country code",
-      "valid_pass": "A valid password must be longer than 8 characters",
+      "valid_pass": "A valid password must be longer than 6 characters",
       "valid_pin": "PIN must be exactly 6 digits.",
       "valid_name": "A valid name must be longer than 2 characters",
       "fill_all": "Please fill in all the required fields",
       "session_timeout_title": "Session expired",
       "session_timeout_desc": "Your session has expired due to inactivity or security timeout.",
       "pls_login_again": "Please log in again to continue securely.",
-      "return_login": "Return to login"
+      "return_login": "Return to login",
+      "invalid_email": "Invalid email",
+      "invalid_email_desc": "The email you've entered is invalid. Please enter a valid one.",
+      "otp_expired": "OTP has Expired",
+      "otp_expired_desc": "OTP code has expired. Please request a new one",
+      "pass_not_match": "Passwords don't match",
+      "pass_not_match_desc": "New password and password confirmation don't match"
     }
   },
 
@@ -526,7 +542,10 @@
     "notes": "Notes",
     "images": "Images",
     "attachments": "Attachments",
-    "soon": "Soon"
+    "soon": "Soon",
+    "confirm": "Confirm",
+    "email_not_available": "Email address not added",
+    "no_email_notice": "No email address is affiliated with your profile. Please supplement your credentials to facilitate seamless account restoration."
   },
 
   "install_prompt": {
