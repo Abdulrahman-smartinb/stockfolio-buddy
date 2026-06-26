@@ -386,7 +386,11 @@ const Auth = () => {
                   type="submit"
                   size="lg"
                   className="w-full bg-primary hover:bg-[#988662]"
-                  disabled={isLoading || newPassword !== confirmNewPassword}
+                  disabled={
+                    isLoading ||
+                    (mode === "reset-password" &&
+                      newPassword !== confirmNewPassword)
+                  }
                 >
                   {isLoading ? (
                     <motion.div
