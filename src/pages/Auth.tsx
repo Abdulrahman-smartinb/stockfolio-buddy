@@ -320,7 +320,7 @@ const Auth = () => {
                     label={t("auth.pin_code")}
                     value={formData.pinCode}
                     show={showPin}
-                    toggle={() => setShowPassword((v) => !v)}
+                    toggle={() => setShowPin((v) => !v)}
                     onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
                     isRtl={isRtl}
                     hint={t("auth.pin_hint")}
