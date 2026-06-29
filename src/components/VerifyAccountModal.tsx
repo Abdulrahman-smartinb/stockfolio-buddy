@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { CameraCapture } from "./CameraCapture";
 import InputField from "./InputField";
 import UploadCard from "./UploadCard";
-import { X } from "lucide-react";
+import { Send, ShieldCheck, X } from "lucide-react";
+import OtpInput from "./OtpInput";
 
 export const VerifyAccountModal = ({
   isOpen,
@@ -38,6 +39,14 @@ export const VerifyAccountModal = ({
   passportPreview,
   disableSubmit,
   setDisableSubmit,
+  emailOtp,
+  setEmailOtp,
+  isEmailChanged,
+  isEmailVerified,
+  onSendEmailCode,
+  onVerifyEmailCode,
+  isSendingEmailCode,
+  isVerifyingEmail,
 }) => {
   if (!isOpen) return null;
 
@@ -152,13 +161,66 @@ export const VerifyAccountModal = ({
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InputField
-                  label={t("profile.email")}
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  required
-                />
+                <div className="space-y-3">
+                  <InputField
+                    label={t("profile.email")}
+                    value={email}
+                    onChange={(e) => {
+                      setEmailOtp("");
+                      setEmail(e.target.value);
+                    }}
+                    type="email"
+                    required
+                  />
+
+                  {isEmailChanged?.(email) && (
+                    <div className="rounded-lg border border-gray-100 bg-gray-50 p-3 space-y-3">
+                      <button
+                        type="button"
+                        className="
+                          inline-flex items-center justify-center gap-2
+                          rounded-md border border-gray-200 bg-white px-3 py-2
+                          text-xs font-medium text-gray-700 hover:bg-gray-50
+                          disabled:opacity-50
+                        "
+                        disabled={isSendingEmailCode}
+                        onClick={() => onSendEmailCode(email)}
+                      >
+                        <Send size={14} />
+                        {isSendingEmailCode
+                          ? t("app.loading")
+                          : t("profile.send_email_code")}
+                      </button>
+
+                      {!isEmailVerified?.(email) ? (
+                        <div className="space-y-3">
+                          <OtpInput value={emailOtp} onChange={setEmailOtp} />
+                          <button
+                            type="button"
+                            className="
+                              inline-flex items-center justify-center gap-2
+                              rounded-md bg-gray-900 px-3 py-2
+                              text-xs font-medium text-white
+                              disabled:opacity-50
+                            "
+                            disabled={isVerifyingEmail || emailOtp.length !== 6}
+                            onClick={() => onVerifyEmailCode(email)}
+                          >
+                            <ShieldCheck size={14} />
+                            {isVerifyingEmail
+                              ? t("app.loading")
+                              : t("profile.verify_email")}
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-xs font-medium text-emerald-600">
+                          <ShieldCheck size={14} />
+                          {t("profile.email_verified")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <InputField
                   label={t("verification.id_number")}

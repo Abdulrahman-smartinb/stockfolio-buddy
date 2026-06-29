@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, CheckCircle2, Camera } from "lucide-react";
+import { X, CheckCircle2, Camera, Send, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,6 +10,7 @@ import { isMobile } from "@/hooks/helpers";
 import { base_url } from "@/api/GlobalData";
 import { useMemo } from "react";
 import CountryCitySelect from "./CountryCitySelect";
+import OtpInput from "./OtpInput";
 
 interface Props {
   isOpen: boolean;
@@ -20,6 +21,14 @@ interface Props {
   handleProfileImageChange: (file: File) => void;
   isSaving: boolean;
   avatarPreview?: string;
+  emailOtp: string;
+  setEmailOtp: (value: string) => void;
+  isEmailChanged: (email?: string) => boolean;
+  isEmailVerified: (email?: string) => boolean;
+  onSendEmailCode: (email: string) => void;
+  onVerifyEmailCode: (email: string) => void;
+  isSendingEmailCode: boolean;
+  isVerifyingEmail: boolean;
 }
 
 export const EditProfileModal = ({
@@ -31,6 +40,14 @@ export const EditProfileModal = ({
   isSaving,
   handleProfileImageChange,
   avatarPreview,
+  emailOtp,
+  setEmailOtp,
+  isEmailChanged,
+  isEmailVerified,
+  onSendEmailCode,
+  onVerifyEmailCode,
+  isSendingEmailCode,
+  isVerifyingEmail,
 }: Props) => {
   const { t, i18n } = useTranslation();
   const isRtl = i18n.language === "ar";
@@ -159,14 +176,60 @@ export const EditProfileModal = ({
                   }
                 />
 
-                <FormField
-                  label={t("profile.email")}
-                  value={editData.email}
-                  onChange={(v: string) =>
-                    setEditData((p: any) => ({ ...p, email: v }))
-                  }
-                  customStyle={"font-google"}
-                />
+                <div className="space-y-3">
+                  <FormField
+                    label={t("profile.email")}
+                    value={editData.email}
+                    onChange={(v: string) => {
+                      setEmailOtp("");
+                      setEditData((p: any) => ({ ...p, email: v }));
+                    }}
+                    customStyle={"font-google"}
+                  />
+
+                  {isEmailChanged(editData.email) && (
+                    <div className="rounded-2xl border border-border/60 bg-muted/10 p-3 space-y-3">
+                      <div className="flex flex-col gap-2 sm:flex-row">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="rounded-xl"
+                          disabled={isSendingEmailCode}
+                          onClick={() => onSendEmailCode(editData.email)}
+                        >
+                          <Send className="w-4 h-4 mr-2" />
+                          {isSendingEmailCode
+                            ? t("app.loading")
+                            : t("profile.send_email_code")}
+                        </Button>
+                      </div>
+
+                      {!isEmailVerified(editData.email) ? (
+                        <div className="space-y-3">
+                          <OtpInput value={emailOtp} onChange={setEmailOtp} />
+                          <Button
+                            type="button"
+                            size="sm"
+                            className="rounded-xl"
+                            disabled={isVerifyingEmail || emailOtp.length !== 6}
+                            onClick={() => onVerifyEmailCode(editData.email)}
+                          >
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            {isVerifyingEmail
+                              ? t("app.loading")
+                              : t("profile.verify_email")}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-xs font-medium text-emerald-600">
+                          <ShieldCheck className="w-4 h-4" />
+                          {t("profile.email_verified")}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
                 <div>
                   <label className="text-xs font-medium text-jadwa-muted mb-1 block">

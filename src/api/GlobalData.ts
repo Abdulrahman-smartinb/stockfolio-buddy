@@ -7,6 +7,9 @@ export const registerEP = "api/investor/auth/register";
 export const verifyPinEP = "api/investor/auth/verify";
 export const forgotPassEP = "api/investor/auth/forgot-password";
 export const resetPassEP = "api/investor/auth/reset-password";
+export const sendEmailVerificationEP =
+  "api/investor/auth/email-verification/send";
+export const verifyEmailEP = "api/investor/auth/email-verification/verify";
 export const stocksEP = "api/clientCompany";
 export const sharePurchaseRequestEP = "api/sharePurchaseRequest";
 export const ShareTransactionEP = "/api/shares/transactions";

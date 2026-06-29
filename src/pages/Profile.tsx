@@ -97,6 +97,14 @@ const Profile = () => {
     passportPreview,
     disableSubmit,
     setDisableSubmit,
+    emailOtp,
+    setEmailOtp,
+    isEmailChanged,
+    isEmailVerified,
+    sendVerificationCode,
+    verifyEmailCode,
+    isSendingEmailCode,
+    isVerifyingEmail,
   } = useProfile();
 
   const [openEditModal, setOpenEditModal] = useState(false);
@@ -390,6 +398,14 @@ const Profile = () => {
         isSaving={isSaving}
         handleProfileImageChange={handleProfileImageChange}
         avatarPreview={avatarSrc}
+        emailOtp={emailOtp}
+        setEmailOtp={setEmailOtp}
+        isEmailChanged={isEmailChanged}
+        isEmailVerified={isEmailVerified}
+        onSendEmailCode={sendVerificationCode}
+        onVerifyEmailCode={verifyEmailCode}
+        isSendingEmailCode={isSendingEmailCode}
+        isVerifyingEmail={isVerifyingEmail}
       />
 
       {/* Verify Modal */}
@@ -426,6 +442,14 @@ const Profile = () => {
         passportPreview={passportPreview}
         disableSubmit={disableSubmit}
         setDisableSubmit={setDisableSubmit}
+        emailOtp={emailOtp}
+        setEmailOtp={setEmailOtp}
+        isEmailChanged={isEmailChanged}
+        isEmailVerified={isEmailVerified}
+        onSendEmailCode={sendVerificationCode}
+        onVerifyEmailCode={verifyEmailCode}
+        isSendingEmailCode={isSendingEmailCode}
+        isVerifyingEmail={isVerifyingEmail}
       />
 
       <VerifyAccountTermsModal

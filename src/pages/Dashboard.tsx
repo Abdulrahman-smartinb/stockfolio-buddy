@@ -120,6 +120,14 @@ const Dashboard = () => {
     passportPreview,
     disableSubmit,
     setDisableSubmit,
+    emailOtp,
+    setEmailOtp,
+    isEmailChanged,
+    isEmailVerified,
+    sendVerificationCode,
+    verifyEmailCode,
+    isSendingEmailCode,
+    isVerifyingEmail,
   } = useProfile();
 
   useEffect(() => {
@@ -413,6 +421,14 @@ const Dashboard = () => {
         passportPreview={passportPreview}
         disableSubmit={disableSubmit}
         setDisableSubmit={setDisableSubmit}
+        emailOtp={emailOtp}
+        setEmailOtp={setEmailOtp}
+        isEmailChanged={isEmailChanged}
+        isEmailVerified={isEmailVerified}
+        onSendEmailCode={sendVerificationCode}
+        onVerifyEmailCode={verifyEmailCode}
+        isSendingEmailCode={isSendingEmailCode}
+        isVerifyingEmail={isVerifyingEmail}
       />
 
       <VerifyAccountTermsModal

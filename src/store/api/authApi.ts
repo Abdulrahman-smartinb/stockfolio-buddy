@@ -7,6 +7,8 @@ import {
   profileEP,
   registerEP,
   resetPassEP,
+  sendEmailVerificationEP,
+  verifyEmailEP,
   // resendSmsEP,
   verifyPinEP,
   // verifySmsEP,
@@ -40,6 +42,7 @@ export interface LogoutResponse {
 export interface ForgotPassRes {
   status: boolean;
   message: string;
+  verificationRequired?: boolean;
 }
 export interface ForgotPassReq {
   email: string;
@@ -53,6 +56,15 @@ export interface ResetPassReq {
   email: string;
   otp: string;
   newPassword: string;
+}
+
+export interface EmailVerificationReq {
+  email: string;
+}
+
+export interface VerifyEmailReq {
+  email: string;
+  otp: string;
 }
 
 export const authApi = baseApi.injectEndpoints({
@@ -103,6 +115,23 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    sendEmailVerification: builder.mutation<
+      ForgotPassRes,
+      EmailVerificationReq
+    >({
+      query: (body) => ({
+        url: sendEmailVerificationEP,
+        method: "POST",
+        body,
+      }),
+    }),
+    verifyEmail: builder.mutation<ResetPassRes, VerifyEmailReq>({
+      query: (body) => ({
+        url: verifyEmailEP,
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -114,4 +143,6 @@ export const {
   useVerifyPinMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useSendEmailVerificationMutation,
+  useVerifyEmailMutation,
 } = authApi;

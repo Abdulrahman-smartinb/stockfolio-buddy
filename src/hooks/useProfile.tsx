@@ -15,6 +15,10 @@ import {
   useGetOneApplicantQuery,
   useUpdateApplicantProfileMutation,
 } from "@/store/api/applicantApi";
+import {
+  useSendEmailVerificationMutation,
+  useVerifyEmailMutation,
+} from "@/store/api/authApi";
 
 import { compressImage } from "@/lib/utils";
 import { UserData } from "@/interfaces/UserData";
@@ -23,6 +27,8 @@ import {
   findCityByValue,
   findCountryByValue,
 } from "@/lib/countryCityUtils";
+
+const normalizeEmail = (email?: string) => email?.trim().toLowerCase() || "";
 
 export const useProfile = () => {
   const { t } = useTranslation();
@@ -75,6 +81,10 @@ export const useProfile = () => {
 
   // Mutations
   const [updateInvestor, { isLoading: isSaving }] = useUpdateInvestorMutation();
+  const [sendEmailVerification, { isLoading: isSendingEmailCode }] =
+    useSendEmailVerificationMutation();
+  const [verifyEmailMutation, { isLoading: isVerifyingEmail }] =
+    useVerifyEmailMutation();
 
   const [submit, { isLoading: isSubmitting, error: submitError }] =
     useUpdateApplicantProfileMutation();
@@ -95,6 +105,79 @@ export const useProfile = () => {
     profileImageFile: null as File | null,
     profilePreview: "",
   });
+  const [emailOtp, setEmailOtp] = useState("");
+  const [verifiedEmail, setVerifiedEmail] = useState("");
+
+  const isEmailChanged = (nextEmail?: string) =>
+    normalizeEmail(nextEmail) !== normalizeEmail(user?.email);
+
+  const isEmailVerified = (nextEmail?: string) =>
+    !isEmailChanged(nextEmail) ||
+    normalizeEmail(nextEmail) === normalizeEmail(verifiedEmail);
+
+  const sendVerificationCode = async (targetEmail: string) => {
+    const normalized = normalizeEmail(targetEmail);
+
+    if (!normalized || !normalized.includes("@")) {
+      toast({
+        title: t("auth.errors.invalid_email"),
+        description: t("auth.errors.invalid_email_desc"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const response = await sendEmailVerification({ email: normalized }).unwrap();
+      setEmailOtp("");
+      setVerifiedEmail(response?.verificationRequired ? "" : normalized);
+      toast({
+        title: response?.verificationRequired
+          ? t("auth.success.code_sent")
+          : t("profile.email_verified"),
+        description: response?.message || t("auth.success.check_email"),
+      });
+    } catch (error: any) {
+      toast({
+        title: t("profile.email_verification_failed"),
+        description: error?.data?.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const verifyEmailCode = async (targetEmail: string) => {
+    const normalized = normalizeEmail(targetEmail);
+
+    if (!emailOtp.trim()) {
+      toast({
+        title: t("auth.verification_code"),
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      await verifyEmailMutation({
+        email: normalized,
+        otp: emailOtp.trim(),
+      }).unwrap();
+
+      setVerifiedEmail(normalized);
+      setEmailOtp("");
+
+      toast({
+        title: t("profile.email_verified"),
+        description: t("profile.email_verified_desc"),
+      });
+    } catch (error: any) {
+      toast({
+        title: t("profile.email_verification_failed"),
+        description: error?.data?.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   // Split E.164 phone when loading user
   useEffect(() => {
@@ -164,6 +247,15 @@ export const useProfile = () => {
       if (editData.birthDate) formData.append("birthDate", editData.birthDate);
 
       if (editData.email) formData.append("email", editData.email);
+
+      if (isEmailChanged(editData.email) && !isEmailVerified(editData.email)) {
+        toast({
+          title: t("profile.email_verification_required"),
+          description: t("profile.email_verification_required_desc"),
+          variant: "destructive",
+        });
+        return;
+      }
 
       if (editData.country) formData.append("country", editData.country);
       if (editData.address) formData.append("address", editData.address);
@@ -276,6 +368,15 @@ export const useProfile = () => {
       }
       formData.append("passportNumber", passportNumber);
       formData.append("passportExpDate", passportExpDate);
+      if (isEmailChanged(email) && !isEmailVerified(email)) {
+        toast({
+          title: t("profile.email_verification_required"),
+          description: t("profile.email_verification_required_desc"),
+          variant: "destructive",
+        });
+        return;
+      }
+
       formData.append("email", email);
       formData.append("idNumber", idNumber);
       formData.append("reviewStatus", "pending");
@@ -315,6 +416,7 @@ export const useProfile = () => {
     setIdPhotoBack(null);
     setLivePhoto(null);
     setLivePhotoPreview(null);
+    setEmailOtp("");
   };
 
   // Animations
@@ -386,5 +488,14 @@ export const useProfile = () => {
     passportPreview,
     disableSubmit,
     setDisableSubmit,
+    emailOtp,
+    setEmailOtp,
+    verifiedEmail,
+    isEmailChanged,
+    isEmailVerified,
+    sendVerificationCode,
+    verifyEmailCode,
+    isSendingEmailCode,
+    isVerifyingEmail,
   };
 };
