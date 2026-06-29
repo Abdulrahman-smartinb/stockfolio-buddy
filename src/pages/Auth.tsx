@@ -317,15 +317,13 @@ const Auth = () => {
                 {/* Password */}
                 {mode === "register" && (
                   <PasswordField
-                    label={t("auth.password")}
-                    value={formData.password}
-                    show={showPassword}
+                    label={t("auth.pin_code")}
+                    value={formData.pinCode}
+                    show={showPin}
                     toggle={() => setShowPassword((v) => !v)}
-                    onChange={(v) =>
-                      setFormData((p) => ({ ...p, password: v }))
-                    }
+                    onChange={(v) => setFormData((p) => ({ ...p, pinCode: v }))}
                     isRtl={isRtl}
-                    hint={t("auth.password_hint")}
+                    hint={t("auth.pin_hint")}
                   />
                 )}
                 {mode === "login" && (

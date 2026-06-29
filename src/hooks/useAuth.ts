@@ -177,14 +177,14 @@ export const useAuth = () => {
       valid = false;
     }
 
-    if (mode === "register" && formData.password.trim().length < 6) {
-      toast({
-        title: t("auth.errors.enter_valid_pass"),
-        variant: "destructive",
-        description: t("auth.errors.valid_pass"),
-      });
-      valid = false;
-    }
+    // if (mode === "register" && formData.password.trim().length < 6) {
+    //   toast({
+    //     title: t("auth.errors.enter_valid_pass"),
+    //     variant: "destructive",
+    //     description: t("auth.errors.valid_pass"),
+    //   });
+    //   valid = false;
+    // }
 
     if (showWarn || showLengthError) valid = false;
 
